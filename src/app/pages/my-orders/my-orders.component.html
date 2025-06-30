@@ -1,0 +1,43 @@
+<div class="container my-4">
+  <h2 class="mb-4">My Orders</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <table *ngIf="!loading && orders.length > 0" class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Order Number</th>
+        <th>Total Items</th>
+        <th>Total Price</th>
+        <th>Status</th>
+        <th>Created Date</th>
+        <th>Updated Date</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.orderNumber }}</td>
+        <td>{{ order.totalItems }}</td>
+        <td>{{ order.totalPrice | currency:'INR':'symbol': '1.2-2' }}</td>
+        <td><span class="badge bg-info text-dark">{{ order.status }}</span></td>
+        <td>{{ order.createdAt | date:'medium' }}</td>
+        <td>{{ order.updatedAt | date:'medium' }}</td>
+        <td>
+          <a [routerLink]="['/my-orders', order.id]" class="btn btn-sm btn-primary">View</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && orders.length === 0" class="alert alert-info">
+    No orders found.
+  </div>
+</div>

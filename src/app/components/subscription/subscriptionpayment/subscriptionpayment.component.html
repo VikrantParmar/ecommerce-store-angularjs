@@ -1,0 +1,21 @@
+<div class="checkout-container">
+  <h2 class="checkout-title">Subscribe to {{ planName }}</h2>
+  <p class="checkout-amount">₹{{ (amount / 100) | number:'1.0-2' }} / {{ interval }}</p>
+
+  <div class="checkout-form">
+    <label class="checkout-label" for="card-element">Card Details</label>
+    <div id="card-element" class="card-element"></div>
+
+    <div class="checkout-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <button class="checkout-button" (click)="pay()" [disabled]="loading">
+      {{ loading ? 'Processing...' : 'Pay & Subscribe' }}
+    </button>
+
+    <button class="cancel-button" (click)="router.navigate(['/prime'])" [disabled]="loading">
+      Cancel
+    </button>
+  </div>
+</div>

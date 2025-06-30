@@ -1,0 +1,23 @@
+<div class="p-3 rounded shadow-sm border bg-white">
+  <h5 class="fw-bold mb-3 border-bottom pb-2">Categories</h5>
+
+  <div *ngIf="loading" class="text-muted small mb-2">
+    <i class="spinner-border spinner-border-sm me-1"></i> Loading...
+  </div>
+
+  <ul class="list-unstyled mb-0">
+    <li (click)="selectCategory(null)" [class.active-category]="selectedCategoryId === null"
+      class="category-item py-2 px-3 rounded mb-2" style="cursor: pointer;" tabindex="0"
+      (keyup.enter)="selectCategory(null)">
+      <span>All</span>
+    </li>
+
+    <li *ngFor="let category of categories" (click)="selectCategory(category.id)"
+      [class.active-category]="category.id === selectedCategoryId"
+      class="category-item py-2 px-3 rounded mb-2 d-flex justify-content-between align-items-center"
+      style="cursor: pointer;" tabindex="0" (keyup.enter)="selectCategory(category.id)">
+      <span>{{ category.name }}</span>
+      <span class="badge bg-secondary">{{ category.productCount || 0 }}</span>
+    </li>
+  </ul>
+</div>

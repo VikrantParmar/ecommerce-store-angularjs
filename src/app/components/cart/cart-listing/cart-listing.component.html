@@ -1,0 +1,71 @@
+<!-- 🔄 Fullscreen Loader -->
+<div *ngIf="loadingItemId !== null" class="fullscreen-loader">
+  <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+
+
+
+
+<!-- 🛒 Cart Items Table -->
+<div class="site-blocks-table">
+  <table class="table mt-3">
+    <thead>
+      <tr>
+        <th class="product-thumbnail">Image</th>
+        <th class="product-name">Product</th>
+        <th class="product-price">Price</th>
+        <th class="product-quantity">Quantity</th>
+        <th class="product-total">Total</th>
+        <th class="product-remove">Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cartItems">
+        <td class="product-thumbnail">
+          <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid"
+            style="width: 100px; height: 100px; object-fit: cover" />
+        </td>
+        <td class="product-name">
+          <h2 class="h5 text-black">{{ item.Product.name }}</h2>
+          <p class="text-muted">
+            {{ item.Product.des || "No description available." }}
+          </p>
+        </td>
+
+        <td>{{ format(item.Product.price) }}</td>
+
+        <td class="text-center align-middle">
+          <div class="d-flex justify-content-center">
+            <div class="input-group" style="max-width: 120px;">
+
+              <button class="btn btn-outline-dark" type="button" (click)="decreaseQty(item)"
+                [disabled]="item.quantity <= 1 || loadingItemId !== null">
+                -
+              </button>
+
+              <input type="text" class="form-control text-center" [value]="item.quantity" readonly />
+
+              <button class="btn btn-outline-dark" type="button" (click)="increaseQty(item)"
+                [disabled]="loadingItemId !== null">
+                +
+              </button>
+
+            </div>
+          </div>
+        </td>
+
+        <td>{{ format( item.Product.price * item.quantity) }}</td>
+        <td>
+          <button (click)="removeItem(item.Product.id)" class="btn btn-black btn-sm" [disabled]="loadingItemId !== null"
+            style="padding: 0.5rem 0.75rem; font-size: 1rem;">
+            <i class="bi bi-trash" style="font-size: 1.2rem;  "></i>
+          </button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

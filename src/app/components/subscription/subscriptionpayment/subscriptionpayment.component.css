@@ -1,0 +1,110 @@
+.checkout-container {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(50, 50, 93, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #32325d;
+}
+
+.checkout-title {
+  font-weight: 600;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.checkout-amount {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #6b7c93;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkout-label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #6b7c93;
+  font-weight: 500;
+}
+
+.card-element {
+  border: 1.5px solid #ccd0d2;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Stripe Element focus style - apply via Stripe element style config too */
+.StripeElement--focus {
+  border-color: #5469d4 !important;
+  box-shadow: 0 0 0 1px #5469d4 !important;
+  background-color: #fff !important;
+}
+
+/* Error style */
+.checkout-error {
+  color: #fa755a;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  min-height: 1.25rem;
+}
+
+/* Submit button */
+.checkout-button {
+  margin-top: 24px;
+  background-color: #5469d4;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.checkout-button:hover:not(:disabled) {
+  background-color: #4353b3;
+}
+
+/* Cancel button */
+.cancel-button {
+  margin-top: 16px;
+  background: transparent;
+  border: none;
+  color: #6b7c93;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.cancel-button:disabled {
+  cursor: not-allowed;
+  color: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .checkout-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+}

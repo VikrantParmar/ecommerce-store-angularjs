@@ -1,0 +1,26 @@
+<div class="d-flex justify-content-center align-items-center px-3 mt-5 ">
+  <div class="card-success text-center">
+    <div class="checkmark-circle ">
+      <i class="bi bi-check-lg"></i>
+    </div>
+
+    <h4 class="mb-2 fw-bold">Order Confirmed!</h4>
+    <p class="small-text mb-2">
+      Thank you for your purchase. Your order has been placed successfully.
+      <a routerLink="/my-orders" class="text-success">View Order History</a>
+    </p>
+    <p class="small-text"><a href="#" class="text-success">Track Your Order</a></p>
+
+    <ul class="list-unstyled order-details text-start mt-4">
+      <li><span>Order ID</span><span>{{ orderId }}</span></li>
+      <li><span>Order Number</span><span>{{ orderNumber }}</span></li>
+      <li><span>Total</span><span>₹{{ total }}.00</span></li>
+      <li><span>Ordered On</span><span>{{ createdAt | date: 'medium' }}</span></li>
+    </ul>
+
+    <div class="d-grid gap-2 mt-4">
+      <a routerLink="/products-list" class="btn btn-primary">Continue Shopping</a>
+      <a routerLink="/my-orders" class="btn btn-outline-success">View My Orders</a>
+    </div>
+  </div>
+</div>

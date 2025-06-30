@@ -1,0 +1,48 @@
+<div class="row justify-content-end">
+  <div class="col-md-7">
+    <div class="row">
+      <div class="col-md-12 text-right border-bottom mb-4">
+        <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+      </div>
+    </div>
+
+    <!-- Total Items -->
+    <div class="row mb-3">
+      <div class="col-md-10 d-flex justify-content-between">
+        <span class="text-black">Total Items</span>
+        <strong class="text-black">{{ totalQuantity }}</strong>
+      </div>
+    </div>
+
+    <!-- Subtotal -->
+    <div class="row mb-3">
+      <div class="col-md-10 d-flex justify-content-between">
+        <span class="text-black">Subtotal</span>
+        <strong class="text-black">{{ format( subtotal ) }}</strong>
+      </div>
+    </div>
+
+    <!-- Discount -->
+    <div class="row mb-3" *ngIf="discount > 0">
+      <div class="col-md-10 d-flex justify-content-between">
+        <span class="text-black">Discount</span>
+        <strong class="text-success">- {{ format( discount ) }}</strong>
+      </div>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="row mb-5">
+      <div class="col-md-10 d-flex justify-content-between">
+        <span class="text-black fw-bold">Total</span>
+        <strong class="text-black">{{ format( grandTotal )}}</strong>
+      </div>
+    </div>
+
+    <!-- Checkout Button -->
+    <div class="row mb-5">
+      <div class="col-md-10">
+        <button class="btn btn-dark btn-lg w-100" (click)="checkout.emit()">Proceed To Checkout</button>
+      </div>
+    </div>
+  </div>
+</div>

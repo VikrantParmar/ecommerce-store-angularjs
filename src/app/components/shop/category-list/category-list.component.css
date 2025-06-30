@@ -1,0 +1,13 @@
+.active-category {
+  background-color: #dce5e4;
+  color: black !important;
+}
+.active-category:hover {
+  background-color: #dce5e4;
+}
+.category-item:hover {
+  background-color: #dce5e4;
+  color: black;
+}
+
+

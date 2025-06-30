@@ -1,0 +1,39 @@
+.custom-alert {
+  padding: 7px 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  font-size: 14px;
+
+  color: #fff;
+}
+
+.custom-alert.success {
+  background-color: #28a745;
+}
+
+.custom-alert.error {
+  background-color: #D32F2F;
+}
+
+.custom-alert.warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.custom-alert.info {
+  background-color: #17a2b8;
+}
+
+.icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.icon i {
+  color: #fff;
+}
+
+.custom-alert.warning .icon i {
+  color: #212529; /* darker icon for yellow background */
+}

@@ -1,0 +1,50 @@
+<!-- Hero -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Shop</h1>
+        </div>
+      </div>
+      <div class="col-lg-7"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Shop Body -->
+<div class="untree_co-section product-section before-footer-section">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0"></h5>
+
+      <app-sort-bar [selectedSortOption]="selectedSortOption" (sortChange)="onSortChange($event)">
+      </app-sort-bar>
+
+    </div>
+    <div class="row">
+      <div class="col-md-3 mb-4">
+
+        <app-category-list [categories]="categories" [selectedCategoryId]="selectedCategoryId"
+          [loading]="loadingCategories" (categorySelected)="selectCategory($event)">
+        </app-category-list>
+
+      </div>
+
+      <div class="col-md-9">
+
+        <app-product-grid [products]="products" [loading]="loadingProducts" [total]="totalProducts"
+          [perPage]="productsPerPage" [page]="currentPage" (pageChange)="onPageChange($event)"
+          (addToCart)="addToCart($event)">
+
+        </app-product-grid>
+
+      </div>
+    </div>
+
+    <app-pagination [total]="totalProducts" [page]="currentPage" [perPage]="productsPerPage"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+
+  </div>
+ 

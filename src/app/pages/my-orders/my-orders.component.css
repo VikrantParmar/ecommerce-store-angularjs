@@ -1,0 +1,20 @@
+/* For better scrollbar on items list */
+.list-group {
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #e9ecef;
+}
+
+.list-group::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list-group::-webkit-scrollbar-track {
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+.list-group::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}

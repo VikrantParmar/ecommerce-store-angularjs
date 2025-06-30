@@ -1,0 +1,76 @@
+<div class="auth-container p-2">
+  <div class="auth-card">
+    <h3 class="text-center mb-4">Login</h3>
+
+    <!-- Notifications -->
+    <app-notification-message [message]="successMessage" type="success"></app-notification-message>
+    <app-notification-message [message]="errorMessage" type="error"></app-notification-message>
+
+    <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
+      <!-- Email -->
+      <div class="form-group mb-4">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          email
+          #emailRef="ngModel"
+          class="form-control"
+          [class.is-invalid]="(emailRef.invalid && (emailRef.touched || submitted)) || backendErrors['email']"
+          placeholder="Enter your email"
+        />
+        <div *ngIf="emailRef.invalid && (emailRef.touched || submitted)" class="text-danger mt-1">
+          {{ getFieldError(emailRef) }}
+        </div>
+        <div *ngIf="backendErrors['email']" class="text-danger mt-1">
+          {{ backendErrors['email'] }}
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group mb-3">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          minlength="6"
+          #passwordRef="ngModel"
+          class="form-control"
+          [class.is-invalid]="(passwordRef.invalid && (passwordRef.touched || submitted)) || backendErrors['password']"
+          placeholder="Enter your password"
+        />
+        <div *ngIf="passwordRef.invalid && (passwordRef.touched || submitted)" class="text-danger mt-1">
+          {{ getFieldError(passwordRef) }}
+        </div>
+        <div *ngIf="backendErrors['password']" class="text-danger mt-1">
+          {{ backendErrors['password'] }}
+        </div>
+      </div>
+
+      <!-- Forgot Link -->
+      <div class="mb-3 text-end">
+        <a routerLink="/forgot-password" class="small">Forgot Password?</a>
+      </div>
+
+      <!-- Signup Link -->
+      <div class="text-center mb-3">
+        <p>Don’t have an account? <a routerLink="/signup">Sign up</a></p>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn btn-primary w-100" type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Login</span>
+        <span *ngIf="loading" class="d-flex justify-content-center align-items-center">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Logging in...
+        </span>
+      </button>
+    </form>
+  </div>
+</div>

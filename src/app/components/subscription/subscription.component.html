@@ -1,0 +1,161 @@
+<div class="container mt-5">
+  <div class="row text-center">
+    <h2>Choose Your Prime Plan</h2>
+    <p class="lead">Get extra benefits and discounts with Prime</p>
+  </div>
+
+  <div class="row">
+    <!-- Basic Plan -->
+    <div class="col-md-4 ">
+      <div class="panel panel-default p-3">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center">Basic</h3>
+        </div>
+        <div class="panel-body text-center">
+          <h4>₹ {{10}} / day</h4>
+          <ul class="list-unstyled">
+            <li><span class="glyphicon glyphicon-ok text-success"></span> 2% Discount</li>
+            <li><span class="glyphicon glyphicon-ok text-success"></span> Free shipping over ₹500</li>
+            <li><span class="glyphicon glyphicon-remove text-danger"></span> No early access to deals</li>
+          </ul>
+          <button class="btn btn-primary btn-block" (click)="subscribe()">Subscribe</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standard Plan -->
+    <div class="col-md-4">
+      <div class="panel panel-info p-3">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center">Standard</h3>
+        </div>
+        <div class="panel-body text-center">
+          <h4>₹{{199}} / month</h4>
+          <ul class="list-unstyled">
+            <li><span class="glyphicon glyphicon-ok text-success"></span> 5% Discount</li>
+            <li><span class="glyphicon glyphicon-ok text-success"></span> Free shipping</li>
+            <li><span class="glyphicon glyphicon-ok text-success"></span> Early access to deals</li>
+          </ul>
+        <button class="btn btn-primary btn-block"
+          (click)="goToPayment('Standard', 19900, 'day', 'Standard subscription')">
+          Subscribe
+        </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="col-md-4">
+      <div class="panel panel-success p-3">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center">Premium</h3>
+        </div>
+        <div class="panel-body text-center">
+          <h4>₹299 / month</h4>
+          <ul class="list-unstyled">
+            <li><span class="glyphicon glyphicon-ok text-success"></span> 10% Discount</li>
+            <li><span class="glyphicon glyphicon-ok text-success"></span> Free express delivery</li>
+            <li><span class="glyphicon glyphicon-ok text-success"></span> Exclusive offers</li>
+          </ul>
+         <button class="btn btn-primary btn-block"
+          (click)="goToPayment('Premium', 29900, 'month', 'Premium subscription')">
+          Subscribe
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="container mt-5">
+  <h2 class="text-center text-primary">Frequently Asked Questions</h2>
+  <div class="accordion" id="faqAccordion">
+    <!-- Question 1 -->
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+            aria-controls="collapseOne">
+            Where can I learn more about the various Prime benefits?
+          </button>
+        </h5>
+      </div>
+      <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#faqAccordion">
+        <div class="card-body">
+          To learn more about Prime benefits, visit www.fastwear.in/primebenefits
+        </div>
+      </div>
+    </div>
+
+    <!-- Further questions can be added here in similar fashion -->
+  </div>
+
+  <h2 class="text-center mt-5 text-primary">Check out what's included with Prime:</h2>
+  <div class="row text-center mt-5">
+    <div class="col-md-4 ">
+      <div class="mb-4">
+        <img src="images/fast delivery.png" alt="" style="width: 60%;">
+        <div class="card-body mt-3">
+          <h5 class="card-title">Fast, free delivery</h5>
+          <p class="card-text">Enjoy Same-Day, One-Day, and Two-Day Delivery on millions of items.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="mb-4">
+        <img src="images/movie.png" alt="" style="width: 60%;">
+        <div class="card-body mt-3">
+          <h5 class="card-title">Popular movies & shows</h5>
+          <p class="card-text">New releases, Award-winning Amazon Originals, Watch what you love on your favorite
+            devices.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class=" mb-4">
+        <img src="images/exclusive.png" alt="" style="width: 60%;">
+        <div class="card-body mt-3">
+          <h5 class="card-title">Exclusive deals & savings</h5>
+          <p class="card-text">Enjoy daily deals on thousands of items and access exclusive savings events like Prime
+            Day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="text-center mt-5 text-primary">More Prime benefits</h2>
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class=" mb-4">
+        <img src="images/music.png" alt="">
+        <div class="card-body mt-3">
+          <h5 class="card-title text-primary mb-2">Prime Music</h5>
+          <p class="card-text">Get the largest catalog of Ad-free top podcasts and shuffle play any artist, album, or
+            playlist on Amazon Music.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class=" mb-4">
+        <img src="images/game.png" alt="">
+        <div class="card-body mt-3">
+          <h5 class="card-title text-primary mb-2">Prime Gaming</h5>
+          <p class="card-text">Get games, a Twitch channel subscription, and more gaming benefits every month.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class=" mb-4">
+        <img src="images/reading.png" alt="">
+        <div class="card-body mt-3">
+          <h5 class="card-title text-primary mb-2">Prime Reading</h5>
+          <p class="card-text">Read as much as you want from hundreds of eligible ebooks, comics, and more for free.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

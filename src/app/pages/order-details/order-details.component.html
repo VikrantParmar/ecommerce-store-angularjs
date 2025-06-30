@@ -1,0 +1,117 @@
+<div class="container my-5" *ngIf="order; else loadingOrError">
+  <div class="card shadow-sm p-4">
+    <!-- Order Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="mb-0">Order #{{ order.id }}</h3>
+      <span class="badge bg-info text-dark text-uppercase">{{ order.status }}</span>
+    </div>
+
+    <!-- Order Info -->
+    <div class="mb-4">
+      <p><strong>Order Number:</strong> {{ order.orderNumber }}</p>
+      <p><strong>Created:</strong> {{ order.createdAt | date: 'medium' }}</p>
+      <p><strong>Last Updated:</strong> {{ order.updatedAt | date: 'medium' }}</p>
+    </div>
+
+    <hr />
+
+    <!-- Order Items Section -->
+    <h5 class="mb-3">Order Details</h5>
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.order_items">
+            <td>
+              <div class="d-flex align-items-center">
+                <!-- Placeholder for product image (optional, as in the image) -->
+                <div class="me-3">
+                  <img [src]="item.product.image" alt="{{ item.product.name }}" class="img-fluid" style="width: 50px; height: 50px;" *ngIf="item.product.image">
+                </div>
+                <div>
+                  <p class="mb-0">{{ item.product.name }}</p>
+                  <small class="text-muted">{{ item.product.description }}</small>
+                </div>
+              </div>
+            </td>
+            <td>{{ item.price | currency }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ (item.price * item.quantity) | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr />
+
+    <!-- Shipping and Summary Section -->
+    <div class="row mb-4">
+      <!-- Shipping Address -->
+      <div class="col-md-6 mb-4 mb-md-0">
+        <h5>Shipping Address</h5>
+        <p class="mb-0">
+          {{ order.Shipping.address ? order.Shipping.address + ',' : '' }}<br />
+          {{ order.Shipping.city }}, {{ order.Shipping.state }}<br />
+          {{ order.Shipping.postalCode }}
+        </p>
+      </div>
+
+      <!-- Summary -->
+      <div class="col-md-6">
+        <h5>Summary</h5>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Subtotal:</span>
+            <strong>{{ order.subtotal | currency }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Discount:</span>
+            <strong class="text-success">- {{ order.discount | currency }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total:</span>
+            <strong class="text-primary">{{ order.total | currency }}</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Customer Info (like in the image) -->
+    <div class="row">
+      <!-- <div class="col-md-6">
+        <h5>Customer</h5>
+        <p>
+          {{ order.customer.name }}<br />
+          {{ order.customer.email }}<br />
+          {{ order.customer.phone }}
+        </p>
+      </div> -->
+      <!-- <div class="col-md-6">
+        <h5>Billing Address</h5>
+        <p>
+          {{ order.Billing.address ? order.Billing.address + ',' : '' }}<br />
+          {{ order.Billing.city }}, {{ order.Billing.state }}<br />
+          {{ order.Billing.postalCode }}
+        </p>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- Loading/Error Template -->
+<ng-template #loadingOrError>
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Loading Order Details...</p>
+  </div>
+  <div *ngIf="error" class="alert alert-danger text-center my-4">
+    {{ error }}
+  </div>
+</ng-template>

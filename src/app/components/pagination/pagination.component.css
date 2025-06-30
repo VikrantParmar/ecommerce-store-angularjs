@@ -1,0 +1,17 @@
+.pagination .page-link {
+  border-radius: 30px;
+  margin: 0 4px;
+  color: #333;
+  border: 1px solid #ddd;
+  transition: background 0.2s;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.pagination .page-link:hover {
+  background-color: #f8f9fa;
+}

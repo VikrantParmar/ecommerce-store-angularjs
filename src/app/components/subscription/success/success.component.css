@@ -1,0 +1,27 @@
+ /* .body {
+      background: linear-gradient(135deg, #1f4037, #99f2c8);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    } */
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+      max-width: 480px;
+      width: 100%;
+      padding: 2rem;
+      background-color: white;
+    }
+    .success-icon {
+      font-size: 4rem;
+      color: #28a745;
+    }
+    .btn-primary {
+      background: #1f8ef1;
+      border: none;
+    }
+    .btn-primary:hover {
+      background: #0b6edc;
+    }

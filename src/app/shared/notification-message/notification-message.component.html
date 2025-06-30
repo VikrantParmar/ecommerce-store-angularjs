@@ -1,0 +1,12 @@
+<div *ngIf="message" class="custom-alert d-flex align-items-start gap-2" [ngClass]="type">
+  <span class="icon">
+    <ng-container [ngSwitch]="type">
+      <span *ngSwitchCase="'success'">&#10004;</span> <!-- checkmark -->
+      <span *ngSwitchCase="'error'"><i class="bi bi-exclamation-circle"></i>
+      </span> <!-- cross -->
+      <span *ngSwitchCase="'warning'">&#9888;</span> <!-- warning sign -->
+      <span *ngSwitchCase="'info'">&#8505;</span> <!-- info symbol -->
+    </ng-container>
+  </span>
+  <span class="message-text">{{ message }}</span>
+</div>

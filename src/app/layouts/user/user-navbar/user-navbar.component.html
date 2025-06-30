@@ -1,0 +1,91 @@
+<body>
+
+  <!-- Start Header/Navigation -->
+  <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Furni navigation bar">
+
+    <div class="container">
+      <a class="navbar-brand text-white" routerLink="/">Furni<span>.</span></a>
+
+      <button class="navbar-toggler border-0 bg-transparent" type="button" (click)="toggleNavbar()"
+        aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Show hamburger when closed -->
+        <span class="text-white d-flex align-items-center justify-content-center"
+          style="font-size: 1.8rem; font-weight: 500;">
+          <i [ngClass]="isNavbarOpen ? 'bi-x-lg' : 'bi-list'" class="bi"></i>
+        </span>
+
+
+      </button>
+
+      <div class="collapse navbar-collapse collapse-custom" id="navbarsFurni" #navbarCollapse>
+        <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+          <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link" routerLink="/">Home</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/shop">Shop</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/about">About us</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/services">Services</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/blog">Blog</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link" routerLink="/contact">Contact us</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
+            <a class="nav-link" routerLink="/signin">Sign in</a>
+          </li>
+          <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
+            <a class="nav-link" routerLink="/signup">Sign up</a>
+          </li>
+
+        </ul>
+
+        <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+
+          <!-- User Dropdown if logged in -->
+          <li class="nav-item dropdown" *ngIf="isLoggedIn">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <img src="images/user.svg" alt="User Profile" />
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+              <li><a class="dropdown-item" routerLink="/my-orders">My Orders</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item text-danger" (click)="logout()">Logout</a></li>
+            </ul>
+          </li>
+
+
+          <!-- Cart Icon with Badge -->
+          <li class="nav-item position-relative">
+            <a class="nav-link" routerLink="/cart">
+              <img src="images/cart.svg" alt="Cart" width="24" height="24" />
+
+              <!-- 🛒 Cart Count Badge (Always visible, shows 0 if empty) -->
+              <span *ngIf="cartCount !== null"
+                class="position-absolute top-3 start-100 translate-middle badge rounded-pill bg-danger"
+                style="font-size: 0.7rem;">
+                {{ cartCount }}
+              </span>
+
+            </a>
+          </li>
+
+        </ul>
+
+
+      </div>
+    </div>
+
+  </nav>
+
+</body>

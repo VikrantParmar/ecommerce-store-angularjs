@@ -1,0 +1,9 @@
+<div class="d-flex align-items-center">
+  <label for="sortSelect" class="me-2 fw-semibold small">Sort by:</label>
+  <select id="sortSelect" class="form-select form-select-sm custom-select-sort" style="width: auto;"
+    [(ngModel)]="selectedSortOption" (change)="onSortChange()">
+    <option value="default">Newest First</option>
+    <option value="lowToHigh">Price: Low to High</option>
+    <option value="highToLow">Price: High to Low</option>
+  </select>
+</div>
