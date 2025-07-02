@@ -29,7 +29,7 @@ export class ShopComponent implements OnInit {
   loadingCategories = false;
   currentPage = 1;
   totalProducts = 0;
-  productsPerPage = 3;
+  productsPerPage = 12;
   Math = Math; //
   selectedSortOption = 'default';
 
@@ -63,7 +63,7 @@ export class ShopComponent implements OnInit {
       sortField: 'name',
       sortOrder: 'ASC',
       search: '',
-      onlyWithProducts: true    // ✅ only categories with products
+      onlyWithProducts: true
     }).subscribe({
       next: (res) => {
         this.categories = res.data?.data || [];
@@ -126,7 +126,7 @@ export class ShopComponent implements OnInit {
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadProductsByCategory(this.selectedCategoryId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 150, behavior: 'smooth' });
 
   }
 

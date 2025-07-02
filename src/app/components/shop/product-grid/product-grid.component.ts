@@ -19,7 +19,7 @@ export class ProductGridComponent {
   @Input() products: any[] = [];
   @Input() loading = false;
   @Input() total = 0;
-  @Input() perPage = 18;
+  @Input() perPage = 10;
   @Input() page = 1;
   @Input() imageUrlFn!: (filename: string) => string; // ✅ Add this line
   @Output() pageChange = new EventEmitter<number>();

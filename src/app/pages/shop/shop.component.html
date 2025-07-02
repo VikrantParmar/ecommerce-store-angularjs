@@ -31,20 +31,35 @@
 
       </div>
 
-      <div class="col-md-9">
+     <div class="col-md-9">
 
-        <app-product-grid [products]="products" [loading]="loadingProducts" [total]="totalProducts"
-          [perPage]="productsPerPage" [page]="currentPage" (pageChange)="onPageChange($event)"
-          (addToCart)="addToCart($event)">
+  <div *ngIf="loadingProducts" class="spinner-container">
+    <div class="custom-spinner"></div>
+  </div>
 
-        </app-product-grid>
+  <app-product-grid
+    *ngIf="!loadingProducts"
+    [products]="products"
+    [loading]="loadingProducts"
+    [total]="totalProducts"
+    [perPage]="productsPerPage"
+    [page]="currentPage"
+    (pageChange)="onPageChange($event)"
+    (addToCart)="addToCart($event)">
+  </app-product-grid>
 
-      </div>
+</div>
     </div>
 
-    <app-pagination [total]="totalProducts" [page]="currentPage" [perPage]="productsPerPage"
-      (pageChange)="onPageChange($event)">
-    </app-pagination>
+
+  <div class="pagination-wrapper-responsive">
+  <app-pagination
+    [total]="totalProducts"
+    [page]="currentPage"
+    [perPage]="productsPerPage"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div>
+
 
   </div>
- 

@@ -115,3 +115,55 @@
   min-width: 40px;
   padding: 0.25rem;
 }
+
+
+
+.fullscreen-loader {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+}
+
+.custom-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e0e0e0;
+  border-top: 4px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* Restrict product image size and crop nicely */
+.cart-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+/* Restrict quantity controls to stay inline */
+.qty-group {
+  max-width: 120px;
+}
+
+/* Trash button padding and size */
+.remove-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+/* Trash icon size */
+.trash-icon {
+  font-size: 1.2rem;
+}

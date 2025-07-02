@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../../services/orders.service';
 import { CommonModule } from '@angular/common';
+import { formatPrice } from '../../constants/currency.constant';
 
 @Component({
   selector: 'app-order-details',
@@ -10,6 +11,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./order-details.component.css']
 })
 export class OrderDetailsComponent implements OnInit {
+
+  format = formatPrice;
+
   order: any = null;
   loading = false;
   error = '';
@@ -38,4 +42,24 @@ export class OrderDetailsComponent implements OnInit {
       }
     });
   }
+
+  getStatusClass(status: string): string {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'bg-warning text-dark';
+    case 'cancelled':
+      return 'bg-danger';
+    case 'shipped':
+      return 'bg-primary';
+    case 'delivered':
+      return 'bg-success';
+    case 'paid':
+      return 'bg-success';
+    case 'refunded':
+      return 'bg-info text-dark';
+    default:
+      return 'bg-secondary';
+  }
+}
+
 }

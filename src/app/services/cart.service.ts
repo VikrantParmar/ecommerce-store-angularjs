@@ -2,7 +2,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -11,16 +12,57 @@ export class CartService {
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
 
+  private cartCache: any = null; // ✅ for caching
+  private cartLoading = false;
+  private cartObservers: ((data: any) => void)[] = [];
+
   constructor(private http: HttpClient) { }
 
-  // ✅ GET full cart (used to get items and update count)
+  // ✅ GET full cart (cached)
   getCart(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}`, { withCredentials: true }).pipe(
-      tap((res) => {
-        const count = res.items?.length || 0; // ✅ Unique product count only
-        this.cartCountSubject.next(count);
-      })
-    );
+    if (this.cartCache) {
+      return of(this.cartCache); // return from cache
+    }
+
+    if (this.cartLoading) {
+      return new Observable(observer => {
+        this.cartObservers.push((data) => {
+          observer.next(data);
+          observer.complete();
+        });
+      });
+    }
+
+    this.cartLoading = true;
+    return new Observable(observer => {
+      this.http.get<any>(`${this.baseUrl}`, { withCredentials: true }).subscribe({
+        next: (res) => {
+          this.cartCache = res;
+          const count = res.items?.length || 0;
+          this.cartCountSubject.next(count);
+          observer.next(res);
+          observer.complete();
+
+          this.cartObservers.forEach(cb => cb(res));
+          this.cartObservers = [];
+          this.cartLoading = false;
+        },
+        error: (err) => {
+          observer.error(err);
+          observer.complete();
+          this.cartLoading = false;
+        }
+      });
+    });
+  }
+
+  // ✅ Used to refresh after add/remove/update
+  private refreshCartCount(): void {
+    this.cartCache = null;
+    this.getCart().subscribe((cart) => {
+      const uniqueCount = cart?.items?.length || 0;
+      this.cartCountSubject.next(uniqueCount);
+    });
   }
 
   // ✅ Triggered after login to merge guest cart
@@ -61,16 +103,6 @@ export class CartService {
     );
   }
 
-  // ✅ Count only unique products
-  private refreshCartCount(): void {
-    this.getCart().pipe(
-      tap((cart) => {
-        const uniqueCount = cart.items?.length || 0;
-        this.cartCountSubject.next(uniqueCount);
-      })
-    ).subscribe();
-  }
-
   // ✅ (Optional) total quantity if needed anywhere
   private getTotalQuantity(items: any[]): number {
     return items.reduce((total, item) => total + item.quantity, 0);
@@ -82,6 +114,8 @@ export class CartService {
       `${this.baseUrl}/apply`,
       { code },
       { withCredentials: true }
+    ).pipe(
+      tap(() => this.refreshCartCount())
     );
   }
 

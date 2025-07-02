@@ -91,7 +91,7 @@ export class CartComponent implements OnInit {
   }
 
   increaseQuantity(item: any) {
-    debugger;
+    
     this.loadingItemId = item.Product.id;
     this.updateQuantity(item.Product.id, item.quantity + 1);
   }

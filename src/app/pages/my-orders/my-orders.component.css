@@ -1,20 +1,26 @@
-/* For better scrollbar on items list */
-.list-group {
-  scrollbar-width: thin;
-  scrollbar-color: #6c757d #e9ecef;
+.table td, .table th {
+  vertical-align: middle;
 }
 
-.list-group::-webkit-scrollbar {
-  width: 8px;
+
+.cart-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
 }
 
-.list-group::-webkit-scrollbar-track {
-  background: #e9ecef;
-  border-radius: 10px;
+.custom-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #333; /* Adjust color if needed */
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
 }
 
-.list-group::-webkit-scrollbar-thumb {
-  background-color: #6c757d;
-  border-radius: 10px;
-  border: 2px solid #e9ecef;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,0 +1,27 @@
+/* Card height and layout */
+.product-card {
+  height: 100%;
+  min-height: 420px;
+  position: relative;
+}
+
+/* Product image */
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Description height consistency */
+.product-des {
+  min-height: 40px;
+  overflow: hidden;
+}
+
+/* No products block height and icon size */
+.no-products {
+  height: 300px;
+}
+
+.no-products-icon {
+  font-size: 2rem;
+}

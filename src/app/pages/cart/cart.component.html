@@ -1,6 +1,12 @@
 <div class="untree_co-section">
   <div class="container bg-white">
 
+ <div *ngIf="loading" class="cart-loader">
+      <div class="custom-spinner"></div>
+    </div>
+
+    <div *ngIf="!loading">
+
     <div class="row " *ngIf="cartItems.length === 0">
       <div class="col-12 text-center p-5">
         <img [src]="imagePath" alt="Empty Cart" class="mb-3" style="height: 200px;">
@@ -8,6 +14,7 @@
         <p class="text-muted">Hit the button below to find great products in our shop.</p>
         <a routerLink="/shop" class="btn btn-primary">Back to Shop</a>
       </div>
+    </div>
     </div>
 
     <!-- Cart Table -->
@@ -63,14 +70,14 @@
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
-          <div class="modal-header">
+          <div class="modal-header border-0">
             <h5 class="modal-title">Confirm Removal</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">Are you sure you want to remove this item?</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" (click)="confirmDelete()">Yes</button>
+          <div class="modal-body ">Are you sure you want to remove this item?</div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn " data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-sm" (click)="confirmDelete()">Yes</button>
           </div>
         </div>
       </div>

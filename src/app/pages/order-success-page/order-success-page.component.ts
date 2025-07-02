@@ -1,18 +1,24 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { formatPrice } from '../../constants/currency.constant';
+
 
 
 @Component({
   selector: 'app-order-success-page',
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './order-success-page.component.html',
   styleUrl: './order-success-page.component.css'
 })
 
 export class OrderSuccessPageComponent {
-   orderId: string | null = null;
-   orderNumber: string | null = null;
+  format = formatPrice;
+
+
+
+  orderId: string | null = null;
+  orderNumber: string | null = null;
   total: number = 0;
   createdAt: string = '';
 

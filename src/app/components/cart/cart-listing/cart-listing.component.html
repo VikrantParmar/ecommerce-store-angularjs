@@ -1,15 +1,7 @@
-<!-- 🔄 Fullscreen Loader -->
 <div *ngIf="loadingItemId !== null" class="fullscreen-loader">
-  <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
+  <div class="custom-spinner"></div>
 </div>
 
-
-
-
-
-<!-- 🛒 Cart Items Table -->
 <div class="site-blocks-table">
   <table class="table mt-3">
     <thead>
@@ -25,8 +17,7 @@
     <tbody>
       <tr *ngFor="let item of cartItems">
         <td class="product-thumbnail">
-          <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid"
-            style="width: 100px; height: 100px; object-fit: cover" />
+          <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid cart-img" />
         </td>
         <td class="product-name">
           <h2 class="h5 text-black">{{ item.Product.name }}</h2>
@@ -39,8 +30,7 @@
 
         <td class="text-center align-middle">
           <div class="d-flex justify-content-center">
-            <div class="input-group" style="max-width: 120px;">
-
+            <div class="input-group flex-nowrap qty-group">
               <button class="btn btn-outline-dark" type="button" (click)="decreaseQty(item)"
                 [disabled]="item.quantity <= 1 || loadingItemId !== null">
                 -
@@ -52,18 +42,16 @@
                 [disabled]="loadingItemId !== null">
                 +
               </button>
-
             </div>
           </div>
         </td>
 
-        <td>{{ format( item.Product.price * item.quantity) }}</td>
+        <td>{{ format(item.Product.price * item.quantity) }}</td>
         <td>
-          <button (click)="removeItem(item.Product.id)" class="btn btn-black btn-sm" [disabled]="loadingItemId !== null"
-            style="padding: 0.5rem 0.75rem; font-size: 1rem;">
-            <i class="bi bi-trash" style="font-size: 1.2rem;  "></i>
+          <button (click)="removeItem(item.Product.id)" class="btn btn-black btn-sm remove-btn"
+            [disabled]="loadingItemId !== null">
+            <i class="bi bi-trash trash-icon"></i>
           </button>
-
         </td>
       </tr>
     </tbody>

@@ -27,6 +27,8 @@ export const routes: Routes = [
       { path: 'order-success', loadComponent: () => import('./pages/order-success-page/order-success-page.component').then(m => m.OrderSuccessPageComponent), canActivate: [AuthGuard] },
       { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent), canActivate: [AuthGuard] },
       { path: 'my-orders', loadComponent: () => import('./pages/my-orders/my-orders.component').then(m => m.MyOrdersComponent), canActivate: [AuthGuard] },
+      { path: 'my-orders/:orderId', loadComponent: () => import('./pages/order-details/order-details.component').then(m => m.OrderDetailsComponent), canActivate: [AuthGuard] },
+
 
 
     ],
