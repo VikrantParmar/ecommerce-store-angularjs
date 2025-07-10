@@ -1,4 +1,4 @@
-<div class="auth-container p-2">
+<div class="auth-container p-3">
   <div class="auth-card">
     <h3 class="text-center mb-4">Login</h3>
 
@@ -58,19 +58,21 @@
         <a routerLink="/forgot-password" class="small">Forgot Password?</a>
       </div>
 
-      <!-- Signup Link -->
-      <div class="text-center mb-3">
-        <p>Don’t have an account? <a routerLink="/signup">Sign up</a></p>
-      </div>
 
       <!-- Submit -->
-      <button class="btn btn-primary w-100" type="submit" [disabled]="loading">
+      <button class="btn btn-primary w-100 mb-4" type="submit" [disabled]="loading">
         <span *ngIf="!loading">Login</span>
         <span *ngIf="loading" class="d-flex justify-content-center align-items-center">
           <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           Logging in...
         </span>
       </button>
+
+      <!-- Signup Link -->
+      <div class="text-center mb-3">
+        <p>Don’t have an account? <a routerLink="/signup">Sign up</a></p>
+      </div>
+
     </form>
   </div>
 </div>

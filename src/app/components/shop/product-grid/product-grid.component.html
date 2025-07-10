@@ -1,30 +1,42 @@
-<!-- Optional loading spinner removed/commented -->
 
 <div class="row">
   <ng-container *ngIf="products.length > 0; else noProducts">
-    <div class="col-12 col-md-4 col-lg-3 mb-4" *ngFor="let product of products">
-      <div class="product-item d-flex flex-column border p-3 shadow-sm h-100 rounded text-center product-card">
-        <span *ngIf="isNewProduct(product.createdAt)" class="badge bg-danger position-absolute top-0 start-0 m-2">
-          New
-        </span>
+   <div class="col-12 col-md-4 col-lg-3 mb-4" *ngFor="let product of products">
+  <a class="text-decoration-none text-dark" [routerLink]="['/product', product.slug]" (click)="onProductClick()">
+    <div class="product-item d-flex flex-column border p-3 shadow-sm h-100 rounded text-center product-card position-relative">
 
-        <img [src]="getImageUrl(product.img)" class="img-fluid mb-3 product-img" [alt]="product.name" />
+      <!-- New Badge -->
+      <span *ngIf="isNewProduct(product.createdAt)" class="badge bg-danger position-absolute top-0 start-0 m-2">
+        New
+      </span>
 
-        <div class="flex-grow-1 d-flex flex-column justify-content-between">
-          <div>
-            <h6 class="fw-semibold mb-2 text-truncate">{{ product.name }}</h6>
-            <p class="text-muted small mb-2 product-des">{{ product.des }}</p>
-            <strong class="text-dark d-block mb-3">{{ format(product.price) }}</strong>
-            <p *ngIf="product.stock === 0" class="text-danger fw-semibold">Out of Stock</p>
-          </div>
+      <!-- Wishlist Icon -->
+      <button class="btn-wishlist position-absolute top-0 end-0 m-2"
+              (click)="toggleWishlist(product); $event.preventDefault(); $event.stopPropagation();"
+              [title]="isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'">
+        <i class="bi" [ngClass]="isInWishlist(product.id) ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+      </button>
+
+      <img [src]="getImageUrl(product.img)" class="img-fluid mb-3 product-img" [alt]="product.name" />
+
+      <div class="flex-grow-1 d-flex flex-column justify-content-between">
+        <div>
+          <h6 class="fw-semibold mb-2 text-truncate">{{ product.name }}</h6>
+          <p class="text-muted small mb-2 product-des">{{ product.des }}</p>
+          <strong class="text-dark d-block mb-3">{{ format(product.price) }}</strong>
+          <p *ngIf="product.stock === 0" class="text-danger fw-semibold">Out of Stock</p>
         </div>
-
-        <button class="btn btn-dark btn-sm mt-auto w-70" [disabled]="product.stock === 0"
-          (click)="emitAddToCart(product)">
-          Add to Cart
-        </button>
       </div>
+
+      <button class="btn btn-dark btn-sm mt-auto w-70"
+              [disabled]="product.stock === 0"
+              (click)="emitAddToCart(product); $event.preventDefault(); $event.stopPropagation();">
+        Add to Cart
+      </button>
     </div>
+  </a>
+</div>
+
   </ng-container>
 
   <ng-template #noProducts>

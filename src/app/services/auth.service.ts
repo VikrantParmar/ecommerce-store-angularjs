@@ -4,12 +4,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { CartService } from './cart.service';
+import { environment } from '../../environments/environment';
 
 
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:4040/api/auth';
+
+  private apiUrl = `${environment.apiBaseUrl}/auth`;
+  private baseUrl = `${environment.apiBaseUrl}/cart`;
+
 
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.loggedIn.asObservable();
@@ -25,7 +29,7 @@ export class AuthService {
 
 
   mergeGuestCartAfterLogin() {
-    return this.http.post('/api/cart/merge', {}, { withCredentials: true });
+  return this.http.post(`${this.baseUrl}/merge`, {}, { withCredentials: true });
   }
 
 
@@ -140,7 +144,7 @@ export class AuthService {
   }
 
 
-  private hasToken(): boolean {
+  public hasToken(): boolean {
     const user = this.getCurrentUser();
     return !!user?.accessToken;
   }
@@ -164,5 +168,10 @@ export class AuthService {
     this.loggedIn.next(false);
     this.userRole.next(null);
   }
+
+  isLoggedIn(): boolean {
+  return this.loggedIn.getValue();
+}
+
 
 }

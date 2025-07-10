@@ -18,6 +18,17 @@ export class CartSummaryComponent {
   @Input() subtotal = 0;
   @Input() discount = 0;
   @Input() grandTotal = 0;
+  @Input() cartItems: any[] = [];
+
 
   @Output() checkout = new EventEmitter<void>();
+
+
+  hasOutOfStock(): boolean {
+  return this.cartItems?.some(item => item.Product.stock === 0);
 }
+
+
+
+}
+

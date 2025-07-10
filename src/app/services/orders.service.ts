@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { buildHttpQueryParams, TableQueryParams } from '../shared/utils/query-param-builder/query-param-builder.component';
+import { environment } from '../../environments/environment';
+
 
 export interface OrderSummary {
   id: number;
@@ -15,7 +17,7 @@ export interface OrderSummary {
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  private baseUrl = 'http://localhost:4040/api/orders';
+  private baseUrl = `${environment.apiBaseUrl}/orders`; 
 
   constructor(private http: HttpClient) { }
 

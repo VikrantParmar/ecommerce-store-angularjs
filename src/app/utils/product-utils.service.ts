@@ -19,17 +19,17 @@ export class ProductUtilsService {
   }
 
   // ✅ Add to cart with stock validation
-  addToCart(product: any): void {
-    if (product.stock === 0) {
-      this.toastr.error('This product is out of stock!');
-      return;
-    }
-
-    this.cartService.addToCart(product.id, 1).subscribe({
-      next: () => this.toastr.success('Product added to cart'),
-      error: () => this.toastr.error('Failed to add product to cart'),
-    });
+addToCart(product: any): void {
+  if (product.stock === 0) {
+    this.toastr.error('This product is out of stock!');
+    return;
   }
 
+  const quantity = product.quantity || 1;
 
+  this.cartService.addToCart(product.id, quantity).subscribe({
+    next: () => this.toastr.success('Product added to cart'),
+    error: () => this.toastr.error('Failed to add product to cart'),
+  });
+}
 }

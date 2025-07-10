@@ -1,0 +1,97 @@
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Wishlist</h1>
+          <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
+            imperdiet dolor tempor tristique.</p>
+          <p><a routerLink="/shop" class="btn btn-secondary me-2">Shop Now</a><a routerLink="/blog"
+              class="btn btn-white-outline">Explore</a>
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="hero-img-wrap">
+          <img src="images/couch.png" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="untree_co-section">
+  <div class="container bg-white">
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="cart-loader">
+      <div class="custom-spinner"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && wishlist.length === 0">
+      <div class="row">
+        <div class="col-12 text-center p-5">
+          <img src="images/empty-cart.svg" alt="Empty Wishlist" class="mb-3" style="height: 200px;" />
+          <h2>Your wishlist is currently empty</h2>
+          <p class="text-muted">Browse products and add them to your wishlist.</p>
+          <a routerLink="/shop" class="btn btn-primary">Start Shopping</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist Table (Responsive) -->
+    <div class="site-blocks-table" *ngIf="!loading && wishlist.length > 0">
+      <div class="table-responsive">
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th class="product-thumbnail">Image</th>
+              <th class="product-name">Product</th>
+              <th class="product-price text-end">Price</th>
+              <th class="text-center">Add to Cart</th>
+              <th class="text-center">Remove</th> <!-- ✅ now total 5 columns -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of wishlist">
+              <td class="product-thumbnail">
+                <img [src]="getImageUrl(item.product.img)" alt="Image" class="img-fluid cart-img"
+                  style="height: 80px; width: 80px; object-fit: cover;" />
+              </td>
+              <td class="product-name">
+                <h2 class="h6 text-black mb-1">{{ item.product.name }}</h2>
+                <p class="text-muted mb-0">{{ item.product.des || 'No description available.' }}</p>
+                <p *ngIf="item.product.stock === 0" class="badge bg-danger ms-2">Out of Stock</p>
+                <!-- ✅ Added -->
+
+              </td>
+              <td class="text-end fw-bold">
+                {{ item.product.price }}
+              </td>
+
+              <!--  Add to Cart Button -->
+              <td class="text-center">
+                <button (click)="moveToCart(item)" class="btn btn-outline-primary btn-lg"
+                  [disabled]="item.product.stock === 0"
+                  [title]="item.product.stock === 0 ? 'Out of Stock' : 'Add to Cart'">
+                  <i class="bi bi-cart-plus"></i>
+                </button>
+              </td>
+
+
+              <!--  Remove Button -->
+              <td class="text-center">
+                <button (click)="removeItem(item.product.id)" class="btn btn-outline-danger btn-sm">
+                  <i class="bi bi-trash trash-icon"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -4,22 +4,23 @@
     <p>Enter your promo code if you have one.</p>
   </div>
 
-  <div class="col-md-8 mb-3">
+  <div class="col-md-8 mb-2">
     <input type="text" class="form-control py-3" [(ngModel)]="promoCode" (ngModelChange)="resetPromo()"
       placeholder="Promo Code">
+  </div>
+  <div class="col-md-12 " *ngIf="promoMessage">
+    <div class="text-success small">{{ promoMessage }}</div>
+  </div>
+
+  <div class="col-md-12 mb-3" *ngIf="promoError">
+    <div class="text-danger small ">{{ promoError }}</div>
   </div>
 
   <div class="col-md-4">
     <button class="btn btn-dark w-100" (click)="apply.emit()" [disabled]="promoApplying">Apply</button>
   </div>
 
-  <div class="col-md-12 " *ngIf="promoMessage">
-    <div class="text-success small">{{ promoMessage }}</div>
-  </div>
 
-  <div class="col-md-12" *ngIf="promoError">
-    <div class="text-danger small ">{{ promoError }}</div>
-  </div>
 
   <div class="col-md-12 mt-3" *ngIf="discount > 0">
     <div class="promo d-flex align-items-center justify-content-between p-3 bg-light border"

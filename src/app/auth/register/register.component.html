@@ -1,4 +1,4 @@
-<div class="auth-container p-2 ">
+<div class="auth-container p-3">
   <div class="auth-card">
     <h3 class="text-center mb-4">Create Account</h3>
 
@@ -45,15 +45,18 @@
         </div>
       </div>
 
-      <div class="text-center mb-3">
-        <p>Already have an account? <a routerLink="/signin">Login</a></p>
-      </div>
+
 
       <!-- Submit -->
-      <button type="submit" class="btn btn-primary w-100" [disabled]="loading">
+      <button type="submit" class="btn btn-primary w-100 mb-4" [disabled]="loading">
         <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         {{ loading ? 'Registering...' : 'Register' }}
       </button>
+
+       <div class="text-center mb-3">
+        <p>Already have an account? <a routerLink="/signin">Login</a></p>
+      </div>
+
     </form>
   </div>
 </div>

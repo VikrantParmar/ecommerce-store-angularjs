@@ -25,3 +25,35 @@
 .no-products-icon {
   font-size: 2rem;
 }
+
+
+.btn-wishlist {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+
+.btn-wishlist i {
+  font-size: 18px;
+  color: #888;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.btn-wishlist:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.1);
+}
+
+/* .btn-wishlist:hover i {
+  color: #dc3545;
+} */

@@ -4,10 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({ providedIn: 'root' })
+
 export class CartService {
-  private baseUrl = 'http://localhost:4040/api/cart';
+ private baseUrl = `${environment.apiBaseUrl}/cart`;
 
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
@@ -67,7 +70,7 @@ export class CartService {
 
   // ✅ Triggered after login to merge guest cart
   mergeGuestCartAfterLogin() {
-    return this.http.post('/api/cart/merge', {}, { withCredentials: true }).pipe(
+    return this.http.post(`${this.baseUrl}/merge`, {}, { withCredentials: true }).pipe(
       tap(() => this.refreshCartCount())
     );
   }

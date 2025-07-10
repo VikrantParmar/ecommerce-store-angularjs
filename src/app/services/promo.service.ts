@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { buildHttpQueryParams, TableQueryParams } from '../shared/utils/query-param-builder/query-param-builder.component';
+import { environment } from '../../environments/environment';
+
 
 export interface PromoCode {
   id?: number;
@@ -27,7 +29,7 @@ export interface ApplyPromoResponse {
   providedIn: 'root',
 })
 export class PromoService {
-  private baseUrl = 'http://localhost:4040/api/promo';
+  private baseUrl = `${environment.apiBaseUrl}/promo`;
 
   constructor(private http: HttpClient) { }
 

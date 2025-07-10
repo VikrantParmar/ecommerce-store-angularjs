@@ -47,8 +47,11 @@ export class ShopComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const savedPage = sessionStorage.getItem('shopCurrentPage');
+    this.currentPage = savedPage ? parseInt(savedPage, 10) : 1;
     this.loadCategories();
   }
+
 
   getImageUrl(filename: string): string {
     return this.productUtils.getImageUrl(filename);
@@ -80,10 +83,15 @@ export class ShopComponent implements OnInit {
 
 
   selectCategory(categoryId: number | null) {
-    this.currentPage = 1; // ✅ Reset to first page
+    const savedPage = sessionStorage.getItem('shopCurrentPage');
+    if (!savedPage || this.selectedCategoryId !== categoryId) {
+      this.currentPage = 1; // ✅ Only reset if selecting a new category
+    }
+
     this.selectedCategoryId = categoryId;
     this.loadProductsByCategory(categoryId);
   }
+
 
   loadProductsByCategory(categoryId: number | null) {
     this.loadingProducts = true;
@@ -125,10 +133,11 @@ export class ShopComponent implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
+    sessionStorage.setItem('shopCurrentPage', String(page)); // Store current page
     this.loadProductsByCategory(this.selectedCategoryId);
     window.scrollTo({ top: 150, behavior: 'smooth' });
-
   }
+
 
 
   addToCart(product: any) {

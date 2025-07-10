@@ -1,0 +1,230 @@
+<!-- Product Details Section -->
+<section class="py-5">
+  <div class="container">
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="custom-spinner mx-auto"></div>
+    </div>
+
+
+    <!-- Not Found -->
+    <div *ngIf="!loading && !product" class="text-center py-5">
+      <img src="images/product-not-found.png" height="200" class="mb-3" alt="Product Not Found" />
+      <div>
+        <button routerLink="/" class="btn btn-dark">
+          Go to Home
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Product Content -->
+    <div class="row g-5 align-items-start" *ngIf="!loading && product">
+
+      <!-- Product Images -->
+      <div class="col-lg-6 col-md-8 col-sm-10 col-12 mx-auto">
+        <!-- Main Image -->
+        <div class="border rounded shadow-sm overflow-hidden text-center">
+          <img [src]="getImageUrl(product.img)" class="img-fluid" [alt]="product.name"
+            style="max-height: 400px; object-fit: contain;" />
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
+          <img *ngFor="let i of [1, 2, 3, 4]" [src]="getImageUrl(product.img)" class="img-thumbnail" width="70"
+            height="70" style="object-fit: cover;" [alt]="'thumb ' + i" />
+        </div>
+      </div>
+
+
+
+      <!-- Product Info -->
+      <div class="col-lg-6">
+        <div class="bg-white rounded shadow-sm p-4">
+          <h1 class="h4 fw-bold mb-2">{{ product.name }}</h1>
+
+
+
+          <!-- Price Section -->
+          <div class="mb-4">
+            <del class="text-muted h6 me-2">{{ product.originalPrice }}</del>
+            <span class="text-dark h5 fw-bold">{{format( product.price ) }}</span>
+          </div>
+
+          <!-- Size -->
+          <p class="mb-4 text-dark"><strong>Size:</strong> 71L X 76D X 84H CM</p>
+
+
+
+          <!-- Quantity Selector -->
+          <div class="mb-4 d-flex align-items-center gap-3">
+            <label class="form-label text-dark mb-0">Quantity:</label>
+            <div class="input-group flex-nowrap qty-group">
+
+              <button class="btn" type="button" (click)="decreaseQty()" [disabled]="quantity <= 1 || loading">
+                -
+              </button>
+
+              <input type="text" class="form-control text-center" [value]="quantity" readonly />
+
+              <button class="btn btn-outline-dark" type="button" (click)="increaseQty()" [disabled]="loading">
+                +
+              </button>
+            </div>
+          </div>
+
+
+          <!-- Buttons -->
+          <div class="d-flex gap-2 mb-4 ">
+            <button class="btn btn-dark custom-add-btn w-100 " [disabled]="product.stock === 0"
+              (click)="addToCart(product); $event.preventDefault(); $event.stopPropagation();">
+              Add to Cart
+            </button>
+          </div>
+
+          <!-- Stock Message -->
+          <div class="mb-3">
+            <span *ngIf="product.stock === 0" class="badge bg-danger px-3 py-2 fs-6 fw-semibold rounded">
+              Out of Stock
+            </span>
+
+            <span *ngIf="product.stock > 0 && product.stock <= 5"
+              class="badge bg-warning text-dark px-3 py-2 fs-6 fw-semibold rounded">
+              Only {{ product.stock }} product left in stock!
+            </span>
+
+            <!-- <span *ngIf="product.stock > 5" class="badge bg-success px-3 py-2 fs-6 fw-semibold rounded-pill">
+              In Stock
+            </span> -->
+          </div>
+
+
+          <!-- Description -->
+          <p class="text-secondary small">
+            Our <strong>{{ product.name }}</strong> is inspired by the classic mid-century wingback but with a new
+            geometric shape.
+            Generous seating, luxurious details, and bold fabric choices make this a standout piece.
+            <strong>{{ product.des }}</strong>
+          </p>
+
+          <!-- Suggested Pairing -->
+          <p class="text-muted small"><strong>Suggested Fabric Pairing:</strong> Bright solids or textured fabrics for
+            bold contrast.</p>
+
+          <!-- Info Icons -->
+          <div class="row justify-content-center mt-4">
+            <div class="col-12 col-md-8 text-center">
+              <img src="images/price gst.webp" alt="Price Icons" class="img-fluid price-icon-img" />
+            </div>
+          </div>
+
+
+
+
+          <!-- Accordion -->
+          <div class="accordion mt-4" id="accordionDetails">
+
+            <!-- Product Details -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                  aria-expanded="true" aria-controls="collapseOne">
+                  Product Details
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                data-bs-parent="#accordionDetails">
+                <div class="accordion-body small">
+                  <ul class="list-unstyled mb-0">
+                    <li><strong>Product</strong> : {{product.name}}</li>
+                    <li><strong>Size:</strong> 71L X 76D X 84H CM</li>
+                    <li><strong>Seat Dimensions:</strong> 54L x 52D x 33H CM</li>
+                    <li><strong>Material:</strong> Teak Wood, Wadding, Hardwood Frame, Wicker</li>
+                    <li><strong>Foam Level:</strong> Firm</li>
+                    <li><strong>Style:</strong> Mid Century</li>
+                    <li><strong>Custom Fabric:</strong> Available</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shipping & Returns -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Shipping & Returns
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#accordionDetails">
+                <div class="accordion-body small">
+                  Free shipping above ₹2,000. Estimated delivery in 3–5 business days. 7-day return policy.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Related Products Section -->
+<div class="untree_co-section mt-5 mb-5" *ngIf="product?.related?.length > 0">
+  <div class="container">
+    <h4 class="mb-4 text-center">Related Products</h4>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-10 col-xxl-9">
+        <app-product-grid
+          [products]="product.related.slice(0, 5)"
+          [loading]="false"
+          [imageUrlFn]="getImageUrl.bind(this)"
+          (addToCart)="addToCart($event)">
+        </app-product-grid>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<section class="product-help-section py-5 border-top border-bottom bg-light mb-5">
+  <div class="container text-center">
+
+    <h3 class="fw-bold mb-4">Any questions on this product?</h3>
+
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mb-3">
+      <button class="btn help-btn btn-dark w-100 w-md-auto">
+        <i class="bi bi-telephone-fill fs-6 fs-md-5 me-2"></i> Call Us
+      </button>
+      <button class="btn help-btn btn-dark w-100 w-md-auto">
+        <i class="bi bi-whatsapp fs-6 fs-md-5 me-2"></i> WhatsApp Us
+      </button>
+      <button class="btn help-btn btn-dark w-100 w-md-auto">
+        <i class="bi bi-envelope-fill fs-6 fs-md-5 me-2"></i> Email Us
+      </button>
+    </div>
+
+    <p class="fst-italic fw-semibold small text-uppercase">
+      We’d love to chat and help you make the perfect selection
+    </p>
+
+    <a routerLink="/shop" class="btn back-btn mt-4 btn-dark">
+      <i class="bi bi-arrow-left fs-6 me-2"></i> Back to Furniture
+    </a>
+
+  </div>
+</section>

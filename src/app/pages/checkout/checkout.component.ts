@@ -8,7 +8,7 @@ import { PaymentService } from '../../services/payment.service';
 import { StripeCardElement } from '@stripe/stripe-js';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { formatPrice } from '../../constants/currency.constant';
 import { getFieldError } from '../../shared/form-validation.helper/form-validation.helper.component';
 import { UserService } from '../../services/user.service';

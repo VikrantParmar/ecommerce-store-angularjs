@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
+
 
 
 @Injectable({
@@ -10,7 +11,7 @@ import { environment } from '../environments/environment';
 export class PaymentService {
   private stripePromise = loadStripe(environment.stripePublishableKey);
 
-  private baseUrl = 'http://localhost:4040/api';
+  private baseUrl = environment.apiBaseUrl; 
   constructor(private http: HttpClient) { }
 
   createPaymentIntent(data: { amount: number; products: any[] }) {

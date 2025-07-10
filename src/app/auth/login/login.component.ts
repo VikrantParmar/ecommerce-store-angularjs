@@ -67,7 +67,7 @@ export class LoginComponent {
               this.loading = false;
               this.successMessage = 'Login successful!';
               this.router.navigate(['/']);
-              this.toastr.success('Login successful!', 'Welcome');
+              this.toastr.success('Login successful!');
             });
           },
           error: () => {
@@ -75,7 +75,7 @@ export class LoginComponent {
               this.loading = false;
               this.successMessage = 'Login successful!';
               this.router.navigate(['/']);
-              this.toastr.success('Login successful!', 'Welcome');
+              this.toastr.success('Login successful!');
             });
           }
         });

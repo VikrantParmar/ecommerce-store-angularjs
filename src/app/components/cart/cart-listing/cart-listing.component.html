@@ -20,11 +20,23 @@
           <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid cart-img" />
         </td>
         <td class="product-name">
-          <h2 class="h5 text-black">{{ item.Product.name }}</h2>
-          <p class="text-muted">
+          <h2 class="h5 text-black mb-1 align-items-center justify-content-between">
+            {{ item.Product.name }}
+          </h2>
+
+          <p class="text-muted mb-1">
             {{ item.Product.des || "No description available." }}
           </p>
+
+          <span *ngIf="item.Product.stock === 0" class="badge bg-danger ms-2">
+              Out of Stock
+            </span>
+
+          <small *ngIf="item.Product.stock > 0 && item.Product.stock <= 5" class="badge bg-warning text-dark">
+            Only {{ item.Product.stock }} product left in stock!
+          </small>
         </td>
+
 
         <td>{{ format(item.Product.price) }}</td>
 
@@ -39,9 +51,10 @@
               <input type="text" class="form-control text-center" [value]="item.quantity" readonly />
 
               <button class="btn btn-outline-dark" type="button" (click)="increaseQty(item)"
-                [disabled]="loadingItemId !== null">
+                [disabled]="loadingItemId !== null || item.quantity >= item.Product.stock">
                 +
               </button>
+
             </div>
           </div>
         </td>

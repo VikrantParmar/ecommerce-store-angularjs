@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private apiUrl = 'http://localhost:4040/api/products';
-  private baseUrl = 'http://localhost:4040/uploads';
+  private apiUrl = `${environment.apiBaseUrl}/products`;
+  private baseUrl = environment.uploadBaseUrl;
 
 
   constructor(private http: HttpClient) { }
@@ -58,6 +60,14 @@ export class ProductService {
 
   getImageUrl(filename: string): string {
     return `${this.baseUrl}/${filename}`;
+  }
+
+  getProductById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  getProductBySlug(slug: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/slug/${slug}`);
   }
 
 

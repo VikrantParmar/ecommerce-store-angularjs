@@ -5,12 +5,14 @@ import {
   TableQueryParams,
   buildHttpQueryParams,
 } from '../shared/utils/query-param-builder/query-param-builder.component';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class BlogService {
-  private baseUrl = 'http://localhost:4040/api/blog'; // Updated to be consistent
+ private baseUrl = `${environment.apiBaseUrl}/blog`; 
 
   constructor(private http: HttpClient) {}
 

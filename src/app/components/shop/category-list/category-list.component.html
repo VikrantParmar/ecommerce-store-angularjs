@@ -1,9 +1,9 @@
 <div class="p-3 rounded shadow-sm border bg-white">
   <h5 class="fw-bold mb-3 border-bottom pb-2">Categories</h5>
 
-  <div *ngIf="loading" class="text-muted small mb-2">
+  <!-- <div *ngIf="loading" class="text-muted small mb-2">
     <i class="spinner-border spinner-border-sm me-1"></i> Loading...
-  </div>
+  </div> -->
 
   <ul class="list-unstyled mb-0">
     <li (click)="selectCategory(null)" [class.active-category]="selectedCategoryId === null"

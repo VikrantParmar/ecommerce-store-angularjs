@@ -13,13 +13,31 @@
             <img src="images/user.svg" alt="User Profile" />
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
-            <li><a class="dropdown-item" routerLink="/my-orders">My Orders</a></li>
+            <li>
+              <a class="dropdown-item" routerLink="/profile">
+                <i class="fas fa-user me-2"></i> Profile
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/my-orders">
+                <i class="fas fa-box me-2"></i> My Orders
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/wishlist">
+                <i class="fas fa-heart me-2"></i> Wishlist
+              </a>
+            </li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item text-danger" (click)="logout()">Logout</a></li>
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+              </a>
+            </li>
           </ul>
+
         </div>
 
         <!-- Cart -->

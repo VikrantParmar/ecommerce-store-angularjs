@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CartListingComponent } from '../../components/cart/cart-listing/cart-listing.component';
 import { CartPromoComponent } from '../../components/cart/cart-promo/cart-promo.component';
 import { CartSummaryComponent } from '../../components/cart/cart-summary/cart-summary.component';
+import { ToastrService } from 'ngx-toastr';
 
 
 declare var bootstrap: any;
@@ -51,7 +52,8 @@ export class CartComponent implements OnInit {
     private cartService: CartService,
     private productService: ProductService,
     private promoService: PromoService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -91,7 +93,7 @@ export class CartComponent implements OnInit {
   }
 
   increaseQuantity(item: any) {
-    
+
     this.loadingItemId = item.Product.id;
     this.updateQuantity(item.Product.id, item.quantity + 1);
   }
@@ -118,6 +120,8 @@ export class CartComponent implements OnInit {
   removeItem(productId: number) {
     this.cartService.removeCartItem(productId).subscribe(() => {
       this.loadCart();
+      this.toastr.warning('Product removed');
+
       this.cartService['refreshCartCount']();
     });
   }
@@ -240,10 +244,20 @@ export class CartComponent implements OnInit {
 
 
   goToCheckout() {
-    if (this.cartItems.length > 0) {
-      this.router.navigate(['/checkout']);
-    }
+  if (this.cartItems.length === 0) {
+    return; // No items in cart
   }
+
+  const hasOutOfStock = this.cartItems.some(item => item.Product.stock === 0);
+
+  if (hasOutOfStock) {
+    this.toastr.warning('Product out of stock.');
+    return;
+  }
+
+  this.router.navigate(['/checkout']);
+}
+
 
 
 

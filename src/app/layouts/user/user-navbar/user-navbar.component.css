@@ -193,7 +193,7 @@ a.more {
 
 
 
-/* In your user-navbar.component.css */
+
 .bi {
   font-size: 1.8rem;
   font-weight: 500;
@@ -201,6 +201,5 @@ a.more {
 }
 
 .bi-list {
-  transform: scale(1.15); /* ⬅️ Slightly increase the size */
+  transform: scale(1.15); 
 }
-  

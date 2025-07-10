@@ -41,7 +41,8 @@
     <!-- Checkout Button -->
     <div class="row mb-5">
       <div class="col-md-10">
-        <button class="btn btn-dark btn-lg w-100" (click)="checkout.emit()">Proceed To Checkout</button>
+        <button class="btn btn-dark btn-lg w-100" [disabled]="hasOutOfStock()" (click)="checkout.emit()">Proceed To
+          Checkout</button>
       </div>
     </div>
   </div>
