@@ -6,7 +6,7 @@ export const environment = {
   paypalCurrency: 'USD',
 
 
-  apiBaseUrl: 'https://ecommerce-store-nodejs-api.vercel.app/api',
-  uploadBaseUrl: 'https://ecommerce-store-nodejs-api.vercel.app/uploads'
+  apiBaseUrl: 'http://3.108.30.98:4040/api',
+  uploadBaseUrl: 'http://3.108.30.98:4040/uploads'
 
 };

@@ -1,0 +1,11 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px; fill: #2E2E2E; }
+    .icon { fill: #4A3AFF; }
+  </style>
+  <g>
+    <!-- Simple abstract chair icon -->
+    <path class="icon" d="M10 45 v-20 h10 v20 h5 v-15 h10 v15 h5 v-25 h-35 v25z"></path>
+    <text class="text" x="50" y="42">Furni</text>
+  </g>
+</svg>
