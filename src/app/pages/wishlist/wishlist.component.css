@@ -211,3 +211,10 @@ button.btn-primary:hover {
   background-color: #0056b3;
   transition: 0.3s ease;
 }
+
+
+.cart-img {
+  height: 100px;
+  width: 100%;
+  object-fit: contain;
+}

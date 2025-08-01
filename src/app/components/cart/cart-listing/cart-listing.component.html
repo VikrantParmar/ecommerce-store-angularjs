@@ -20,13 +20,13 @@
           <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid cart-img" />
         </td>
         <td class="product-name">
-          <h2 class="h5 text-black mb-1 align-items-center justify-content-between">
+          <h2 class="h6 text-black mb-1 align-items-center justify-content-between">
             {{ item.Product.name }}
           </h2>
 
-          <p class="text-muted mb-1">
+          <!-- <p class="text-muted mb-1">
             {{ item.Product.des || "No description available." }}
-          </p>
+          </p> -->
 
           <span *ngIf="item.Product.stock === 0" class="badge bg-danger ms-2">
               Out of Stock

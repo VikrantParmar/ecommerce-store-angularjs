@@ -22,11 +22,12 @@ export const routes: Routes = [
       { path: 'blog', loadComponent: () => import('./pages/blog/blog.component').then(m => m.BlogComponent), },
       { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent), },
       { path: 'cart', loadComponent: () => import('./pages/cart/cart.component').then(m => m.CartComponent), },
-      { path: 'product/:slug', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent), },
+      { path: 'product/:slug', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
+      { path: 'product/:slug/:sku', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
 
 
 
-      // private routes
+
 
       { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent), canActivate: [AuthGuard] },
       { path: 'order-success', loadComponent: () => import('./pages/order-success-page/order-success-page.component').then(m => m.OrderSuccessPageComponent), canActivate: [AuthGuard] },

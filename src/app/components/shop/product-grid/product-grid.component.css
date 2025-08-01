@@ -57,3 +57,12 @@
 /* .btn-wishlist:hover i {
   color: #dc3545;
 } */
+
+
+
+.product-img {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+

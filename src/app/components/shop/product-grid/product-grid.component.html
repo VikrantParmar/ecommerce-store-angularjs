@@ -22,7 +22,7 @@
       <div class="flex-grow-1 d-flex flex-column justify-content-between">
         <div>
           <h6 class="fw-semibold mb-2 text-truncate">{{ product.name }}</h6>
-          <p class="text-muted small mb-2 product-des">{{ product.des }}</p>
+          <!-- <p class="text-muted small mb-2 product-des">{{ product.des }}</p> -->
           <strong class="text-dark d-block mb-3">{{ format(product.price) }}</strong>
           <p *ngIf="product.stock === 0" class="text-danger fw-semibold">Out of Stock</p>
         </div>

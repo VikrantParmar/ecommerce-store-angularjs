@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private apiUrl = `${environment.apiBaseUrl}/categories`; 
+  private apiUrl = `${environment.apiBaseUrl}/categories`;
   constructor(private http: HttpClient) {}
 
  getCategories(params: any): Observable<any> {

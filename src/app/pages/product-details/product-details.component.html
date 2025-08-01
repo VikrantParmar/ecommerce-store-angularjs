@@ -1,67 +1,67 @@
 <!-- Product Details Section -->
 <section class="py-5">
   <div class="container">
-
     <!-- Loader -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="custom-spinner mx-auto"></div>
     </div>
 
-
     <!-- Not Found -->
     <div *ngIf="!loading && !product" class="text-center py-5">
       <img src="images/product-not-found.png" height="200" class="mb-3" alt="Product Not Found" />
       <div>
-        <button routerLink="/" class="btn btn-dark">
-          Go to Home
-        </button>
+        <button routerLink="/" class="btn btn-dark">Go to Home</button>
       </div>
     </div>
 
-
     <!-- Product Content -->
     <div class="row g-5 align-items-start" *ngIf="!loading && product">
-
-      <!-- Product Images -->
       <div class="col-lg-6 col-md-8 col-sm-10 col-12 mx-auto">
         <!-- Main Image -->
-        <div class="border rounded shadow-sm overflow-hidden text-center">
-          <img [src]="getImageUrl(product.img)" class="img-fluid" [alt]="product.name"
-            style="max-height: 400px; object-fit: contain;" />
+        <div class="product-image-wrapper text-center">
+          <img [src]="selectedImageUrl || getImageUrl(product.image)" class="img-fluid product-main-image"
+            [alt]="product.name" />
         </div>
 
         <!-- Thumbnails -->
         <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
-          <img *ngFor="let i of [1, 2, 3, 4]" [src]="getImageUrl(product.img)" class="img-thumbnail" width="70"
-            height="70" style="object-fit: cover;" [alt]="'thumb ' + i" />
+          <!-- Main product image thumbnail -->
+          <img *ngIf="product.image" [src]="getImageUrl(product.image)" class="img-thumbnail product-thumbnail"
+            [ngClass]="{
+              'border-primary border-3':
+                selectedImageUrl === getImageUrl(product.image)
+            }" [alt]="product.name + ' thumbnail'" (click)="setMainImage(getImageUrl(product.image))" />
+
+          <!-- Variant image thumbnails -->
+          <img *ngFor="let img of selectedVariant?.images" [src]="getVariantImageUrl(img.image_url)"
+            class="img-thumbnail product-thumbnail" [ngClass]="{
+              'border-primary border-1':
+                selectedImageUrl === getVariantImageUrl(img.image_url)
+            }" [alt]="product.name + ' variant'" (click)="setMainImage(getVariantImageUrl(img.image_url))" />
         </div>
       </div>
-
 
 
       <!-- Product Info -->
       <div class="col-lg-6">
         <div class="bg-white rounded shadow-sm p-4">
-          <h1 class="h4 fw-bold mb-2">{{ product.name }}</h1>
+          <h1 class="h4 fw-bold mb-4">{{ product.name }}</h1>
 
-
-
-          <!-- Price Section -->
           <div class="mb-4">
-            <del class="text-muted h6 me-2">{{ product.originalPrice }}</del>
-            <span class="text-dark h5 fw-bold">{{format( product.price ) }}</span>
+            <!-- Variant Price on Top -->
+            <!-- <span class="text-dark h5 fw-bold">
+              {{ format(selectedVariant?.price || product.price) }}
+            </span> -->
+
+            <span class="text-dark h5 fw-bold">
+              {{ format(product.price) }}
+            </span>
           </div>
-
-          <!-- Size -->
-          <p class="mb-4 text-dark"><strong>Size:</strong> 71L X 76D X 84H CM</p>
-
-
 
           <!-- Quantity Selector -->
           <div class="mb-4 d-flex align-items-center gap-3">
             <label class="form-label text-dark mb-0">Quantity:</label>
             <div class="input-group flex-nowrap qty-group">
-
               <button class="btn" type="button" (click)="decreaseQty()" [disabled]="quantity <= 1 || loading">
                 -
               </button>
@@ -74,11 +74,66 @@
             </div>
           </div>
 
+          <!-- Amazon-Style Attribute Selectors -->
+          <div *ngFor="let attr of product.attributes" class="mb-4">
+            <label class="form-label fw-semibold text-muted d-block">
+              {{ attr.name }}:
+              <span *ngIf="selectedAttributes[attr.name]" class="text-dark">
+                {{ selectedAttributes[attr.name] }}
+              </span>
+            </label>
+
+            <div class="d-flex flex-wrap gap-3 mt-2">
+              <!-- Color Attribute using variant image directly -->
+              <ng-container *ngIf="
+                  attr.name.toLowerCase() === 'color';
+                  else otherAttributes
+                ">
+                <div *ngFor="let val of attr.values" class="amazon-color-image-swatch position-relative"
+                  [class.selected]="selectedAttributes[attr.name] === val"
+                  [class.disabled]="!isValueAvailable(attr.name, val)" (click)="
+                    isValueAvailable(attr.name, val) &&
+                      onSelectAttribute(attr.name, val)
+                  ">
+                  <ng-container *ngIf="colorVariantMap[val] as variant">
+                    <img [src]="getVariantImageUrl(variant.images[0].image_url)" [alt]="val"
+                      class="color-thumbnail-img" />
+                  </ng-container>
+
+
+
+                  <small *ngIf="getAvailabilityLabel(attr.name, val)" class="text-danger d-block">
+                    {{ getAvailabilityLabel(attr.name, val) }}
+                  </small>
+                </div>
+              </ng-container>
+
+              <!-- Other Attributes -->
+              <ng-template #otherAttributes>
+                <div *ngFor="let val of attr.values" class="amazon-pill position-relative"
+                  [class.selected]="selectedAttributes[attr.name] === val"
+                  [class.disabled]="!isValueAvailable(attr.name, val)" (click)="
+                    isValueAvailable(attr.name, val) &&
+                      onSelectAttribute(attr.name, val)
+                  ">
+                  {{ val }}
+
+                  <small *ngIf="getAvailabilityLabel(attr.name, val)" class="text-danger d-block">
+                    {{ getAvailabilityLabel(attr.name, val) }}
+                  </small>
+                </div>
+              </ng-template>
+            </div>
+          </div>
 
           <!-- Buttons -->
-          <div class="d-flex gap-2 mb-4 ">
-            <button class="btn btn-dark custom-add-btn w-100 " [disabled]="product.stock === 0"
-              (click)="addToCart(product); $event.preventDefault(); $event.stopPropagation();">
+          <!-- Buttons -->
+          <div class="text mb-4">
+            <button class="btn btn-dark custom-add-btn px-4" [disabled]="product.stock === 0" (click)="
+                addToCart(product);
+                $event.preventDefault();
+                $event.stopPropagation()
+              ">
               Add to Cart
             </button>
           </div>
@@ -99,18 +154,20 @@
             </span> -->
           </div>
 
-
           <!-- Description -->
           <p class="text-secondary small">
-            Our <strong>{{ product.name }}</strong> is inspired by the classic mid-century wingback but with a new
-            geometric shape.
-            Generous seating, luxurious details, and bold fabric choices make this a standout piece.
+            Our <strong>{{ product.name }}</strong> is inspired by the classic
+            mid-century wingback but with a new geometric shape. Generous
+            seating, luxurious details, and bold fabric choices make this a
+            standout piece.
             <strong>{{ product.des }}</strong>
           </p>
 
           <!-- Suggested Pairing -->
-          <p class="text-muted small"><strong>Suggested Fabric Pairing:</strong> Bright solids or textured fabrics for
-            bold contrast.</p>
+          <p class="text-muted small">
+            <strong>Suggested Fabric Pairing:</strong> Bright solids or textured
+            fabrics for bold contrast.
+          </p>
 
           <!-- Info Icons -->
           <div class="row justify-content-center mt-4">
@@ -119,12 +176,8 @@
             </div>
           </div>
 
-
-
-
           <!-- Accordion -->
           <div class="accordion mt-4" id="accordionDetails">
-
             <!-- Product Details -->
             <div class="accordion-item">
               <h2 class="accordion-header" id="headingOne">
@@ -137,10 +190,15 @@
                 data-bs-parent="#accordionDetails">
                 <div class="accordion-body small">
                   <ul class="list-unstyled mb-0">
-                    <li><strong>Product</strong> : {{product.name}}</li>
+                    <li><strong>Product</strong> : {{ product.name }}</li>
                     <li><strong>Size:</strong> 71L X 76D X 84H CM</li>
-                    <li><strong>Seat Dimensions:</strong> 54L x 52D x 33H CM</li>
-                    <li><strong>Material:</strong> Teak Wood, Wadding, Hardwood Frame, Wicker</li>
+                    <li>
+                      <strong>Seat Dimensions:</strong> 54L x 52D x 33H CM
+                    </li>
+                    <li>
+                      <strong>Material:</strong> Teak Wood, Wadding, Hardwood
+                      Frame, Wicker
+                    </li>
                     <li><strong>Foam Level:</strong> Firm</li>
                     <li><strong>Style:</strong> Mid Century</li>
                     <li><strong>Custom Fabric:</strong> Available</li>
@@ -160,20 +218,17 @@
               <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                 data-bs-parent="#accordionDetails">
                 <div class="accordion-body small">
-                  Free shipping above ₹2,000. Estimated delivery in 3–5 business days. 7-day return policy.
+                  Free shipping above ₹2,000. Estimated delivery in 3–5 business
+                  days. 7-day return policy.
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
-
-
 
 <!-- Related Products Section -->
 <div class="untree_co-section mt-5 mb-5" *ngIf="product?.related?.length > 0">
@@ -182,28 +237,16 @@
 
     <div class="row justify-content-center">
       <div class="col-12 col-xl-10 col-xxl-9">
-        <app-product-grid
-          [products]="product.related.slice(0, 5)"
-          [loading]="false"
-          [imageUrlFn]="getImageUrl.bind(this)"
-          (addToCart)="addToCart($event)">
+        <app-product-grid [products]="product.related.slice(0, 5)" [loading]="false"
+          [imageUrlFn]="getImageUrl.bind(this)" (addToCart)="addToCart($event)">
         </app-product-grid>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-
-
-
-
-
 <section class="product-help-section py-5 border-top border-bottom bg-light mb-5">
   <div class="container text-center">
-
     <h3 class="fw-bold mb-4">Any questions on this product?</h3>
 
     <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mb-3">
@@ -225,6 +268,5 @@
     <a routerLink="/shop" class="btn back-btn mt-4 btn-dark">
       <i class="bi bi-arrow-left fs-6 me-2"></i> Back to Furniture
     </a>
-
   </div>
 </section>

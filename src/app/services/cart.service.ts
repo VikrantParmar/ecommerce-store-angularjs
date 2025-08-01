@@ -15,16 +15,15 @@ export class CartService {
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
 
-  private cartCache: any = null; // ✅ for caching
+  private cartCache: any = null;
   private cartLoading = false;
   private cartObservers: ((data: any) => void)[] = [];
 
   constructor(private http: HttpClient) { }
 
-  // ✅ GET full cart (cached)
   getCart(): Observable<any> {
     if (this.cartCache) {
-      return of(this.cartCache); // return from cache
+      return of(this.cartCache);
     }
 
     if (this.cartLoading) {
@@ -59,7 +58,6 @@ export class CartService {
     });
   }
 
-  // ✅ Used to refresh after add/remove/update
   private refreshCartCount(): void {
     this.cartCache = null;
     this.getCart().subscribe((cart) => {
@@ -68,14 +66,12 @@ export class CartService {
     });
   }
 
-  // ✅ Triggered after login to merge guest cart
   mergeGuestCartAfterLogin() {
     return this.http.post(`${this.baseUrl}/merge`, {}, { withCredentials: true }).pipe(
       tap(() => this.refreshCartCount())
     );
   }
 
-  // ✅ Add item to cart
   addToCart(productId: number, quantity = 1): Observable<any> {
     return this.http.post(
       `${this.baseUrl}/`,
@@ -86,7 +82,6 @@ export class CartService {
     );
   }
 
-  // ✅ Update quantity of an item
   updateCartItem(productId: number, quantity: number): Observable<any> {
     return this.http.put(
       `${this.baseUrl}/`,
@@ -97,7 +92,6 @@ export class CartService {
     );
   }
 
-  // ✅ Remove item from cart
   removeCartItem(productId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${productId}`, {
       withCredentials: true,
@@ -106,12 +100,10 @@ export class CartService {
     );
   }
 
-  // ✅ (Optional) total quantity if needed anywhere
   private getTotalQuantity(items: any[]): number {
     return items.reduce((total, item) => total + item.quantity, 0);
   }
 
-  // ✅ Apply promo code
   applyPromoCode(code: string): Observable<any> {
     return this.http.post(
       `${this.baseUrl}/apply`,
@@ -122,7 +114,6 @@ export class CartService {
     );
   }
 
-  // ✅ Remove promo code
   removePromoCode(): Observable<any> {
     return this.http.post(
       `${this.baseUrl}/remove`,

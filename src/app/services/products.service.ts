@@ -62,6 +62,7 @@ export class ProductService {
     return `${this.baseUrl}/${filename}`;
   }
 
+
   getProductById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
@@ -70,6 +71,15 @@ export class ProductService {
     return this.http.get(`${this.apiUrl}/slug/${slug}`);
   }
 
+  getVariantImageUrl(filename: string): string {
+    if (!filename) return '';
+
+    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+      return filename;
+    }
+
+    return `${this.baseUrl}/uploads/${filename}`;
+  }
 
 }
 
