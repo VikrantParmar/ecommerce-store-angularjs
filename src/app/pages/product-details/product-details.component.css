@@ -279,7 +279,8 @@
 /* Main image styling */
 .product-main-image {
   transition: transform 0.25s ease;
-  width: 100%;
+  width: 60%;
+  height: auto;
   height: auto;
   object-fit: contain;
 }

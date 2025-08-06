@@ -227,9 +227,13 @@ export class ProductDetailsComponent implements OnInit {
     return allOutOfStock ? 'Currently unavailable' : '';
   }
 
+
   getImageUrl(filename: string): string {
     return this.productUtils.getImageUrl(filename);
+    
+
   }
+
 
   getVariantImageUrl(filename: string): string {
     return this.productService.getVariantImageUrl(filename);
