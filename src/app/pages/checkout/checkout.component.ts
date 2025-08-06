@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 import { formatPrice } from '../../constants/currency.constant';
 import { getFieldError } from '../../shared/form-validation.helper/form-validation.helper.component';
 import { UserService } from '../../services/user.service';
-
+import { ToastrService } from 'ngx-toastr';
 declare var paypal: any;
 
 @Component({
@@ -83,7 +83,8 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private router: Router,
     private paymentService: PaymentService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
 
   ) { }
 
@@ -119,9 +120,14 @@ export class CheckoutComponent implements OnInit {
   }
 
 
-  getImageUrl(filename: string): string {
-    return this.productService.getImageUrl(filename);
+  getCartImageUrl(item: any): string {
+    if (item.variant?.images?.length > 0) {
+      return this.productService.getVariantImageUrl(item.variant.images[0].image_url);
+    }
+
+    return this.productService.getImageUrl(item.Product?.img);
   }
+
 
   loadCartDetails() {
     this.cartService.getCart().subscribe({
@@ -226,7 +232,8 @@ export class CheckoutComponent implements OnInit {
         },
         error: (err) => {
           console.error('Order failed:', err);
-          alert(err.error.message || 'Failed to place order.');
+          this.toastr.error(err);
+          this.loading = false;
         },
         complete: () => this.loading = false
       });

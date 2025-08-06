@@ -7,7 +7,7 @@
     <thead>
       <tr>
         <th class="product-thumbnail">Image</th>
-        <th class="product-name">Product</th>
+        <th class="product-name">Name</th>
         <th class="product-price">Price</th>
         <th class="product-quantity">Quantity</th>
         <th class="product-total">Total</th>
@@ -16,30 +16,47 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of cartItems">
+        <!-- IMAGE -->
         <td class="product-thumbnail">
-          <img [src]="getImageUrl(item.Product.img)" alt="Image" class="img-fluid cart-img" />
+          <img [src]="getCartImageUrl(item)" alt="Product Image" class="img-fluid cart-img" />
         </td>
-        <td class="product-name">
-          <h2 class="h6 text-black mb-1 align-items-center justify-content-between">
-            {{ item.Product.name }}
+
+        <!-- NAME + VARIANT ATTRIBUTES -->
+        <td class="product-name text-start">
+          <!-- Product Name -->
+          <h2 class="h6 text-black mb-1 text-start text-wrap">
+            {{ item.Product?.name }}
           </h2>
 
-          <!-- <p class="text-muted mb-1">
-            {{ item.Product.des || "No description available." }}
-          </p> -->
+          <!-- Variant Attributes -->
+          <p *ngIf="item.variant?.variantAttributes?.length" class="text small mb-1 text-start">
+            <ng-container *ngFor="let attr of item.variant.variantAttributes; let i = index">
+              {{ attr.attributeValue?.attribute?.name }}:
+              {{ attr.attributeValue?.value }}
+              <span *ngIf="i < item.variant.variantAttributes.length - 1">|</span>
+            </ng-container>
+          </p>
 
-          <span *ngIf="item.Product.stock === 0" class="badge bg-danger ms-2">
+          <!-- Stock Badges -->
+          <div class="text-start">
+            <span *ngIf="(item.variant?.stock ?? item.Product?.stock) === 0" class="badge bg-danger me-1">
               Out of Stock
             </span>
 
-          <small *ngIf="item.Product.stock > 0 && item.Product.stock <= 5" class="badge bg-warning text-dark">
-            Only {{ item.Product.stock }} product left in stock!
-          </small>
+            <span *ngIf="(item.variant?.stock ?? item.Product?.stock) > 0 &&
+                 (item.variant?.stock ?? item.Product?.stock) <= 5" class="badge bg-warning text-dark">
+              Only {{ item.variant?.stock ?? item.Product?.stock }} left in stock!
+            </span>
+          </div>
         </td>
 
 
-        <td>{{ format(item.Product.price) }}</td>
+        <!-- PRICE -->
+        <td>
+          {{ format(item.variant?.price ?? item.Product?.price) }}
+        </td>
 
+        <!-- QUANTITY -->
         <td class="text-center align-middle">
           <div class="d-flex justify-content-center">
             <div class="input-group flex-nowrap qty-group">
@@ -47,26 +64,29 @@
                 [disabled]="item.quantity <= 1 || loadingItemId !== null">
                 -
               </button>
-
               <input type="text" class="form-control text-center" [value]="item.quantity" readonly />
-
-              <button class="btn btn-outline-dark" type="button" (click)="increaseQty(item)"
-                [disabled]="loadingItemId !== null || item.quantity >= item.Product.stock">
+              <button class="btn btn-outline-dark" type="button" (click)="increaseQty(item)" [disabled]="loadingItemId !== null ||
+                     item.quantity >= (item.variant?.stock ?? item.Product?.stock)">
                 +
               </button>
-
             </div>
           </div>
         </td>
 
-        <td>{{ format(item.Product.price * item.quantity) }}</td>
+        <!-- TOTAL -->
         <td>
-          <button (click)="removeItem(item.Product.id)" class="btn btn-black btn-sm remove-btn"
+          {{ format((item.variant?.price ?? item.Product?.price) * item.quantity) }}
+        </td>
+
+        <!-- REMOVE -->
+        <td>
+          <button (click)="removeItem(item.Product?.id)" class="btn btn-black btn-sm remove-btn"
             [disabled]="loadingItemId !== null">
             <i class="bi bi-trash trash-icon"></i>
           </button>
         </td>
       </tr>
+
     </tbody>
   </table>
 </div>

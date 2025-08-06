@@ -7,6 +7,7 @@ import { formatPrice } from '../../constants/currency.constant';
 import { RouterLink } from '@angular/router';
 import { ProductGridComponent } from '../../components/shop/product-grid/product-grid.component';
 
+
 @Component({
   selector: 'app-product-details',
   standalone: true,
@@ -25,7 +26,9 @@ export class ProductDetailsComponent implements OnInit {
   selectedVariant: any = null;
   selectedImageUrl: string = '';
   lastSelectedColor: string = '';
-  colorVariantMap: { [colorValue: string]: any } = {}; // NEW
+  colorVariantMap: { [colorValue: string]: any } = {};
+  isZoomActive: boolean = false; // Flag to show zoom effect
+
 
   constructor(
     private route: ActivatedRoute,
@@ -37,15 +40,14 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const slug = params['slug'];
-      const sku = params['sku'] ?? null;
-
       if (slug) {
-        this.loadProduct(slug, sku);
+        this.loadProduct(slug);
       }
     });
   }
 
-  loadProduct(slug: string, sku: string | null): void {
+  loadProduct(slug: string): void {
+
     this.loading = true;
     this.quantity = 1;
 
@@ -53,7 +55,7 @@ export class ProductDetailsComponent implements OnInit {
       next: (res) => {
         this.product = res.data;
         this.filteredVariants = res.data.variants || [];
-        this.buildColorVariantMap(); // NEW
+        this.buildColorVariantMap();
         this.loading = false;
 
         this.product.attributes.sort((a: any, b: any) => {
@@ -61,21 +63,8 @@ export class ProductDetailsComponent implements OnInit {
           return 0;
         });
 
-        let variantToSet = null;
-
-        if (sku && sku !== 'null') {
-          variantToSet = this.filteredVariants.find(v => v.sku === sku);
-        }
-
-        if (!variantToSet && this.filteredVariants.length > 0) {
-          variantToSet = this.filteredVariants.find(v => v.stock > 0) || this.filteredVariants[0];
-
-          if (variantToSet?.sku && sku !== variantToSet.sku) {
-            this.router.navigate(['/product', slug, variantToSet.sku], { replaceUrl: true });
-            return;
-          }
-        }
-
+        // Select first in-stock variant or fallback to first variant
+        let variantToSet = this.filteredVariants.find(v => v.stock > 0) || this.filteredVariants[0];
         this.selectedVariant = variantToSet;
 
         if (variantToSet) {
@@ -129,8 +118,16 @@ export class ProductDetailsComponent implements OnInit {
   onSelectAttribute(attributeName: string, value: string) {
     if (this.selectedAttributes[attributeName] === value) return;
     this.selectedAttributes[attributeName] = value;
+
     this.updateSelectedVariant();
+
+    // 🔁 Reset quantity if it exceeds the new stock
+    const maxStock = this.selectedVariant ? this.selectedVariant.stock : this.product.stock;
+    if (this.quantity > maxStock) {
+      this.quantity = maxStock > 0 ? 1 : 0;
+    }
   }
+
 
   updateSelectedVariant() {
     const matching = this.filteredVariants.find((variant: any) => {
@@ -153,11 +150,8 @@ export class ProductDetailsComponent implements OnInit {
 
       this.selectedVariant = matching;
 
-      const slug = this.product?.slug;
-      const sku = matching.sku;
-      if (slug && sku && this.route.snapshot.params['sku'] !== sku) {
-        this.router.navigate(['/product', slug, sku], { replaceUrl: true });
-      }
+      // Removed SKU navigation to URL here
+      // No router.navigate to add SKU to URL
 
       let newImageUrl = '';
 
@@ -243,14 +237,19 @@ export class ProductDetailsComponent implements OnInit {
 
   addToCart(product: any) {
     const payload = {
-      ...product,
+      id: product.id, // productId
+      selectedVariant: this.selectedVariant || null,
       quantity: this.quantity,
+      stock: this.selectedVariant?.stock ?? product.stock
     };
+
     this.productUtils.addToCart(payload);
   }
 
+
   increaseQty() {
-    if (this.quantity < this.product.stock) {
+    const maxStock = this.selectedVariant ? this.selectedVariant.stock : this.product.stock;
+    if (this.quantity < maxStock) {
       this.quantity++;
     }
   }
@@ -260,4 +259,37 @@ export class ProductDetailsComponent implements OnInit {
       this.quantity--;
     }
   }
-}     
+
+
+
+  onMouseEnter(event: MouseEvent): void {
+    this.isZoomActive = true;
+    this.moveZoom(event);
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    if (this.isZoomActive) {
+      this.moveZoom(event);
+    }
+  }
+
+  onMouseLeave(): void {
+    this.isZoomActive = false;
+  }
+
+  moveZoom(event: MouseEvent): void {
+    const zoomContainer = document.querySelector('.zoom-overlay') as HTMLElement;
+    const zoomedImage = document.querySelector('.zoomed-img') as HTMLImageElement;
+
+    if (zoomContainer && zoomedImage) {
+      const { left, top, width, height } = zoomContainer.getBoundingClientRect();
+      const offsetX = event.clientX - left;
+      const offsetY = event.clientY - top;
+
+      const xPercent = (offsetX / width) * 100;
+      const yPercent = (offsetY / height) * 100;
+
+      zoomedImage.style.transform = `translate(-${xPercent}%, -${yPercent}%)`;
+    }
+  }
+}

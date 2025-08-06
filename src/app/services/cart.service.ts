@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 
 export class CartService {
- private baseUrl = `${environment.apiBaseUrl}/cart`;
+  private baseUrl = `${environment.apiBaseUrl}/cart`;
 
   private cartCountSubject = new BehaviorSubject<number>(0);
   cartCount$ = this.cartCountSubject.asObservable();
@@ -72,33 +72,48 @@ export class CartService {
     );
   }
 
-  addToCart(productId: number, quantity = 1): Observable<any> {
+  addToCart(payload: { productId: number; variantId?: number; quantity: number }): Observable<any> {
     return this.http.post(
       `${this.baseUrl}/`,
-      { productId, quantity },
+      payload,
       { withCredentials: true }
     ).pipe(
       tap(() => this.refreshCartCount())
     );
   }
 
-  updateCartItem(productId: number, quantity: number): Observable<any> {
+
+  updateCartItem(productId: number, quantity: number, variantId?: number): Observable<any> {
     return this.http.put(
       `${this.baseUrl}/`,
-      { productId, quantity },
+      { productId, quantity, variantId },
       { withCredentials: true }
     ).pipe(
       tap(() => this.refreshCartCount())
     );
   }
 
-  removeCartItem(productId: number): Observable<any> {
+
+  // removeCartItem(productId: number): Observable<any> {
+  //   return this.http.delete(`${this.baseUrl}/${productId}`, {
+  //     withCredentials: true,
+  //   }).pipe(
+  //     tap(() => this.refreshCartCount())
+  //   );
+  // }
+  removeCartItem(productId: number, variantId?: number): Observable<any> {
+    const params: any = { productId };
+    if (variantId != null) params.variantId = variantId;
+
     return this.http.delete(`${this.baseUrl}/${productId}`, {
+      params,
       withCredentials: true,
     }).pipe(
       tap(() => this.refreshCartCount())
     );
   }
+
+
 
   private getTotalQuantity(items: any[]): number {
     return items.reduce((total, item) => total + item.quantity, 0);
@@ -122,5 +137,9 @@ export class CartService {
     ).pipe(
       tap(() => this.refreshCartCount())
     );
+  }
+
+  clearCart(): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/clear`);
   }
 }

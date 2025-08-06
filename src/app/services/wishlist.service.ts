@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -13,19 +13,24 @@ export class WishlistService {
   constructor(private http: HttpClient) { }
 
   getWishlist(): Observable<any> {
-    return this.http.get(this.apiUrl)
+    return this.http.get(this.apiUrl);
   }
 
-  addToWishlist(productId: number): Observable<any> {
-    return this.http.post(this.apiUrl, { productId });
+  addToWishlist(productId: number, variantId?: number): Observable<any> {
+    const body: any = { productId };
+    if (variantId != null) { // covers both undefined and null
+      body.variantId = variantId;
+    }
+    return this.http.post(this.apiUrl, body);
   }
 
-  removeFromWishlist(productId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${productId}`);
-  }
+  removeFromWishlist(productId: number, variantId: number | null = null): Observable<any> {
+  let params = new HttpParams();
+  params = params.set('variantId', variantId !== null ? variantId.toString() : 'null');
+  return this.http.delete(`${this.apiUrl}/${productId}`, { params });
+}
+
 
 
 
 }
-
-

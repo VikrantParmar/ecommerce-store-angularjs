@@ -12,7 +12,7 @@ import { formatPrice } from '../../../constants/currency.constant';
 })
 export class CartListingComponent {
 
-    format = formatPrice;   
+  format = formatPrice;
 
 
   constructor(private productService: ProductService) { }
@@ -25,12 +25,22 @@ export class CartListingComponent {
   @Output() increase = new EventEmitter<any>();
   @Output() decrease = new EventEmitter<any>();
 
-  getImageUrl(filename: string): string {
-    if (this.imageUrlFn) {
-      return this.imageUrlFn(filename);
+  // getImageUrl(filename: string): string {
+  //   if (this.imageUrlFn) {
+  //     return this.imageUrlFn(filename);
+  //   }
+  //   return this.productService.getImageUrl(filename);
+  // }
+
+  getCartImageUrl(item: any): string {
+    if (item.variant?.images?.length > 0) {
+      return this.productService.getVariantImageUrl(item.variant.images[0].image_url);
     }
-    return this.productService.getImageUrl(filename);
+
+    return this.productService.getImageUrl(item.Product?.img);
   }
+
+
 
   removeItem(id: number) {
     this.remove.emit(id);
@@ -43,4 +53,6 @@ export class CartListingComponent {
   decreaseQty(item: any) {
     this.decrease.emit(item);
   }
+
+
 }

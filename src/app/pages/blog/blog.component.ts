@@ -13,6 +13,8 @@ import { BlogsComponent } from '../../components/blogs/blogs.component';
 })
 export class BlogComponent implements OnInit {
   blogs: any[] = [];
+  loading = false;
+
 
   constructor(private blogService: BlogService) {}
 
@@ -21,6 +23,7 @@ export class BlogComponent implements OnInit {
   }
 
   loadBlogs(): void {
+  this.loading = true;
   this.blogService.getAllBlogs({
     page: 1,
     limit: 12,
@@ -28,6 +31,7 @@ export class BlogComponent implements OnInit {
     sortOrder: 'ASC',
   }).subscribe((res) => {
     this.blogs = res.data?.data || [];
+    this.loading = false;
   });
 }
 

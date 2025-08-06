@@ -18,7 +18,7 @@ export class BlogService {
 
   createBlog(data: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}`, data);
-  }
+  } 
 
   getAllBlogs(params: TableQueryParams = {}): Observable<any> {
     const httpParams = buildHttpQueryParams(params);

@@ -309,7 +309,6 @@
       </div>
 
 
-      <!-- Right: Order Summary + Payment Options -->
       <!-- Right: Order Summary and Payment (Split into two cards) -->
       <div class="col-md-6">
 
@@ -320,13 +319,23 @@
 
             <!-- Cart Items -->
             <div *ngFor="let item of cartItems" class="d-flex mb-3 border-bottom pb-2">
-              <img [src]="getImageUrl(item.Product.img)" class="me-3 rounded"
-                style="width: 60px; height: 60px; object-fit: cover;" />
+              <img [src]="getCartImageUrl(item)" class="cart-item-img me-3 rounded" />
+
               <div class="flex-grow-1">
-                <div class="fw-semibold">{{ item.Product.name }}</div>
+
+                <div class="fw-semibold">{{ item.Product.name }} </div>
+                <p *ngIf="item.variant?.variantAttributes?.length" class="text small mb-1 text-start">
+                  <ng-container *ngFor="let attr of item.variant.variantAttributes; let i = index">
+                    {{ attr.attributeValue?.attribute?.name }}:
+                    {{ attr.attributeValue?.value }}
+                    <span *ngIf="i < item.variant.variantAttributes.length - 1">|</span>
+                  </ng-container>
+                </p>
                 <div class="small text-muted">Qty: {{ item.quantity }}</div>
+
               </div>
-              <div class="fw-bold">{{ format(item.Product.price * item.quantity) }}</div>
+
+              <div class="fw-bold"> {{ format(item.variant?.price ?? item.Product?.price) }}</div>
             </div>
 
             <!-- Price Summary -->

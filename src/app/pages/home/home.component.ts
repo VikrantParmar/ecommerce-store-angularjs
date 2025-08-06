@@ -61,10 +61,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return this.productService.getImageUrl(filename);
   }
 
-  onAddToCart(productId: number) {
-    this.cartService.addToCart(productId, 1).subscribe({
-      next: () => this.toastr.success('Product added to cart'),
-      error: () => this.toastr.error('Failed to add product to cart')
-    });
-  }
+ onAddToCart(productId: number) {
+  this.cartService.addToCart({ productId, quantity: 1 }).subscribe({
+    next: () => this.toastr.success('Product added to cart'),
+    error: () => this.toastr.error('Failed to add product to cart')
+  });
+}
+
 }

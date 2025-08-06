@@ -57,36 +57,51 @@
           <tbody>
             <tr *ngFor="let item of wishlist">
               <td class="product-thumbnail">
-                <img [src]="getImageUrl(item.product.img)" alt="Image" class="img-fluid cart-img"
-                   />
+                <img [src]="getCartImageUrl(item)" alt="Product Image" class="img-fluid cart-img p-2" />
+
               </td>
-              <td class="product-name">
+              <td class="product-name text-start">
                 <h2 class="h6 text-black mb-1">{{ item.product.name }}</h2>
-                <p class="text-muted mb-0">{{ item.product.des || 'No description available.' }}</p>
-                <p *ngIf="item.product.stock === 0" class="badge bg-danger ms-2">Out of Stock</p>
+                <!-- Inside product-name cell -->
+                <p *ngIf="item.variant?.variantAttributes?.length" class="text small mb-1 text-start">
+                  <ng-container *ngFor="let attr of item.variant.variantAttributes; let i = index">
+                    {{ attr.attributeValue?.attribute?.name }}: {{ attr.attributeValue?.value }}
+                    <span *ngIf="i < item.variant.variantAttributes.length - 1">|</span>
+                  </ng-container>
+                </p>
+
+
+                <p *ngIf="(item.variant?.stock ?? item.product.stock) === 0" class="badge bg-danger ms-2">
+                  Out of Stock
+                </p>
+
                 <!-- ✅ Added -->
 
               </td>
               <td class="text-end fw-bold">
-                {{ item.product.price }}
+                {{ format ( item.variant?.price ?? item.product.price ) }}
               </td>
+
 
               <!--  Add to Cart Button -->
               <td class="text-center">
                 <button (click)="moveToCart(item)" class="btn btn-outline-primary btn-lg"
-                  [disabled]="item.product.stock === 0"
-                  [title]="item.product.stock === 0 ? 'Out of Stock' : 'Add to Cart'">
+                  [disabled]="(item.variant?.stock ?? item.product.stock) === 0"
+                  [title]="(item.variant?.stock ?? item.product.stock) === 0 ? 'Out of Stock' : 'Add to Cart'">
                   <i class="bi bi-cart-plus"></i>
                 </button>
               </td>
 
 
+
               <!--  Remove Button -->
               <td class="text-center">
-                <button (click)="removeItem(item.product.id)" class="btn btn-outline-danger btn-sm">
+                <button (click)="removeItem(item.product.id, item.variant?.id ?? null)"
+                  class="btn btn-outline-danger btn-sm">
                   <i class="bi bi-trash trash-icon"></i>
                 </button>
               </td>
+
             </tr>
           </tbody>
         </table>

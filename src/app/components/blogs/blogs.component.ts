@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 })
 export class BlogsComponent {
     @Input() blogs: any[] = [];
+    @Input() loading = false;
+
 
 
 }

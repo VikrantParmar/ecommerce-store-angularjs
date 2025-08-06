@@ -14,25 +14,30 @@
       </div>
     </div>
 
-    <!-- Product Content -->
+    <!-- Image Section Start  -->
     <div class="row g-5 align-items-start" *ngIf="!loading && product">
       <div class="col-lg-6 col-md-8 col-sm-10 col-12 mx-auto">
-        <!-- Main Image -->
-        <div class="product-image-wrapper text-center">
+        <!-- Main Image with Zoom Effect -->
+        <div class="product-image-wrapper text-center" (mouseenter)="onMouseEnter($event)"
+          (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
           <img [src]="selectedImageUrl || getImageUrl(product.image)" class="img-fluid product-main-image"
             [alt]="product.name" />
+
+          <!-- Zoomed Image Overlay -->
+          <div class="zoom-overlay" *ngIf="isZoomActive">
+            <img [src]="selectedImageUrl || getImageUrl(product.image)" class="zoomed-img"
+              [alt]="product.name + ' zoomed image'" />
+          </div>
         </div>
 
         <!-- Thumbnails -->
         <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
-          <!-- Main product image thumbnail -->
           <img *ngIf="product.image" [src]="getImageUrl(product.image)" class="img-thumbnail product-thumbnail"
             [ngClass]="{
               'border-primary border-3':
                 selectedImageUrl === getImageUrl(product.image)
             }" [alt]="product.name + ' thumbnail'" (click)="setMainImage(getImageUrl(product.image))" />
 
-          <!-- Variant image thumbnails -->
           <img *ngFor="let img of selectedVariant?.images" [src]="getVariantImageUrl(img.image_url)"
             class="img-thumbnail product-thumbnail" [ngClass]="{
               'border-primary border-1':
@@ -41,6 +46,7 @@
         </div>
       </div>
 
+      <!-- Image Section End   -->
 
       <!-- Product Info -->
       <div class="col-lg-6">
@@ -54,23 +60,30 @@
             </span> -->
 
             <span class="text-dark h5 fw-bold">
-              {{ format(product.price) }}
+              {{ format(selectedVariant?.price ?? product.price) }}
             </span>
+
           </div>
 
           <!-- Quantity Selector -->
           <div class="mb-4 d-flex align-items-center gap-3">
             <label class="form-label text-dark mb-0">Quantity:</label>
             <div class="input-group flex-nowrap qty-group">
-              <button class="btn" type="button" (click)="decreaseQty()" [disabled]="quantity <= 1 || loading">
+              <!-- Decrease button -->
+              <button class="btn btn-outline-dark" type="button" (click)="decreaseQty()"
+                [disabled]="quantity <= 1 || loading">
                 -
               </button>
 
+              <!-- Quantity Display -->
               <input type="text" class="form-control text-center" [value]="quantity" readonly />
 
-              <button class="btn btn-outline-dark" type="button" (click)="increaseQty()" [disabled]="loading">
+              <!-- Increase button -->
+              <button class="btn btn-outline-dark" type="button" (click)="increaseQty()"
+                [disabled]="loading || quantity >= (selectedVariant?.stock ?? product.stock)">
                 +
               </button>
+
             </div>
           </div>
 
@@ -100,8 +113,6 @@
                       class="color-thumbnail-img" />
                   </ng-container>
 
-
-
                   <small *ngIf="getAvailabilityLabel(attr.name, val)" class="text-danger d-block">
                     {{ getAvailabilityLabel(attr.name, val) }}
                   </small>
@@ -129,30 +140,47 @@
           <!-- Buttons -->
           <!-- Buttons -->
           <div class="text mb-4">
-            <button class="btn btn-dark custom-add-btn px-4" [disabled]="product.stock === 0" (click)="
-                addToCart(product);
-                $event.preventDefault();
-                $event.stopPropagation()
-              ">
+            <button class="btn btn-dark custom-add-btn px-4"
+              [disabled]="(selectedVariant ? selectedVariant.stock : product.stock) === 0"
+              (click)="addToCart(product); $event.preventDefault(); $event.stopPropagation()">
               Add to Cart
             </button>
           </div>
 
+
           <!-- Stock Message -->
           <div class="mb-3">
-            <span *ngIf="product.stock === 0" class="badge bg-danger px-3 py-2 fs-6 fw-semibold rounded">
+            <!-- Out of Stock -->
+            <span *ngIf="(selectedVariant?.stock ?? product.stock) === 0"
+              class="badge bg-danger px-3 py-2 fs-6 fw-semibold rounded">
               Out of Stock
             </span>
 
-            <span *ngIf="product.stock > 0 && product.stock <= 5"
+            <!-- Low Stock -->
+            <span
+              *ngIf="(selectedVariant?.stock ?? product.stock) > 0 && (selectedVariant?.stock ?? product.stock) <= 5"
               class="badge bg-warning text-dark px-3 py-2 fs-6 fw-semibold rounded">
-              Only {{ product.stock }} product left in stock!
+              Only {{ selectedVariant?.stock ?? product.stock }} product left in stock!
             </span>
 
-            <!-- <span *ngIf="product.stock > 5" class="badge bg-success px-3 py-2 fs-6 fw-semibold rounded-pill">
+            <!-- In Stock (Optional - if you want to show message when stock is fine) -->
+            <span *ngIf="(selectedVariant?.stock ?? product.stock) > 5"
+              class="badge bg-success px-3 py-2 fs-6 fw-semibold rounded">
               In Stock
-            </span> -->
+            </span>
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
           <!-- Description -->
           <p class="text-secondary small">

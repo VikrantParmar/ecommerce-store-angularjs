@@ -25,7 +25,7 @@ export class CartSummaryComponent {
 
 
   hasOutOfStock(): boolean {
-  return this.cartItems?.some(item => item.Product.stock === 0);
+  return this.cartItems?.some(item => (item.variant?.stock ?? item.Product.stock) === 0);
 }
 
 

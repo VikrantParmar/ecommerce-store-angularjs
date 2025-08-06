@@ -88,20 +88,19 @@ export class CartComponent implements OnInit {
   decreaseQuantity(item: any) {
     if (item.quantity > 1) {
       this.loadingItemId = item.Product.id;
-      this.updateQuantity(item.Product.id, item.quantity - 1);
+      this.updateQuantity(item.Product.id, item.variant?.id, item.quantity - 1); // ✅ pass variantId
     }
   }
 
   increaseQuantity(item: any) {
-
     this.loadingItemId = item.Product.id;
-    this.updateQuantity(item.Product.id, item.quantity + 1);
+    this.updateQuantity(item.Product.id, item.variant?.id, item.quantity + 1); // ✅ pass variantId
   }
 
-  updateQuantity(productId: number, quantity: number) {
+  updateQuantity(productId: number, variantId: number | null | undefined, quantity: number) {
     if (quantity < 1) return;
 
-    this.cartService.updateCartItem(productId, quantity).subscribe({
+    this.cartService.updateCartItem(productId, quantity, variantId ?? undefined).subscribe({
       next: () => {
         this.cartService['refreshCartCount']();
         this.loadCart();
@@ -117,18 +116,19 @@ export class CartComponent implements OnInit {
 
 
 
-  removeItem(productId: number) {
-    this.cartService.removeCartItem(productId).subscribe(() => {
+
+  removeItem(productId: number, variantId?: number) {
+    this.cartService.removeCartItem(productId, variantId).subscribe(() => {
       this.loadCart();
       this.toastr.warning('Product removed');
-
       this.cartService['refreshCartCount']();
     });
   }
 
-  getImageUrl(filename: string): string {
-    return this.productService.getImageUrl(filename);
-  }
+
+  // getImageUrl(filename: string): string {
+  //   return this.productService.getImageUrl(filename);
+  // }
 
   openConfirmModal(productId: number): void {
     this.selectedProductId = productId;
@@ -139,7 +139,10 @@ export class CartComponent implements OnInit {
 
   confirmDelete(): void {
     if (this.selectedProductId !== null) {
-      this.removeItem(this.selectedProductId);
+      const selectedItem = this.cartItems.find(item => item.Product.id === this.selectedProductId);
+      const variantId = selectedItem?.variant?.id || null;
+
+      this.removeItem(this.selectedProductId, variantId);
       this.selectedProductId = null;
     }
 
@@ -148,16 +151,18 @@ export class CartComponent implements OnInit {
     modal.hide();
   }
 
+
   getTotalQuantity(): number {
     return this.cartItems.reduce((total, item) => total + item.quantity, 0);
   }
 
   getTotalPrice(): number {
-    return this.cartItems.reduce(
-      (total, item) => total + item.quantity * item.Product.price,
-      0
-    );
+    return this.cartItems.reduce((total, item) => {
+      const price = parseFloat(item.variant?.price ?? item.Product.price ?? 0);
+      return total + item.quantity * price;
+    }, 0);
   }
+
 
   applyPromo(): void {
     const total = this.getTotalPrice();
@@ -245,22 +250,25 @@ export class CartComponent implements OnInit {
 
   goToCheckout() {
   if (this.cartItems.length === 0) {
-    return; // No items in cart
+    this.toastr.warning('Your cart is empty.');
+    return;
   }
 
-  const hasOutOfStock = this.cartItems.some(item => item.Product.stock === 0);
+  const hasOutOfStock = this.cartItems.some(item => {
+    const variantStock = item.variant?.stock;
+    const productStock = item.Product?.stock;
+    const availableStock = variantStock ?? productStock;
+
+    return !availableStock || item.quantity > availableStock;
+  });
 
   if (hasOutOfStock) {
-    this.toastr.warning('Product out of stock.');
+    this.toastr.warning('Some products in your cart are out of stock or exceed available quantity.');
     return;
   }
 
   this.router.navigate(['/checkout']);
 }
-
-
-
-
 
 
 }

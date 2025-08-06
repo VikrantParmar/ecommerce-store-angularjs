@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
 
               this.lastProductSlug = slug;
 
-              this.productService.getProductBySlug(slug).subscribe({
+              this.productService.getProductBySlug(slug,).subscribe({
                 next: (res) => {
                   const productName = res.data?.name || 'Product';
                   this.titleService.setTitle(productName);

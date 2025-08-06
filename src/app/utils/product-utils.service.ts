@@ -11,25 +11,59 @@ export class ProductUtilsService {
     private cartService: CartService,
     private toastr: ToastrService,
     private productService: ProductService
-  ) {}
+  ) { }
 
-  // ✅ Get product image URL
   getImageUrl(filename: string): string {
     return this.productService.getImageUrl(filename);
   }
 
-  // ✅ Add to cart with stock validation
-addToCart(product: any): void {
-  if (product.stock === 0) {
-    this.toastr.error('This product is out of stock!');
-    return;
+  addToCart(product: any): void {
+    const variant = product.selectedVariant || product.variants?.[0];
+    const stock = variant?.stock ?? product.stock;
+    const quantity = product.quantity || 1;
+
+    // ✅ Block if stock is already 0
+    if (!product || stock === 0) {
+      this.toastr.error('This product is out of stock!');
+      return;
+    }
+
+    // ✅ Block if requested quantity exceeds available stock
+    if (quantity > stock) {
+      this.toastr.error(`Only ${stock} item(s) available`);
+      return;
+    }
+
+    const payload = {
+      productId: product.id,
+      variantId: variant?.id || null,
+      quantity,
+    };
+
+    this.cartService.addToCart(payload).subscribe({
+      next: () => {
+        this.toastr.success('Product added to cart');
+        if (variant) {
+          variant.stock -= quantity;
+          if (variant.stock === 0) {
+            this.toastr.warning('This variant is now out of stock!');
+          }
+        } else {
+          product.stock -= quantity;
+          if (product.stock === 0) {
+            this.toastr.warning('This product is now out of stock!');
+          }
+        }
+      },
+      error: (error) => {
+        const errorMsg = error?.error?.message || 'Failed to add product to cart';
+        this.toastr.error(errorMsg);
+      },
+    });
+
   }
 
-  const quantity = product.quantity || 1;
 
-  this.cartService.addToCart(product.id, quantity).subscribe({
-    next: () => this.toastr.success('Product added to cart'),
-    error: () => this.toastr.error('Failed to add product to cart'),
-  });
-}
+
+
 }
