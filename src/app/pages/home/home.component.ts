@@ -14,14 +14,14 @@ declare var tns: any;
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  featuredProducts: any[] = []; // ✅ needed for [products]
-  loading = false;              // ✅ needed for [loading]
+  featuredProducts: any[] = [];
+  loading = false;
 
   constructor(
     private productService: ProductService,
     private cartService: CartService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadFeaturedProducts();
@@ -61,11 +61,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return this.productService.getImageUrl(filename);
   }
 
- onAddToCart(productId: number) {
-  this.cartService.addToCart({ productId, quantity: 1 }).subscribe({
-    next: () => this.toastr.success('Product added to cart'),
-    error: () => this.toastr.error('Failed to add product to cart')
-  });
-}
+  onAddToCart(productId: number) {
+    this.cartService.addToCart({ productId, quantity: 1 }).subscribe({
+      next: () => this.toastr.success('Product added to cart'),
+      error: () => this.toastr.error('Failed to add product to cart')
+    });
+  }
 
 }

@@ -20,7 +20,7 @@
         <!-- Main Image with Zoom Effect -->
         <div class="product-image-wrapper text-center" (mouseenter)="onMouseEnter($event)"
           (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
-          <img [src]="selectedImageUrl || getImageUrl(product.image)" class="img-fluid product-main-image"
+          <img [src]="selectedImageUrl || getImageUrl(product.img)" class="img-fluid product-main-image"
             [alt]="product.name" />
 
           <!-- Zoomed Image Overlay -->

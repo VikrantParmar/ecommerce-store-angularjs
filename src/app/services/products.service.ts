@@ -58,9 +58,14 @@ export class ProductService {
   }
 
 
-  getImageUrl(filename: string): string {
-    return `${this.baseUrl}/${filename}`;
+ getImageUrl(filename: string): string {
+  if (!filename) return '';
+
+  if (filename.startsWith('http://') || filename.startsWith('https://')) {
+    return filename;
   }
+  return `${this.baseUrl}/${filename}`;
+}
 
 
   getProductById(id: string): Observable<any> {

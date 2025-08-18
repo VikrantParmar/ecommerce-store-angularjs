@@ -12,13 +12,15 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class BlogService {
- private baseUrl = `${environment.apiBaseUrl}/blog`; 
+  private baseUrl = `${environment.apiBaseUrl}/blog`;
+   private apiUrl = environment.uploadBaseUrl;
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) { }
 
   createBlog(data: FormData): Observable<any> {
     return this.http.post(`${this.baseUrl}`, data);
-  } 
+  }
 
   getAllBlogs(params: TableQueryParams = {}): Observable<any> {
     const httpParams = buildHttpQueryParams(params);
@@ -31,5 +33,14 @@ export class BlogService {
 
   deleteBlog(id: number | string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  getImageUrl(filename: string): string {
+    if (!filename) return '';
+
+    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+      return filename;
+    }
+    return `${this.apiUrl}/${filename}`;
   }
 }
