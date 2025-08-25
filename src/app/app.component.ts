@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
           return;
         }
 
-        let title = 'Furni - Home';
+        let title = 'Furni';
 
         switch (url) {
           case '/home': title = 'Home'; break;
@@ -64,30 +64,30 @@ export class AppComponent implements OnInit {
           case '/prime': title = 'Fastwear Prime'; break;
 
           default:
-            if (url.startsWith('/product/')) {
-              const parts = url.split('/product/')[1]?.split('/');
-              const slug = decodeURIComponent(parts?.[0] || '');
+            // if (url.startsWith('/product/')) {
+            //   const parts = url.split('/product/')[1]?.split('/');
+            //   const slug = decodeURIComponent(parts?.[0] || '');
 
-              if (!slug || this.lastProductSlug === slug) return;
+            //   if (!slug || this.lastProductSlug === slug) return;
 
-              this.lastProductSlug = slug;
+            //   this.lastProductSlug = slug;
 
-              this.productService.getProductBySlug(slug,).subscribe({
-                next: (res) => {
-                  const productName = res.data?.name || 'Product';
-                  this.titleService.setTitle(productName);
-                },
-                error: () => {
-                  this.titleService.setTitle('Product Not Found');
-                }
-              });
-              return;
-            } else if (url.startsWith('/my-orders/')) {
-              title = 'Order Details';
-            } else if (url.startsWith('/paypal')) {
-              title = 'Paypal Payment';
-            }
-            break;
+            //   this.productService.getProductBySlug(slug,).subscribe({
+            //     next: (res) => {
+            //       const productName = res.data?.name || 'Product';
+            //       this.titleService.setTitle(productName);
+            //     },
+            //     error: () => {
+            //       this.titleService.setTitle('Product Not Found');
+            //     }
+            //   });
+            //   return;
+            // } else if (url.startsWith('/my-orders/')) {
+            //   title = 'Order Details';
+            // } else if (url.startsWith('/paypal')) {
+            //   title = 'Paypal Payment';
+            // }
+            // break;
         }
 
         this.titleService.setTitle(title);

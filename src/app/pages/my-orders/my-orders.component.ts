@@ -18,6 +18,8 @@ export class MyOrdersComponent implements OnInit {
   orders: OrderSummary[] = [];
   loading = false;
   error = '';
+  loadingInvoice: { [orderId: number]: boolean } = {};
+
 
 
   constructor(private orderService: OrderService) { }
@@ -54,5 +56,21 @@ export class MyOrdersComponent implements OnInit {
         return 'bg-secondary';
     }
   }
+
+  downloadInvoice(orderId: number, orderNumber: string) {
+  this.loadingInvoice[orderId] = true;
+  this.orderService.downloadInvoice(orderId).subscribe({
+    next: (res: Blob) => {
+      const url = window.URL.createObjectURL(res);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${orderNumber}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      this.loadingInvoice[orderId] = false;
+    },
+    error: () => this.loadingInvoice[orderId] = false
+  });
+}
 
 }

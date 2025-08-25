@@ -20,12 +20,12 @@
         <!-- Main Image with Zoom Effect -->
         <div class="product-image-wrapper text-center" (mouseenter)="onMouseEnter($event)"
           (mousemove)="onMouseMove($event)" (mouseleave)="onMouseLeave()">
-          <img [src]="selectedImageUrl || getImageUrl(product.img)" class="img-fluid product-main-image"
+          <img [src]="selectedImageUrl || getImageUrl(product.media?.img_url)" class="img-fluid product-main-image"
             [alt]="product.name" />
 
           <!-- Zoomed Image Overlay -->
           <div class="zoom-overlay" *ngIf="isZoomActive">
-            <img [src]="selectedImageUrl || getImageUrl(product.image)" class="zoomed-img"
+            <img [src]="selectedImageUrl || getImageUrl(product.media?.img_url)" class="zoomed-img"
               [alt]="product.name + ' zoomed image'" />
           </div>
         </div>
@@ -62,6 +62,9 @@
             <span class="text-dark h5 fw-bold">
               {{ format(selectedVariant?.price ?? product.price) }}
             </span>
+
+            <app-rating-display [product]="product"></app-rating-display>
+
 
           </div>
 
@@ -207,7 +210,7 @@
           <!-- Accordion -->
           <div class="accordion mt-4" id="accordionDetails">
             <!-- Product Details -->
-            <div class="accordion-item">
+            <!-- <div class="accordion-item">
               <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                   aria-expanded="true" aria-controls="collapseOne">
@@ -233,10 +236,10 @@
                   </ul>
                 </div>
               </div>
-            </div>
+            </div> -->
 
-            <!-- Shipping & Returns -->
-            <div class="accordion-item">
+            <!-- Shipping &  Returns -->
+            <div class="accordion-item mb-4">
               <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                   data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -250,6 +253,11 @@
                   days. 7-day return policy.
                 </div>
               </div>
+
+            </div>
+            <div class="">
+              <h4 class="text-center mb-4">Product Reviews </h4>
+              <app-product-ratings *ngIf="productId" [productId]="productId" [productSlug]="product.slug"></app-product-ratings>
             </div>
           </div>
         </div>
@@ -259,8 +267,8 @@
 </section>
 
 <!-- Related Products Section -->
-<div class="untree_co-section mt-5 mb-5" *ngIf="product?.related?.length > 0">
-  <div class="container">
+<div class="mt-5 mb-5" *ngIf="product?.related?.length > 0">
+  <div class="container-fluid">
     <h4 class="mb-4 text-center">Related Products</h4>
 
     <div class="row justify-content-center">
@@ -273,28 +281,5 @@
   </div>
 </div>
 
-<section class="product-help-section py-5 border-top border-bottom bg-light mb-5">
-  <div class="container text-center">
-    <h3 class="fw-bold mb-4">Any questions on this product?</h3>
 
-    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mb-3">
-      <button class="btn help-btn btn-dark w-100 w-md-auto">
-        <i class="bi bi-telephone-fill fs-6 fs-md-5 me-2"></i> Call Us
-      </button>
-      <button class="btn help-btn btn-dark w-100 w-md-auto">
-        <i class="bi bi-whatsapp fs-6 fs-md-5 me-2"></i> WhatsApp Us
-      </button>
-      <button class="btn help-btn btn-dark w-100 w-md-auto">
-        <i class="bi bi-envelope-fill fs-6 fs-md-5 me-2"></i> Email Us
-      </button>
-    </div>
 
-    <p class="fst-italic fw-semibold small text-uppercase">
-      We’d love to chat and help you make the perfect selection
-    </p>
-
-    <a routerLink="/shop" class="btn back-btn mt-4 btn-dark">
-      <i class="bi bi-arrow-left fs-6 me-2"></i> Back to Furniture
-    </a>
-  </div>
-</section>

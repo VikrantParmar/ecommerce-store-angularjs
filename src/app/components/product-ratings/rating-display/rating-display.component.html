@@ -1,0 +1,9 @@
+<div class="mb-2 stars d-flex align-items-center" *ngIf="product">
+  <span class="bg-light border px-2 py-1 rounded-4 d-flex align-items-center">
+    <i class="bi bi-star-fill text-warning me-1"></i>
+    <span class="fw-semibold">{{ safeAvgRating }}</span>
+  </span>
+
+  <!-- Agar total reviews dikhane ho -->
+  <!-- <span class="ms-2 text-muted">({{ safeTotalRatings }} Reviews)</span> -->
+</div>

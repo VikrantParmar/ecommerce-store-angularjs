@@ -13,11 +13,13 @@ export interface OrderSummary {
   status: string;
   createdAt: string;
   updatedAt: string;
+  invoicePdfUrl?: string;
+
 }
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
-  private baseUrl = `${environment.apiBaseUrl}/orders`; 
+  private baseUrl = `${environment.apiBaseUrl}/orders`;
 
   constructor(private http: HttpClient) { }
 
@@ -57,6 +59,15 @@ export class OrderService {
   // ✅ NEW: Delete order
   deleteOrder(orderId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/orders/${orderId}`, { withCredentials: true });
+  }
+
+
+    //Invoice
+  downloadInvoice(orderId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${orderId}/invoice`, {
+      responseType: 'blob',  // 👈 PDF/Blob response ke liye
+      withCredentials: true,
+    });
   }
 
 

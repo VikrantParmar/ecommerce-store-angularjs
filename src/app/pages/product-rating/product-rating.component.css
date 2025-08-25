@@ -1,0 +1,24 @@
+.product-image {
+  height: 160px;
+  width: 160px;
+  object-fit: cover;
+}
+.mt-6 {
+  margin-top: 10rem !important; /* Bootstrap ke mt-5 se thoda zyada */
+  margin-bottom: 10rem !important;
+}
+.rating-message {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 1.5rem 0;
+}
+
+.thank-you-msg {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  color: #28a745;
+}
+
+

@@ -1,0 +1,75 @@
+<div class="product-rating row" *ngIf="ratingData">
+  <!-- Left side: Average & Stars -->
+  <div class="col-md-4 text-center">
+    <h2 class="fw-bold mb-0 text-dark">{{ ratingData.average | number:'1.1-1' }}</h2>
+    <div class="stars mb-1">
+      <div class="text-muted">{{ ratingData.total }} ratings</div>
+      <ng-container *ngFor="let star of [1,2,3,4,5]">
+        <i class="bi" [ngClass]="star <= Math.round(ratingData?.average || 0) ? 'bi-star-fill text-warning' : 'bi-star'"></i>
+      </ng-container>
+    </div>
+    <button class="Rate btn-rate mt-3" (click)="goToRate()">RATE</button>
+  </div>
+
+  <!-- Right side: Star distribution bars -->
+  <div class="col-md-8">
+    <div *ngFor="let star of [5,4,3,2,1]" class="d-flex align-items-center mb-1">
+      <span class="me-2" style="width:30px;">{{ star }} ★</span>
+      <div class="progress flex-grow-1 me-2">
+        <div class="progress-bar" role="progressbar" [style.width.%]="ratingData.starPercentages[star]"
+          [style.backgroundColor]="
+            star === 5 ? '#28a745' :
+            star === 4 ? '#8bc34a' :
+            star === 3 ? '#ffc107' :
+            star === 2 ? '#ff9800' :
+                         '#f44336'
+          "></div>
+      </div>
+      <span class="text-muted">({{ ratingData.starCounts[star] || 0 }})</span>
+    </div>
+  </div>
+</div>
+<hr>
+
+<!-- Reviews Section -->
+<div class="reviews-section mt-3" *ngIf="ratings.length > 0">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <h5 class="mb-1 mb-md-0">Hear what our customers say ({{ ratings.length }})</h5>
+  </div>
+
+  <!-- Reviews List (show 3 by default) -->
+  <div class="reviews-list">
+    <div *ngFor="let r of ratings | slice:0:3" class="review-card p-3">
+      <div class="d-flex align-items-center mb-1">
+        <ng-container *ngFor="let s of [1,2,3,4,5]">
+          <i class="bi" [ngClass]="s <= r.rating ? 'bi-star-fill text-warning' : 'bi-star text-muted'"></i>
+        </ng-container>
+        <span class="verified ms-2" *ngIf="r.verified">Verified Buyer</span>
+      </div>
+      <p class="review-text mb-1">{{ r.review }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">{{ r.User?.username || 'Anonymous' }} <br>
+          {{ r.createdAt | date:'d MMMM y' }}
+        </small>
+      </div>
+
+      <!-- Separator line -->
+      <hr class="review-separator">
+    </div>
+
+    <!-- View all reviews button -->
+    <div class="text-center mt-3" *ngIf="ratings.length >= 3">
+  <button
+    class="btn btn-dark btn-sm"
+    [routerLink]="['/product', productId, 'reviews']">
+    View all Reviews
+  </button>
+</div>
+
+</div>
+
+<!-- No Reviews -->
+<div *ngIf="ratings.length === 0" class="text-muted mt-3 text-center">
+  No reviews yet.
+</div>

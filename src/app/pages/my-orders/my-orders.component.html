@@ -34,6 +34,13 @@
             <td>{{ order.createdAt | date: 'medium' }}</td>
             <td>
               <a [routerLink]="['/my-orders', order.id]" class="btn btn-sm btn-dark">View</a>
+
+               <button class="btn btn-sm btn-success" (click)="downloadInvoice(order.id, order.orderNumber)"
+                [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">
+                <i *ngIf="!loadingInvoice[order.id]" class="bi bi-file-earmark-pdf me-1"></i>
+                <span *ngIf="loadingInvoice[order.id]" class="spinner-border spinner-border-sm me-1"></span>
+                {{ loadingInvoice[order.id] ? 'Downloading' : 'Invoice' }}
+              </button>
             </td>
           </tr>
         </tbody>

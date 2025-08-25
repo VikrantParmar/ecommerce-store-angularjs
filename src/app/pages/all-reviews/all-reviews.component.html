@@ -1,0 +1,33 @@
+<!-- Reviews Section -->
+<div class="container reviews-section mt-5 mb-5 " *ngIf="ratings.length > 0">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <h5 class="mb-1 mb-md-0">All Customer Reviews ({{ ratings.length }})</h5>
+  </div>
+
+  <!-- Reviews List -->
+  <div class="reviews-list bg-white">
+    <div *ngFor="let r of ratings" class="review-card p-3 ">
+      <div class="d-flex align-items-center mb-1">
+        <ng-container *ngFor="let s of [1,2,3,4,5]">
+          <i class="bi" [ngClass]="s <= r.rating ? 'bi-star-fill text-warning' : 'bi-star text-muted'"></i>
+        </ng-container>
+        <span class="verified ms-2" *ngIf="r.verified">Verified Buyer</span>
+      </div>
+      <p class="review-text mb-1">{{ r.review }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">{{ r.User?.username || 'Anonymous' }} <br>
+          {{ r.createdAt | date:'d MMMM y' }}
+        </small>
+      </div>
+
+      <!-- Separator line -->
+      <hr class="review-separator">
+    </div>
+  </div>
+</div>
+
+<!-- No Reviews -->
+<div *ngIf="ratings.length === 0" class="text-muted mt-3 text-center">
+  No reviews yet.
+</div>

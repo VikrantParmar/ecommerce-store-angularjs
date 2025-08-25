@@ -1,0 +1,45 @@
+<div class="container mt-6" *ngIf="!loading && product">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <!-- Already Rated Warning OR Thank You -->
+      <div *ngIf="alreadyRated" class="text-center rating-message">
+        <span *ngIf="submitted" class="thank-you-msg">
+          Thank you! Your feedback has been submitted.
+        </span>
+        You will be redirected back in <strong>{{ countdown }}</strong> seconds...
+      </div>
+
+
+      <!-- Image + Name + Stars + Feedback Form -->
+      <div *ngIf="!alreadyRated">
+        <div class="d-flex align-items-center mb-4">
+          <img [src]="getImageUrl(product.media?.img_url)" alt="{{ product.name }}"
+            class="img-fluid rounded shadow-sm me-4 product-image">
+
+          <div>
+            <h4 class="fw-bold mb-2">{{ product.name }}</h4>
+            <div class="d-flex gap-2">
+              <ng-container *ngFor="let star of [1,2,3,4,5]">
+                <i class="bi" (click)="setRating(star)" [ngClass]="star <= selectedRating
+                     ? 'bi-star-fill text-warning fs-3'
+                     : 'bi-star fs-3'">
+                </i>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedRating > 0 && !submitted">
+          <textarea [(ngModel)]="feedback" class="form-control mb-3" rows="3" placeholder="Share your experience...">
+          </textarea>
+
+          <button class="btn btn-dark w-100" (click)="submitFeedback()">
+            Submit Your Feedback
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

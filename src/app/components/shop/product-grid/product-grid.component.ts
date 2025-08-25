@@ -6,12 +6,13 @@ import { WishlistService } from '../../../services/wishlist.service'; // ✅ new
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { RatingDisplayComponent } from '../../product-ratings/rating-display/rating-display.component';
 
 
 @Component({
   selector: 'app-product-grid',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RatingDisplayComponent],
   templateUrl: './product-grid.component.html',
   styleUrls: ['./product-grid.component.css']
 })

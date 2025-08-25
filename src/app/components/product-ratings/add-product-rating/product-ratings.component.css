@@ -1,0 +1,33 @@
+
+
+.user-rating i {
+  font-size: 1.5rem;
+}
+
+textarea.form-control {
+  resize: none;
+  height: 60px;
+}
+
+
+.product-rating .stars i {
+  font-size: 1rem;
+  margin-right: 2px;
+}
+.product-rating .progress {
+  height: 7px;
+}
+
+.Rate{
+  padding: 0.2rem 1rem;
+    width: auto;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 3px;
+    height: auto;
+    background-color: rgb(254, 254, 254);
+    border: 1px solid rgb(232, 232, 232);
+    color: rgb(32, 123, 180);
+}
+
+

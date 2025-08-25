@@ -37,7 +37,12 @@ export class CartListingComponent {
       return this.productService.getVariantImageUrl(item.variant.images[0].image_url);
     }
 
-    return this.productService.getImageUrl(item.Product?.img);
+    if (item.Product?.media?.img_url) {
+      return this.productService.getImageUrl(item.Product.media.img_url);
+    }
+    // Default fallback
+    return 'assets/images/default.jpg';
+
   }
 
 

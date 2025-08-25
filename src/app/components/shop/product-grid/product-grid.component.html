@@ -22,7 +22,7 @@
 
 
 
-          <img [src]="getImageUrl(product.img)" class="img-fluid mb-3 product-img" [alt]="product.name" />
+          <img [src]="getImageUrl(product.media?.img_url)" class="img-fluid mb-3 product-img" [alt]="product.name" />
 
           <div class="flex-grow-1 d-flex flex-column justify-content-between">
             <div>
@@ -32,6 +32,10 @@
               <strong class="text-dark d-block mb-3">
                 {{ format(product.selectedVariant?.price ?? product.variants?.[0]?.price ?? product.price) }}
               </strong>
+
+              
+            <app-rating-display [product]="product"></app-rating-display>
+
 
               <p *ngIf="(product.selectedVariant?.stock ?? product.variants?.[0]?.stock ?? product.stock) === 0"
                 class="text-danger fw-semibold">

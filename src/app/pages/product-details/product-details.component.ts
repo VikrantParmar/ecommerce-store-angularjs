@@ -6,12 +6,14 @@ import { ProductUtilsService } from '../../utils/product-utils.service';
 import { formatPrice } from '../../constants/currency.constant';
 import { RouterLink } from '@angular/router';
 import { ProductGridComponent } from '../../components/shop/product-grid/product-grid.component';
+import { RatingDisplayComponent } from "../../components/product-ratings/rating-display/rating-display.component";
+import { ProductRatingComponent } from "../../components/product-ratings/add-product-rating/product-ratings.component";
 
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProductGridComponent],
+  imports: [CommonModule, RouterLink, ProductGridComponent, RatingDisplayComponent, ProductRatingComponent],
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
@@ -20,6 +22,7 @@ export class ProductDetailsComponent implements OnInit {
   loading = true;
   format = formatPrice;
   quantity: number = 1;
+  productId!: number;
 
   selectedAttributes: { [key: string]: string } = {};
   filteredVariants: any[] = [];
@@ -47,13 +50,13 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   loadProduct(slug: string): void {
-
     this.loading = true;
     this.quantity = 1;
 
     this.productService.getProductBySlug(slug).subscribe({
       next: (res) => {
         this.product = res.data;
+        this.productId = this.product.id;
         this.filteredVariants = res.data.variants || [];
         this.buildColorVariantMap();
         this.loading = false;
@@ -94,6 +97,7 @@ export class ProductDetailsComponent implements OnInit {
       }
     });
   }
+
 
   buildColorVariantMap(): void {
     this.colorVariantMap = {};
@@ -170,7 +174,7 @@ export class ProductDetailsComponent implements OnInit {
         if (fallbackVariant?.images?.length) {
           newImageUrl = this.getVariantImageUrl(fallbackVariant.images[0].image_url);
         } else {
-          newImageUrl = this.getImageUrl(this.product.image);
+          newImageUrl = this.getImageUrl(this.product.img);
         }
       }
 
@@ -230,7 +234,7 @@ export class ProductDetailsComponent implements OnInit {
 
   getImageUrl(filename: string): string {
     return this.productUtils.getImageUrl(filename);
-    
+
 
   }
 
