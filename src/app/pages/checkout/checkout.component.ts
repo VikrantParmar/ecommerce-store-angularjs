@@ -13,12 +13,13 @@ import { formatPrice } from '../../constants/currency.constant';
 import { getFieldError } from '../../shared/form-validation.helper/form-validation.helper.component';
 import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { ShippingMethodComponent } from "../../components/shipping-method/shipping-method.component";
 declare var paypal: any;
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ShippingMethodComponent],
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
@@ -26,14 +27,8 @@ export class CheckoutComponent implements OnInit {
 
   backendErrors: { [key: string]: string } = {};
   getFieldError = getFieldError;
-
-
-
   format = formatPrice;
-
   sameAsShipping: boolean = false;
-
-
   cartItems: any[] = [];
   subtotal = 0;
   discount = 0;
@@ -42,15 +37,14 @@ export class CheckoutComponent implements OnInit {
   discountType: string = '';
   discountValue: number = 0;
   submitted = false;
-
   stripe: any = null;
   card: StripeCardElement | null = null;
   selectedPayment: 'stripe' | 'paypal' | 'cod' = 'stripe';
   paypalRendered = false;
-
   cardError: string = '';
   loading = false;
   successMessage = '';
+  selectedShippingMethod: any = null;
 
   shippingAddress = {
     firstName: '',
@@ -91,12 +85,14 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getSavedAddresses().subscribe({
       next: (res) => {
-        // if (res.shipping?.length > 0) {
-        //   this.shippingAddress = res.shipping[0];
-        // }
-        if (res.billing?.length > 0) {
-          this.billingAddress = res.billing[0];
+        if (res.shipping?.length > 0) {
+          this.shippingAddress = res.shipping[0];
         }
+        // if (res.billing?.length > 0) {
+        //   this.billingAddress = res.billing[0];
+        // }
+
+
       },
       error: (err) => {
         console.warn('No saved address found', err);
@@ -113,7 +109,7 @@ export class CheckoutComponent implements OnInit {
     if (this.selectedPayment === 'paypal' && !this.paypalRendered) {
       const container = document.getElementById('paypal-button-container');
       if (container) {
-        container.innerHTML = ''; // Clear old buttons (prevent re-render errors)
+        container.innerHTML = '';
         this.setupPayPal();
       }
     }
@@ -213,11 +209,12 @@ export class CheckoutComponent implements OnInit {
       discount: this.discount,
       total: this.total,
       promoCode: this.promoCode,
-      paymentMethod: this.selectedPayment
+      paymentMethod: this.selectedPayment,
+      shippingMethodId: this.selectedShippingMethod?.id || null
     };
 
     if (this.selectedPayment === 'cod') {
-      // ✅ Skip payment — place order directly
+      // Skip payment — place order directly
       this.loading = true;
       this.orderService.createOrder(orderPayload).subscribe({
         next: (res: any) => {
@@ -240,7 +237,7 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // 🔐 Continue with Stripe logic
+    // Continue with Stripe logic
     if (this.selectedPayment === 'stripe') {
       if (!this.card || !this.stripe) return;
 
@@ -282,11 +279,11 @@ export class CheckoutComponent implements OnInit {
         }
 
         if (result.paymentIntent.status === 'succeeded') {
-          // ✅ Save payment entry in DB
+          // Save payment entry in DB
           await this.paymentService.updatePaymentStatus(result.paymentIntent.id).toPromise();
           this.successMessage = 'Payment successful! Placing order...';
 
-          // ⏳ Now place the order
+          //  Now place the order
           this.orderService.createOrder(orderPayload).subscribe({
             next: (res: any) => {
               this.router.navigate(['/order-success'], {
@@ -312,14 +309,6 @@ export class CheckoutComponent implements OnInit {
       }
     }
   }
-
-
-
-
-
-
-
-
 
 
 
@@ -408,7 +397,8 @@ export class CheckoutComponent implements OnInit {
       total: this.total,
       promoCode: this.promoCode,
       paymentMethod: 'PayPal',
-      paypalDetails: paymentDetails
+      paypalDetails: paymentDetails,
+      shippingMethodId: this.selectedShippingMethod?.id || null
     };
 
     this.orderService.createOrder(orderPayload).subscribe({
@@ -431,7 +421,7 @@ export class CheckoutComponent implements OnInit {
 
   copyShippingToBilling() {
     if (this.sameAsShipping) {
-      this.shippingAddress = { ...this.billingAddress };
+      this.billingAddress = { ...this.shippingAddress };
     }
   }
 
@@ -447,6 +437,13 @@ export class CheckoutComponent implements OnInit {
       this.setupPayPal(); // ensure PayPal renders again
 
     }
+  }
+
+
+  onShippingMethodSelected(method: any) {
+    this.selectedShippingMethod = method;
+    const shippingPrice = method?.price || 0;
+    this.total = this.subtotal - this.discount + shippingPrice;
   }
 
 

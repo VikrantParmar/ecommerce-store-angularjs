@@ -2,17 +2,26 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
 
-      <!-- Already Rated Warning OR Thank You -->
-      <div *ngIf="alreadyRated" class="text-center rating-message">
-        <span *ngIf="submitted" class="thank-you-msg">
+      <!-- Thank You Message -->
+      <div *ngIf="submitted" class="text-center rating-message">
+        <span class="thank-you-msg">
           Thank you! Your feedback has been submitted.
-        </span>
-        You will be redirected back in <strong>{{ countdown }}</strong> seconds...
+        </span> <br>
+        You will be redirected back in <br> <br>
+        <strong>{{ countdown }}</strong> seconds...
       </div>
 
+      <!-- Already Rated Message -->
+      <div *ngIf="alreadyRated && !submitted" class="text-center rating-message">
+        <span class="thank-you-msg">
+          You have already reviewed this product.
+        </span> <br>
+        You will be redirected back in <br> <br>
+        <strong>{{ countdown }}</strong> seconds...
+      </div>
 
       <!-- Image + Name + Stars + Feedback Form -->
-      <div *ngIf="!alreadyRated">
+      <div *ngIf="!alreadyRated && !submitted">
         <div class="d-flex align-items-center mb-4">
           <img [src]="getImageUrl(product.media?.img_url)" alt="{{ product.name }}"
             class="img-fluid rounded shadow-sm me-4 product-image">
@@ -30,12 +39,20 @@
           </div>
         </div>
 
-        <div *ngIf="selectedRating > 0 && !submitted">
+        <div *ngIf="selectedRating > 0">
           <textarea [(ngModel)]="feedback" class="form-control mb-3" rows="3" placeholder="Share your experience...">
           </textarea>
 
-          <button class="btn btn-dark w-100" (click)="submitFeedback()">
-            Submit Your Feedback
+          <button class="btn btn-dark w-100" [disabled]="submitting" (click)="submitFeedback()">
+
+            <ng-container *ngIf="!submitting; else loadingTpl">
+              Submit Your Feedback
+            </ng-container>
+
+            <ng-template #loadingTpl>
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Submitting...
+            </ng-template>
           </button>
         </div>
       </div>

@@ -5,7 +5,8 @@
     <div class="stars mb-1">
       <div class="text-muted">{{ ratingData.total }} ratings</div>
       <ng-container *ngFor="let star of [1,2,3,4,5]">
-        <i class="bi" [ngClass]="star <= Math.round(ratingData?.average || 0) ? 'bi-star-fill text-warning' : 'bi-star'"></i>
+        <i class="bi"
+          [ngClass]="star <= Math.round(ratingData?.average || 0) ? 'bi-star-fill text-warning' : 'bi-star'"></i>
       </ng-container>
     </div>
     <button class="Rate btn-rate mt-3" (click)="goToRate()">RATE</button>
@@ -60,16 +61,14 @@
 
     <!-- View all reviews button -->
     <div class="text-center mt-3" *ngIf="ratings.length >= 3">
-  <button
-    class="btn btn-dark btn-sm"
-    [routerLink]="['/product', productId, 'reviews']">
-    View all Reviews
-  </button>
-</div>
+      <button class="btn btn-dark btn-sm" [routerLink]="['/product', productId, 'reviews']">
+        View all Reviews
+      </button>
+    </div>
 
-</div>
+  </div>
 
-<!-- No Reviews -->
-<div *ngIf="ratings.length === 0" class="text-muted mt-3 text-center">
-  No reviews yet.
-</div>
+  <!-- No Reviews -->
+  <div *ngIf="ratings.length === 0" class="text-muted mt-3 text-center">
+    No reviews yet.
+  </div>

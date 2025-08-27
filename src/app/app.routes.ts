@@ -3,6 +3,7 @@ import { UserLayoutComponent } from './layouts/user/user-layout/user-layout.comp
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { ShippingMethodComponent } from './components/shipping-method/shipping-method.component';
 
 
 export const routes: Routes = [
@@ -37,8 +38,6 @@ export const routes: Routes = [
       { path: 'wishlist', loadComponent: () => import('./pages/wishlist/wishlist.component').then(m => m.WishlistComponent), canActivate: [AuthGuard] },
       { path: 'product-rating/:slug', loadComponent: () => import('./pages/product-rating/product-rating.component').then(m => m.ProductRatingComponent), canActivate: [AuthGuard] },
       { path: 'product/:id/reviews', loadComponent: () => import('./pages/all-reviews/all-reviews.component').then(m => m.AllReviewsComponent), canActivate: [AuthGuard] },
-
-
 
     ],
   },

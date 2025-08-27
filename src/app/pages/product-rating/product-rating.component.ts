@@ -23,6 +23,8 @@ export class ProductRatingComponent implements OnInit, OnDestroy {
   alreadyRated = false;
   countdown = 3;
   countdownInterval: any;
+  submitting: boolean = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -55,44 +57,53 @@ export class ProductRatingComponent implements OnInit, OnDestroy {
     if (this.alreadyRated) return;
     this.selectedRating = star;
   }
-
-submitFeedback() {
-  if (!this.selectedRating) {
-    this.toastr.warning('Please select a star rating!');
-    return;
-  }
-
-  const payload = {
-    productId: this.product.id,
-    rating: this.selectedRating,
-    review: this.feedback
-  };
-
-  this.ratingService.createRating(payload).subscribe({
-    next: () => this.showThankYou(),
-    error: (err: any) => {
-      // Specific backend checks
-      if (err.status === 400) {
-        if (err.error?.message === "You already rated this product") {
-          this.showAlreadyRated();
-        } else if (err.error?.message === "You can only rate products after delivery.") {
-          this.toastr.warning('You can only rate this product after delivery.');
-        } else {
-          this.toastr.error(err.error?.message || 'Error submitting rating!');
-        }
-      } else if (err.status === 401) {
-        this.toastr.error('Please login to submit a rating!');
-      } else {
-        this.toastr.error('Error submitting rating!');
-      }
+  submitFeedback() {
+    if (!this.selectedRating) {
+      this.toastr.warning('Please select a star rating!');
+      return;
     }
-  });
-}
+
+    const variantId = this.product?.variants?.length ? this.product.variants[0].id : null;
+
+    const payload: any = {
+      productId: this.product.id,
+      rating: this.selectedRating,
+      review: this.feedback
+    };
+
+    if (variantId) {
+      payload.variantId = variantId;
+    }
+
+    this.submitting = true; // ✅ loader start
+
+    this.ratingService.createRating(payload).subscribe({
+      next: () => {
+        this.showThankYou();
+        this.submitting = false; // ✅ loader stop
+      },
+      error: (err: any) => {
+        this.submitting = false; // ✅ loader stop even on error
+        if (err.status === 400) {
+          if (err.error?.message === "You already rated this product") {
+            this.showAlreadyRated();
+          } else if (err.error?.message === "You can only rate products after delivery.") {
+            this.toastr.warning('You can only rate this product after delivery.');
+          } else {
+            this.toastr.error(err.error?.message || 'Error submitting rating!');
+          }
+        } else if (err.status === 401) {
+          this.toastr.error('Please login to submit a rating!');
+        } else {
+          this.toastr.error('Error submitting rating!');
+        }
+      }
+    });
+  }
 
 
   showThankYou() {
     this.submitted = true;
-    this.alreadyRated = true; // hide form & stars
     this.toastr.success('Thank you! Your feedback has been submitted.');
     this.startCountdown();
   }

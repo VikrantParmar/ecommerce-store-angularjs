@@ -1,0 +1,17 @@
+<div *ngIf="shippingMethods.length > 0; else noMethod">
+  <div *ngFor="let method of shippingMethods">
+    <input
+      type="radio"
+      name="shippingMethod"
+      [value]="method.id"
+      (change)="selectShippingMethod(method)"
+      [checked]="selectedShippingMethod?.id === method.id"
+    />
+    {{ method.name }} - ₹{{ method.price }}
+    <span>(Delivery: {{ method.estimated_delivery }})</span>
+  </div>
+</div>
+
+<ng-template #noMethod>
+  <p class="text-danger">No shipping methods available for this pincode.</p>
+</ng-template>

@@ -19,12 +19,155 @@
     <div class="row g-4">
 
 
-      <!-- Left: Billing Address -->
+      <!-- Left: shipping Address -->
       <div class="col-md-6">
 
-        <!-- Billing Address -->
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <!-- Shipping Addresss   -->
+          <div class="card shadow-sm border-0 rounded-4 mb-3">
           <div class="card-body p-4">
+            <h2 class="mb-4">Shipping Address</h2>
+
+            <!-- Repeat the same field structure but use shippingAddress.* and #shipping* refs -->
+            <div class="row">
+              <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" name="shippingFirstName" [(ngModel)]="shippingAddress.firstName"
+                  #shippingFirstName="ngModel" required
+                  [class.is-invalid]="shippingFirstName.invalid && (shippingFirstName.touched || submitted)" />
+                <div *ngIf="shippingFirstName.invalid && (shippingFirstName.touched || submitted)"
+                  class="text-danger mt-1">
+                  First name is required.
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" name="shippingLastName" [(ngModel)]="shippingAddress.lastName"
+                  #shippingLastName="ngModel" required
+                  [class.is-invalid]="shippingLastName.invalid && (shippingLastName.touched || submitted)" />
+                <div *ngIf="shippingLastName.invalid && (shippingLastName.touched || submitted)"
+                  class="text-danger mt-1">
+                  Last name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" name="shippingPhone" [(ngModel)]="shippingAddress.phone"
+                #shippingPhone="ngModel" required pattern="[0-9]{10}"
+                [class.is-invalid]="shippingPhone.invalid && (shippingPhone.touched || submitted)" />
+              <div *ngIf="shippingPhone.invalid && (shippingPhone.touched || submitted)" class="text-danger mt-1">
+                Enter valid 10-digit phone number.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="shippingEmail" [(ngModel)]="shippingAddress.email"
+                #shippingEmail="ngModel" required
+                [class.is-invalid]="shippingEmail.invalid && (shippingEmail.touched || submitted)" />
+              <div *ngIf="shippingEmail.invalid && (shippingEmail.touched || submitted)" class="text-danger mt-1">
+                Enter a valid email.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" name="shippingAddress" [(ngModel)]="shippingAddress.address"
+                #shippingAddressField="ngModel" required
+                [class.is-invalid]="shippingAddressField.invalid && (shippingAddressField.touched || submitted)" />
+              <div *ngIf="shippingAddressField.invalid && (shippingAddressField.touched || submitted)"
+                class="text-danger mt-1">
+                Address is required.
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-5">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="shippingCity" [(ngModel)]="shippingAddress.city"
+                  #shippingCity="ngModel" required
+                  [class.is-invalid]="shippingCity.invalid && (shippingCity.touched || submitted)" />
+                <div *ngIf="shippingCity.invalid && (shippingCity.touched || submitted)" class="text-danger mt-1">
+                  City is required.
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">State</label>
+                <select class="form-select" name="shippingState" [(ngModel)]="shippingAddress.state"
+                  #shippingState="ngModel" required
+                  [class.is-invalid]="shippingState.invalid && (shippingState.touched || submitted)">
+                  <option value="">Choose...</option>
+                  <option value="AN">Andaman and Nicobar Islands</option>
+                  <option value="AP">Andhra Pradesh</option>
+                  <option value="AR">Arunachal Pradesh</option>
+                  <option value="AS">Assam</option>
+                  <option value="BR">Bihar</option>
+                  <option value="CH">Chandigarh</option>
+                  <option value="CT">Chhattisgarh</option>
+                  <option value="DN">Dadra and Nagar Haveli</option>
+                  <option value="DD">Daman and Diu</option>
+                  <option value="DL">Delhi</option>
+                  <option value="GA">Goa</option>
+                  <option value="GJ">Gujarat</option>
+                  <option value="HR">Haryana</option>
+                  <option value="HP">Himachal Pradesh</option>
+                  <option value="JK">Jammu and Kashmir</option>
+                  <option value="JH">Jharkhand</option>
+                  <option value="KA">Karnataka</option>
+                  <option value="KL">Kerala</option>
+                  <option value="LA">Ladakh</option>
+                  <option value="LD">Lakshadweep</option>
+                  <option value="MP">Madhya Pradesh</option>
+                  <option value="MH">Maharashtra</option>
+                  <option value="MN">Manipur</option>
+                  <option value="ML">Meghalaya</option>
+                  <option value="MZ">Mizoram</option>
+                  <option value="NL">Nagaland</option>
+                  <option value="OR">Odisha</option>
+                  <option value="PY">Puducherry</option>
+                  <option value="PB">Punjab</option>
+                  <option value="RJ">Rajasthan</option>
+                  <option value="SK">Sikkim</option>
+                  <option value="TN">Tamil Nadu</option>
+                  <option value="TG">Telangana</option>
+                  <option value="TR">Tripura</option>
+                  <option value="UP">Uttar Pradesh</option>
+                  <option value="UT">Uttarakhand</option>
+                  <option value="WB">West Bengal</option>
+                </select>
+
+                <div *ngIf="shippingState.invalid && (shippingState.touched || submitted)" class="text-danger mt-1">
+                  State is required.
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" name="shippingPostalCode"
+                  [(ngModel)]="shippingAddress.postalCode" #shippingPostalCode="ngModel" required pattern="[0-9]{6}"
+                  [class.is-invalid]="shippingPostalCode.invalid && (shippingPostalCode.touched || submitted)" />
+                <div *ngIf="shippingPostalCode.invalid && (shippingPostalCode.touched || submitted)"
+                  class="text-danger mt-1">
+                  Enter valid 6-digit code.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Address -->
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4">
+            <div class="form-check mb-4 d-flex align-items-center">
+              <input class="form-check-input me-2" type="checkbox" id="sameAsShipping" [(ngModel)]="sameAsShipping"
+                name="sameAsShipping" (change)="copyShippingToBilling()" />
+              <label class="form-check-label " for="sameAsShipping" style="margin-top: 2px;">
+                Billing same as shipping address
+              </label>
+            </div>
             <h2 class="mb-4">Billing Address</h2>
 
             <div class="row mb-3">
@@ -163,149 +306,6 @@
         </div>
 
 
-        <!-- Shipping Address -->
-        <div class="card shadow-sm border-0 rounded-4">
-          <div class="card-body p-4">
-            <div class="form-check mb-4 d-flex align-items-center">
-              <input class="form-check-input me-2" type="checkbox" id="sameAsShipping" [(ngModel)]="sameAsShipping"
-                name="sameAsShipping" (change)="copyShippingToBilling()" />
-              <label class="form-check-label " for="sameAsShipping" style="margin-top: 2px;">
-                Billing same as shipping address
-              </label>
-            </div>
-
-            <h2 class="mb-4">Shipping Address</h2>
-
-            <!-- Repeat the same field structure but use shippingAddress.* and #shipping* refs -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label">First Name</label>
-                <input type="text" class="form-control" name="shippingFirstName" [(ngModel)]="shippingAddress.firstName"
-                  #shippingFirstName="ngModel" required
-                  [class.is-invalid]="shippingFirstName.invalid && (shippingFirstName.touched || submitted)" />
-                <div *ngIf="shippingFirstName.invalid && (shippingFirstName.touched || submitted)"
-                  class="text-danger mt-1">
-                  First name is required.
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label">Last Name</label>
-                <input type="text" class="form-control" name="shippingLastName" [(ngModel)]="shippingAddress.lastName"
-                  #shippingLastName="ngModel" required
-                  [class.is-invalid]="shippingLastName.invalid && (shippingLastName.touched || submitted)" />
-                <div *ngIf="shippingLastName.invalid && (shippingLastName.touched || submitted)"
-                  class="text-danger mt-1">
-                  Last name is required.
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Phone</label>
-              <input type="tel" class="form-control" name="shippingPhone" [(ngModel)]="shippingAddress.phone"
-                #shippingPhone="ngModel" required pattern="[0-9]{10}"
-                [class.is-invalid]="shippingPhone.invalid && (shippingPhone.touched || submitted)" />
-              <div *ngIf="shippingPhone.invalid && (shippingPhone.touched || submitted)" class="text-danger mt-1">
-                Enter valid 10-digit phone number.
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" name="shippingEmail" [(ngModel)]="shippingAddress.email"
-                #shippingEmail="ngModel" required
-                [class.is-invalid]="shippingEmail.invalid && (shippingEmail.touched || submitted)" />
-              <div *ngIf="shippingEmail.invalid && (shippingEmail.touched || submitted)" class="text-danger mt-1">
-                Enter a valid email.
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Address</label>
-              <input type="text" class="form-control" name="shippingAddress" [(ngModel)]="shippingAddress.address"
-                #shippingAddressField="ngModel" required
-                [class.is-invalid]="shippingAddressField.invalid && (shippingAddressField.touched || submitted)" />
-              <div *ngIf="shippingAddressField.invalid && (shippingAddressField.touched || submitted)"
-                class="text-danger mt-1">
-                Address is required.
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-5">
-                <label class="form-label">City</label>
-                <input type="text" class="form-control" name="shippingCity" [(ngModel)]="shippingAddress.city"
-                  #shippingCity="ngModel" required
-                  [class.is-invalid]="shippingCity.invalid && (shippingCity.touched || submitted)" />
-                <div *ngIf="shippingCity.invalid && (shippingCity.touched || submitted)" class="text-danger mt-1">
-                  City is required.
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <label class="form-label">State</label>
-                <select class="form-select" name="shippingState" [(ngModel)]="shippingAddress.state"
-                  #shippingState="ngModel" required
-                  [class.is-invalid]="shippingState.invalid && (shippingState.touched || submitted)">
-                  <option value="">Choose...</option>
-                  <option value="AN">Andaman and Nicobar Islands</option>
-                  <option value="AP">Andhra Pradesh</option>
-                  <option value="AR">Arunachal Pradesh</option>
-                  <option value="AS">Assam</option>
-                  <option value="BR">Bihar</option>
-                  <option value="CH">Chandigarh</option>
-                  <option value="CT">Chhattisgarh</option>
-                  <option value="DN">Dadra and Nagar Haveli</option>
-                  <option value="DD">Daman and Diu</option>
-                  <option value="DL">Delhi</option>
-                  <option value="GA">Goa</option>
-                  <option value="GJ">Gujarat</option>
-                  <option value="HR">Haryana</option>
-                  <option value="HP">Himachal Pradesh</option>
-                  <option value="JK">Jammu and Kashmir</option>
-                  <option value="JH">Jharkhand</option>
-                  <option value="KA">Karnataka</option>
-                  <option value="KL">Kerala</option>
-                  <option value="LA">Ladakh</option>
-                  <option value="LD">Lakshadweep</option>
-                  <option value="MP">Madhya Pradesh</option>
-                  <option value="MH">Maharashtra</option>
-                  <option value="MN">Manipur</option>
-                  <option value="ML">Meghalaya</option>
-                  <option value="MZ">Mizoram</option>
-                  <option value="NL">Nagaland</option>
-                  <option value="OR">Odisha</option>
-                  <option value="PY">Puducherry</option>
-                  <option value="PB">Punjab</option>
-                  <option value="RJ">Rajasthan</option>
-                  <option value="SK">Sikkim</option>
-                  <option value="TN">Tamil Nadu</option>
-                  <option value="TG">Telangana</option>
-                  <option value="TR">Tripura</option>
-                  <option value="UP">Uttar Pradesh</option>
-                  <option value="UT">Uttarakhand</option>
-                  <option value="WB">West Bengal</option>
-                </select>
-
-                <div *ngIf="shippingState.invalid && (shippingState.touched || submitted)" class="text-danger mt-1">
-                  State is required.
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <label class="form-label">Postal Code</label>
-                <input type="text" class="form-control" name="shippingPostalCode"
-                  [(ngModel)]="shippingAddress.postalCode" #shippingPostalCode="ngModel" required pattern="[0-9]{6}"
-                  [class.is-invalid]="shippingPostalCode.invalid && (shippingPostalCode.touched || submitted)" />
-                <div *ngIf="shippingPostalCode.invalid && (shippingPostalCode.touched || submitted)"
-                  class="text-danger mt-1">
-                  Enter valid 6-digit code.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
 
@@ -340,7 +340,7 @@
 
             <!-- Price Summary -->
             <hr />
-            <div class="d-flex justify-content-between mb-2">
+            <div class="d-flex justify-content-between">
               <div>Subtotal</div>
               <div>{{ format(subtotal) }}</div>
             </div>
@@ -349,12 +349,30 @@
               <strong class="text-success">- {{ format(discount) }}</strong>
             </div>
 
+           <div class="d-flex justify-content-between">
+              <div class="text-dark">Shipping Charge</div>
+            <strong>{{ selectedShippingMethod ? format(selectedShippingMethod.price) : format(0) }}</strong>
+            </div>
+
             <div class="d-flex justify-content-between mt-3 border-top pt-3 fw-bold fs-5">
               <div>Total</div>
               <div>{{ format(total) }}</div>
             </div>
           </div>
         </div>
+
+
+          <div class="card shadow-sm border-0 rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h4 class="mb-3 border-bottom pb-2">Shipping Method</h4>
+            <!-- Shipping Method -->
+            <app-shipping-method [pincode]="shippingAddress.postalCode"
+              (methodSelected)="onShippingMethodSelected($event)">
+            </app-shipping-method>
+
+          </div>
+        </div>
+
 
         <!-- 💳 Payment Card -->
         <div class="card shadow-sm border-0 rounded-4">
@@ -409,6 +427,9 @@
             </div> -->
           </div>
         </div>
+
+
+
 
 
 
