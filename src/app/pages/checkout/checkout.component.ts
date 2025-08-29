@@ -148,6 +148,7 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+
   async setupStripe() {
     this.stripe = await this.paymentService.getStripe();
     const elements = this.stripe.elements();
@@ -187,7 +188,6 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
     let uniqueId: string;
 
@@ -196,7 +196,7 @@ export class CheckoutComponent implements OnInit {
     } else if (localStorage.getItem('guestId')) {
       uniqueId = localStorage.getItem('guestId')!;
     } else {
-      alert('No valid user found. Please login or continue as guest.');
+      this.toastr.warning('No valid user found. Please login or continue as guest.');
       return;
     }
 
@@ -204,17 +204,12 @@ export class CheckoutComponent implements OnInit {
       uniqueId,
       shippingAddress: this.shippingAddress,
       billingAddress: this.billingAddress,
-      items: this.cartItems,
-      subtotal: this.subtotal,
-      discount: this.discount,
-      total: this.total,
-      promoCode: this.promoCode,
       paymentMethod: this.selectedPayment,
       shippingMethodId: this.selectedShippingMethod?.id || null
     };
 
     if (this.selectedPayment === 'cod') {
-      // Skip payment — place order directly
+      // Cash on Delivery
       this.loading = true;
       this.orderService.createOrder(orderPayload).subscribe({
         next: (res: any) => {
@@ -222,22 +217,22 @@ export class CheckoutComponent implements OnInit {
             state: {
               orderId: res.orderId,
               orderNumber: res.orderNumber,
-              total: res.total ?? this.total,
-              createdAt: res.createdAt || new Date().toISOString()
+              total: res.total,
+              createdAt: res.createdAt
             }
           });
         },
         error: (err) => {
           console.error('Order failed:', err);
-          this.toastr.error(err);
+          this.toastr.error(err.error?.message || 'Failed to place order.');
           this.loading = false;
         },
-        complete: () => this.loading = false
+        complete: () => (this.loading = false)
       });
       return;
     }
 
-    // Continue with Stripe logic
+    // ✅ Stripe Payment Flow
     if (this.selectedPayment === 'stripe') {
       if (!this.card || !this.stripe) return;
 
@@ -248,10 +243,12 @@ export class CheckoutComponent implements OnInit {
       try {
         const amountInPaise = this.total * 100;
 
-        const res = await this.paymentService.createPaymentIntent({
-          amount: amountInPaise,
-          products: this.cartItems
-        }).toPromise();
+        const res = await this.paymentService
+          .createPaymentIntent({
+            amount: amountInPaise,
+            products: this.cartItems
+          })
+          .toPromise();
 
         const clientSecret = res?.clientSecret;
 
@@ -279,27 +276,30 @@ export class CheckoutComponent implements OnInit {
         }
 
         if (result.paymentIntent.status === 'succeeded') {
-          // Save payment entry in DB
-          await this.paymentService.updatePaymentStatus(result.paymentIntent.id).toPromise();
+          // Update Payment in DB
+          await this.paymentService
+            .updatePaymentStatus(result.paymentIntent.id)
+            .toPromise();
+
           this.successMessage = 'Payment successful! Placing order...';
 
-          //  Now place the order
+          // अब order बनाओ
           this.orderService.createOrder(orderPayload).subscribe({
             next: (res: any) => {
               this.router.navigate(['/order-success'], {
                 state: {
                   orderId: res.orderId,
                   orderNumber: res.orderNumber,
-                  total: res.total ?? this.total,
-                  createdAt: res.createdAt || new Date().toISOString()
+                  total: res.total,
+                  createdAt: res.createdAt
                 }
               });
             },
             error: (err) => {
               console.error('Order failed:', err);
-              alert(err.error.message || 'Failed to place order.');
+              this.toastr.error(err.error?.message || 'Failed to place order.');
             },
-            complete: () => this.loading = false
+            complete: () => (this.loading = false)
           });
         }
       } catch (error) {
@@ -309,8 +309,6 @@ export class CheckoutComponent implements OnInit {
       }
     }
   }
-
-
 
   loadPayPalScript(): Promise<void> {
     return new Promise((resolve) => {
@@ -370,20 +368,16 @@ export class CheckoutComponent implements OnInit {
     }).render('#paypal-button-container');
   }
 
-
-
-
   placePayPalOrder(paymentDetails: any) {
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
     let uniqueId: string;
-
 
     if (storedUser?.user?.id) {
       uniqueId = storedUser.user.id.toString();
     } else if (localStorage.getItem('guestId')) {
       uniqueId = localStorage.getItem('guestId')!;
     } else {
-      // alert('No valid user found. Please login or continue as guest.');
+      this.toastr.warning('No valid user found. Please login or continue as guest.');
       return;
     }
 
@@ -391,30 +385,30 @@ export class CheckoutComponent implements OnInit {
       uniqueId,
       shippingAddress: this.shippingAddress,
       billingAddress: this.billingAddress,
-      items: this.cartItems,
-      subtotal: this.subtotal,
-      discount: this.discount,
-      total: this.total,
-      promoCode: this.promoCode,
       paymentMethod: 'PayPal',
       paypalDetails: paymentDetails,
       shippingMethodId: this.selectedShippingMethod?.id || null
     };
 
+    this.loading = true;
+
     this.orderService.createOrder(orderPayload).subscribe({
       next: (res: any) => {
+        this.loading = false;
         this.router.navigate(['/order-success'], {
           state: {
             orderId: res.orderId,
             orderNumber: res.orderNumber,
-            total: res.total ?? this.total,
-            createdAt: res.createdAt || new Date().toISOString()
+            total: res.total,
+            createdAt: res.createdAt,
+            promoCode: res.promoCode
           }
         });
       },
       error: (err) => {
+        this.loading = false;
         console.error('Order failed:', err);
-        alert(err.error.message || 'Failed to place order.');
+        this.toastr.error(err.error?.message || 'Failed to place order.');
       }
     });
   }

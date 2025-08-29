@@ -7,7 +7,7 @@
       (change)="selectShippingMethod(method)"
       [checked]="selectedShippingMethod?.id === method.id"
     />
-    {{ method.name }} - ₹{{ method.price }}
+    {{ method.name }} - ₹{{ method.price }} - ({{method.min_delivery_days}}-{{method.max_delivery_days}} days)
     <span>(Delivery: {{ method.estimated_delivery }})</span>
   </div>
 </div>

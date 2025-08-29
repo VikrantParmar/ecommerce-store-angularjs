@@ -23,14 +23,7 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  createOrder(orderData: {
-    uniqueId: string; // guest ya logged in dono ke liye
-    items: { productId: number; quantity: number }[];
-    subtotal: number;
-    discount: number;
-    total: number;
-    promoCode?: string | null;
-  }): Observable<any> {
+  createOrder(orderData: any): Observable<any> {
     return this.http.post(this.baseUrl, orderData, { withCredentials: true });
   }
 
@@ -62,7 +55,7 @@ export class OrderService {
   }
 
 
-    //Invoice
+  //Invoice
   downloadInvoice(orderId: number): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${orderId}/invoice`, {
       responseType: 'blob',  // 👈 PDF/Blob response ke liye
