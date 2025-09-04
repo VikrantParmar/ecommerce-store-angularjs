@@ -13,9 +13,11 @@ export class CategoryListComponent {
   @Input() selectedCategoryId: number | null = null;
   @Input() loading = false;
 
-  @Output() categorySelected = new EventEmitter<number | null>();
+  // id + name emit karenge
+  @Output() categorySelected = new EventEmitter<{ id: number | null; name: string | null }>();
 
-  selectCategory(id: number | null) {
-    this.categorySelected.emit(id);
+  selectCategory(id: number | null, name: string | null = null) {
+    this.categorySelected.emit({ id, name });
   }
+
 }

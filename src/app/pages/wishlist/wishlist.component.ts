@@ -64,7 +64,7 @@ export class WishlistComponent implements OnInit {
           this.wishlist = this.wishlist.filter(
             p => !(p.product.id === productId && (p.variant?.id ?? null) === variantId)
           );
-          this.toastr.warning('Removed from wishlist');
+          this.toastr.success('Removed from wishlist');
         },
         error: () => {
           this.toastr.error('Error removing from wishlist');

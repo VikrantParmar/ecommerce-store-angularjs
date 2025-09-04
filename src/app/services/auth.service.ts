@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { CartService } from './cart.service';
 import { environment } from '../../environments/environment';
+import { WishlistService } from './wishlist.service';
 
 
 
@@ -24,7 +25,9 @@ export class AuthService {
   private userRole = new BehaviorSubject<string | null>(this.getUserRole());
   userRole$ = this.userRole.asObservable();
 
-  constructor(private http: HttpClient, private router: Router, private cartService: CartService) { }
+  constructor(private http: HttpClient, private router: Router, private cartService: CartService,
+    private wishlistService: WishlistService
+  ) { }
 
 
 
@@ -98,25 +101,33 @@ export class AuthService {
 
 
 
-  saveUser(loginResponse: any) {
-    const { accessToken, refreshToken, user } = loginResponse;
+  saveUser(loginResponse: any, wishlistService?: WishlistService, cartService?: CartService) {
+  const { accessToken, refreshToken, user } = loginResponse;
 
-    const decoded: any = jwtDecode(accessToken);
-    const role = decoded?.role?.toLowerCase() || null;
+  const decoded: any = jwtDecode(accessToken);
+  const role = decoded?.role?.toLowerCase() || null;
 
-    const fullUser = {
-      accessToken,
-      refreshToken,
-      user,
-      role,
-    };
+  const fullUser = {
+    accessToken,
+    refreshToken,
+    user,
+    role,
+  };
 
-    localStorage.setItem('user', JSON.stringify(fullUser));
-    this.loggedIn.next(true);
-    this.userRole.next(role);
+  localStorage.setItem('user', JSON.stringify(fullUser));
+  this.loggedIn.next(true);
+  this.userRole.next(role);
 
-    // console.log('✅ Saved user to localStorage:', fullUser);
+  // ✅ login ke turant baad wishlist & cart load karo
+  if (wishlistService) {
+    wishlistService.getWishlist().subscribe();
   }
+
+  if (cartService) {
+    cartService.getCart().subscribe();
+  }
+}
+
 
 
   getAccessToken(): string | null {

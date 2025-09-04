@@ -1,0 +1,33 @@
+<div class="timeline-container" *ngIf="!loading && !error; else stateBlock">
+  <div *ngFor="let log of stepLogs; let i = index" class="timeline-item">
+
+    <div class="timeline-marker" [ngClass]="{
+       'completed': i < currentStepIndex,
+       'active': i === currentStepIndex && !cancelled,
+       'pending': i > currentStepIndex && !log.createdAt,
+       'delivered': log.status.toLowerCase() === 'delivered',
+       'cancelled': log.status.toLowerCase() === 'cancelled'
+    }">
+      <span *ngIf="i <= currentStepIndex && log.createdAt && log.status.toLowerCase() !== 'cancelled'">
+        <i class="fa-solid fa-check"></i>
+      </span>
+      <span *ngIf="log.status.toLowerCase() === 'cancelled'">
+        <i class="fa-solid fa-xmark text-white "></i>
+      </span>
+    </div>
+
+    <div class="timeline-line" [ngClass]="{ 'completed': i < currentStepIndex }" *ngIf="i < stepLogs.length - 1"></div>
+
+    <div class="timeline-content">
+      <h6>{{ log.status }}</h6>
+      <small *ngIf="log.createdAt">{{ log.createdAt | date:'EEE, d MMM y, h:mm a' }}</small>
+      <p *ngIf="log.location">{{ log.location }}</p>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #stateBlock>
+  <p *ngIf="loading">Loading tracking...</p>
+  <p *ngIf="error">{{ error }}</p>
+</ng-template>

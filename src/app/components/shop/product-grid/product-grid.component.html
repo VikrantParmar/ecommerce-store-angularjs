@@ -33,8 +33,8 @@
                 {{ format(product.selectedVariant?.price ?? product.variants?.[0]?.price ?? product.price) }}
               </strong>
 
-              
-            <app-rating-display [product]="product"></app-rating-display>
+
+              <app-rating-display [product]="product"></app-rating-display>
 
 
               <p *ngIf="(product.selectedVariant?.stock ?? product.variants?.[0]?.stock ?? product.stock) === 0"
@@ -43,12 +43,14 @@
               </p>
             </div>
           </div>
-
-          <button class="btn btn-dark btn-sm mt-auto w-70"
-            [disabled]="(product.selectedVariant?.stock ?? product.variants?.[0]?.stock ?? product.stock) === 0"
-            (click)="emitAddToCart(product); $event.preventDefault(); $event.stopPropagation();">
-            Add to Cart
+          <button class="btn btn-dark btn-sm mt-auto w-70 d-flex align-items-center justify-content-center" [disabled]="
+          (product.selectedVariant?.stock ?? product.variants?.[0]?.stock ?? product.stock) === 0
+          || loadingAddToCart[product.id]
+        " (click)="emitAddToCart(product); $event.stopPropagation(); $event.preventDefault()">
+            <span *ngIf="!loadingAddToCart[product.id]">Add to Cart</span>
+            <span *ngIf="loadingAddToCart[product.id]" class="spinner-border spinner-border-sm"></span>
           </button>
+
 
 
         </div>

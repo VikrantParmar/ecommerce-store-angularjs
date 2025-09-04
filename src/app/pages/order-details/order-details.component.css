@@ -26,3 +26,9 @@
   object-fit: contain;
 }
 
+.modal {
+  overflow-y: auto !important;
+}
+
+
+

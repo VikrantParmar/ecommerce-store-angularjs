@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../../services/orders.service';
 import { CommonModule } from '@angular/common';
 import { formatPrice } from '../../constants/currency.constant';
 import { ProductService } from '../../services/products.service';
+import { OrderTrackingTimelineComponent } from "../../components/order-tracking/order-tracking.component";
+import { ToastrService } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-order-details',
-  imports: [CommonModule],
+  imports: [CommonModule, OrderTrackingTimelineComponent, RouterLink, FormsModule],
   templateUrl: './order-details.component.html',
   styleUrls: ['./order-details.component.css']
 })
@@ -18,10 +22,22 @@ export class OrderDetailsComponent implements OnInit {
   loading = false;
   error = '';
 
+  cancelReasons: string[] = [];
+  selectedReason: string = '';
+  comment: string = '';
+
+  showCancelForm = false;
+  showAllReasons = false;
+  cancelSuccess = false;
+  isSubmitting = false;
+
+
+
   constructor(
     private route: ActivatedRoute,
     private orderService: OrderService,
-    private productService: ProductService
+    private productService: ProductService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -43,31 +59,82 @@ export class OrderDetailsComponent implements OnInit {
       }
     });
   }
+
   getCartImageUrl(item: any): string {
     if (item.variant?.images?.length > 0) {
       return this.productService.getVariantImageUrl(item.variant.images[0].image_url);
     }
-
     return this.productService.getImageUrl(item.product?.img);
   }
 
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
-      case 'pending':
-        return 'bg-warning text-dark';
-      case 'cancelled':
-        return 'bg-danger';
-      case 'shipped':
-        return 'bg-primary';
-      case 'delivered':
-        return 'bg-success';
-      case 'paid':
-        return 'bg-success';
-      case 'refunded':
-        return 'bg-info text-dark';
-      default:
-        return 'bg-secondary';
+      case 'pending': return 'bg-warning text-dark';
+      case 'order confirmed': return 'bg-success text-dark';
+      case 'cancelled': return 'bg-danger';
+      case 'shipped': return 'bg-primary';
+      case 'delivered': return 'bg-success';
+      case 'paid': return 'bg-success';
+      case 'refunded': return 'bg-info text-dark';
+      default: return 'bg-secondary';
     }
   }
+
+  // Step 1: Open confirmation modal
+  openCancelConfirm(order: any) {
+    const modal = document.getElementById('cancelConfirmModal');
+    if (modal) {
+      (window as any).bootstrap.Modal.getOrCreateInstance(modal).show();
+    }
+  }
+
+  // Step 2: After confirming, show cancel form and hide other details
+  proceedToCancelPage(order: any) {
+    const modal = document.getElementById('cancelConfirmModal');
+    if (modal) {
+      (window as any).bootstrap.Modal.getOrCreateInstance(modal).hide();
+    }
+
+    this.orderService.getCancellationReasons().subscribe({
+      next: (res: any) => {
+        this.cancelReasons = res.reasons || [];
+        this.showCancelForm = true;
+        this.selectedReason = '';
+        this.comment = '';
+        this.showAllReasons = true;
+      },
+      error: (err) => {
+        console.error("Failed to load cancel reasons", err);
+        this.toastr.error("Failed to load reasons");
+      }
+    });
+  }
+
+submitCancel(orderId: number | string) {
+  const id = Number(orderId);
+
+  if (!this.selectedReason) {
+    this.toastr.warning("Please select a reason");
+    return;
+  }
+
+  this.isSubmitting = true;
+  setTimeout(() => {
+    this.orderService.cancelOrder(id, this.selectedReason, this.comment).subscribe({
+      next: () => {
+        this.order.status = 'Cancelled';
+        this.cancelSuccess = true;
+        this.toastr.success("Order cancelled successfully");
+        this.showCancelForm = true;
+        this.showAllReasons = false;
+        this.isSubmitting = false;
+      },
+      error: () => {
+        this.toastr.error("Failed to cancel order");
+        this.isSubmitting = false;
+      }
+    });
+  }, 2000);
+}
 
 }

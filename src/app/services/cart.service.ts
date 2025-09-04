@@ -139,7 +139,14 @@ export class CartService {
     );
   }
 
+  // for all clear cart
   clearCart(): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/clear`);
-  }
+  return this.http.delete(`${this.baseUrl}/clear`, { withCredentials: true }).pipe(
+    tap(() => {
+      this.cartCache = null;
+      this.cartCountSubject.next(0);
+    })
+  );
+}
+
 }

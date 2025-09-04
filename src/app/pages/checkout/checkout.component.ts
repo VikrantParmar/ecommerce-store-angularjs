@@ -14,6 +14,10 @@ import { getFieldError } from '../../shared/form-validation.helper/form-validati
 import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { ShippingMethodComponent } from "../../components/shipping-method/shipping-method.component";
+import { PaypalService } from '../../services/paypal.service';
+
+
+
 declare var paypal: any;
 
 @Component({
@@ -77,6 +81,7 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private router: Router,
     private paymentService: PaymentService,
+    private paypalService: PaypalService,
     private userService: UserService,
     private toastr: ToastrService
 
@@ -241,11 +246,14 @@ export class CheckoutComponent implements OnInit {
       this.successMessage = '';
 
       try {
-        const amountInPaise = this.total * 100;
+        const orderRes: any = await this.orderService.createOrder(orderPayload).toPromise();
+        const orderId = orderRes.orderId;
 
+        const amountInPaise = this.total * 100;
         const res = await this.paymentService
           .createPaymentIntent({
             amount: amountInPaise,
+            orderId,
             products: this.cartItems
           })
           .toPromise();
@@ -276,30 +284,17 @@ export class CheckoutComponent implements OnInit {
         }
 
         if (result.paymentIntent.status === 'succeeded') {
-          // Update Payment in DB
-          await this.paymentService
-            .updatePaymentStatus(result.paymentIntent.id)
-            .toPromise();
+          await this.paymentService.updatePaymentStatus(result.paymentIntent.id).toPromise();
 
-          this.successMessage = 'Payment successful! Placing order...';
+          this.successMessage = 'Payment successful!';
 
-          // अब order बनाओ
-          this.orderService.createOrder(orderPayload).subscribe({
-            next: (res: any) => {
-              this.router.navigate(['/order-success'], {
-                state: {
-                  orderId: res.orderId,
-                  orderNumber: res.orderNumber,
-                  total: res.total,
-                  createdAt: res.createdAt
-                }
-              });
-            },
-            error: (err) => {
-              console.error('Order failed:', err);
-              this.toastr.error(err.error?.message || 'Failed to place order.');
-            },
-            complete: () => (this.loading = false)
+          this.router.navigate(['/order-success'], {
+            state: {
+              orderId: orderRes.orderId,
+              orderNumber: orderRes.orderNumber,
+              total: orderRes.total,
+              createdAt: orderRes.createdAt
+            }
           });
         }
       } catch (error) {
@@ -308,8 +303,81 @@ export class CheckoutComponent implements OnInit {
         this.loading = false;
       }
     }
+
   }
 
+  // loadPayPalScript(): Promise<void> {
+  //   return new Promise((resolve) => {
+  //     if ((<any>window).paypal) {
+  //       resolve();
+  //       return;
+  //     }
+  //     const script = document.createElement('script');
+  //     script.src = `https://www.paypal.com/sdk/js?client-id=${environment.paypalClientId}&currency=${environment.paypalCurrency}`;
+  //     script.onload = () => resolve();
+  //     document.body.appendChild(script);
+  //   });
+  // }
+  // setupPayPal(): void {
+  //   if (this.paypalRendered) return;
+
+  //   const container = document.getElementById('paypal-button-container');
+  //   if (!container) return;
+
+  //   this.paypalRendered = true;
+  //   const paypal = (<any>window).paypal;
+  //   const INR_TO_USD = 0.012;
+
+  //   paypal.Buttons({
+  //     createOrder: async (data: any, actions: any) => {
+  //       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  //       const uniqueId = storedUser?.user?.id || localStorage.getItem('guestId') || null;
+
+  //       if (!uniqueId) {
+  //         this.toastr.warning('No valid user found.');
+  //         return;
+  //       }
+
+  //       const orderPayload = {
+  //         uniqueId,
+  //         shippingAddress: this.shippingAddress,
+  //         billingAddress: this.billingAddress,
+  //         paymentMethod: 'PayPal',
+  //         amount: this.total,
+  //         shippingMethodId: this.selectedShippingMethod?.id || null
+  //       };
+
+  //       const orderRes: any = await this.orderService.createOrder(orderPayload).toPromise();
+
+  //       const payPalRes: any = await this.paypalService.createPaypalOrder(this.total, orderRes.orderId).toPromise();
+
+  //       return payPalRes.orderID; 
+  //     },
+
+  //     onApprove: async (data: any, actions: any) => {
+  //       const captureRes: any = await this.paypalService.captureOrder(data.orderID).toPromise();
+
+  //       this.successMessage = 'PayPal payment successful!';
+  //       this.router.navigate(['/order-success'], {
+  //         state: {
+  //           orderId: captureRes.orderId,
+  //           orderNumber: captureRes.orderNumber,
+  //           total: captureRes.total,
+  //           createdAt: captureRes.createdAt,
+  //           promoCode: captureRes.promoCode
+  //         }
+  //       });
+  //     },
+
+  //     onError: (err: any) => {
+  //       console.error('PayPal Error:', err);
+  //       this.cardError = 'PayPal payment failed.';
+  //     }
+  //   }).render('#paypal-button-container');
+  // }
+
+
+    
   loadPayPalScript(): Promise<void> {
     return new Promise((resolve) => {
       if ((<any>window).paypal) {
@@ -318,9 +386,7 @@ export class CheckoutComponent implements OnInit {
       }
       const script = document.createElement('script');
       script.src = `https://www.paypal.com/sdk/js?client-id=${environment.paypalClientId}&currency=${environment.paypalCurrency}`;
-      script.onload = () => {
-        resolve();
-      };
+      script.onload = () => resolve();
       document.body.appendChild(script);
     });
   }
@@ -332,32 +398,54 @@ export class CheckoutComponent implements OnInit {
     if (!container) return;
 
     this.paypalRendered = true;
-
     const paypal = (<any>window).paypal;
-    const INR_TO_USD = 0.012;
 
     paypal.Buttons({
-      fundingSource: paypal.FUNDING.PAYPAL, // ✅ Only PayPal, hides debit/credit card option
+      createOrder: async (data: any, actions: any) => {
+        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const uniqueId = storedUser?.user?.id || localStorage.getItem('guestId') || null;
 
-      // ✅ Don't override style — keeps original PayPal design
-      createOrder: (data: any, actions: any) => {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              currency_code: 'USD',
-              value: (this.total * INR_TO_USD).toFixed(2)
-            }
-          }],
-          application_context: {
-            shipping_preference: 'NO_SHIPPING'
-          }
-        });
+        if (!uniqueId) {
+          this.toastr.warning('No valid user found.');
+          return;
+        }
+
+        // 1️⃣ Create local order first
+        const orderPayload = {
+          uniqueId,
+          shippingAddress: this.shippingAddress,
+          billingAddress: this.billingAddress,
+          paymentMethod: 'PayPal',
+          amount: this.total,
+          shippingMethodId: this.selectedShippingMethod?.id || null
+        };
+
+        const orderRes: any = await this.orderService.createOrder(orderPayload).toPromise();
+
+        // 2️⃣ Create PayPal order
+        const payPalRes: any = await this.paypalService.createPaypalOrder(this.total, orderRes.orderId).toPromise();
+
+        // Save local orderId for onApprove
+        (window as any)._localOrderId = orderRes.orderId;
+
+        return payPalRes.orderID;
       },
 
-      onApprove: (data: any, actions: any) => {
-        return actions.order.capture().then((details: any) => {
-          this.successMessage = 'PayPal payment successful!';
-          this.placePayPalOrder(details);
+      onApprove: async (data: any, actions: any) => {
+        const localOrderId = (window as any)._localOrderId;
+
+        const captureRes: any = await this.paypalService.captureOrder(localOrderId).toPromise();
+
+        this.successMessage = 'PayPal payment successful!';
+
+        this.router.navigate(['/order-success'], {
+          state: {
+            orderId: captureRes.orderId,
+            orderNumber: captureRes.orderNumber,
+            total: captureRes.total,
+            createdAt: captureRes.createdAt,
+            promoCode: captureRes.promoCode
+          }
         });
       },
 
@@ -366,51 +454,6 @@ export class CheckoutComponent implements OnInit {
         this.cardError = 'PayPal payment failed.';
       }
     }).render('#paypal-button-container');
-  }
-
-  placePayPalOrder(paymentDetails: any) {
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-    let uniqueId: string;
-
-    if (storedUser?.user?.id) {
-      uniqueId = storedUser.user.id.toString();
-    } else if (localStorage.getItem('guestId')) {
-      uniqueId = localStorage.getItem('guestId')!;
-    } else {
-      this.toastr.warning('No valid user found. Please login or continue as guest.');
-      return;
-    }
-
-    const orderPayload = {
-      uniqueId,
-      shippingAddress: this.shippingAddress,
-      billingAddress: this.billingAddress,
-      paymentMethod: 'PayPal',
-      paypalDetails: paymentDetails,
-      shippingMethodId: this.selectedShippingMethod?.id || null
-    };
-
-    this.loading = true;
-
-    this.orderService.createOrder(orderPayload).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        this.router.navigate(['/order-success'], {
-          state: {
-            orderId: res.orderId,
-            orderNumber: res.orderNumber,
-            total: res.total,
-            createdAt: res.createdAt,
-            promoCode: res.promoCode
-          }
-        });
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Order failed:', err);
-        this.toastr.error(err.error?.message || 'Failed to place order.');
-      }
-    });
   }
 
   copyShippingToBilling() {

@@ -13,12 +13,13 @@ export class PaypalService {
   constructor(private http: HttpClient) {}
 
   // Create PayPal order
-  createOrder(total: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/create-paypal-order`, { total });
+  createPaypalOrder(total: number, orderId:number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/create-paypal-order`, { total, orderId });
   }
 
   // Capture PayPal order
-  captureOrder(orderID: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/capture-order`, { orderID });
+  captureOrder(orderId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/capture-order`, { orderId });
   }
 }
+ 

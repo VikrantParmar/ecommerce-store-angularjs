@@ -3,15 +3,17 @@ import { ProductGridComponent } from '../../components/shop/product-grid/product
 import { ProductService } from '../../services/products.service';
 import { CartService } from '../../services/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { RouterLink } from '@angular/router';
 
 declare var tns: any;
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  // imports: [ProductGridComponent],
+  imports: [RouterLink], 
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
+  // ProductGridComponent
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   featuredProducts: any[] = [];

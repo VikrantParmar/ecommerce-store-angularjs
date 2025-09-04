@@ -115,16 +115,13 @@ export class CartComponent implements OnInit {
   }
 
 
-
-
   removeItem(productId: number, variantId?: number) {
     this.cartService.removeCartItem(productId, variantId).subscribe(() => {
       this.loadCart();
-      this.toastr.warning('Product removed');
+      this.toastr.success('Product removed');
       this.cartService['refreshCartCount']();
     });
   }
-
 
   // getImageUrl(filename: string): string {
   //   return this.productService.getImageUrl(filename);

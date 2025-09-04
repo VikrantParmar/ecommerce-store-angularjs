@@ -26,40 +26,35 @@
       <div class="col-md-3 mb-4">
 
         <app-category-list [categories]="categories" [selectedCategoryId]="selectedCategoryId"
-          [loading]="loadingCategories" (categorySelected)="selectCategory($event)">
+          [loading]="loadingCategories" (categorySelected)="onCategorySelected($event)">
         </app-category-list>
+
+
+
 
       </div>
 
-     <div class="col-md-9">
+      <div class="col-md-9">
 
-  <div *ngIf="loadingProducts" class="spinner-container">
-    <div class="custom-spinner"></div>
-  </div>
+        <div *ngIf="loadingProducts" class="spinner-container">
+          <div class="custom-spinner"></div>
+        </div>
 
-  <app-product-grid
-    *ngIf="!loadingProducts"
-    [products]="products"
-    [loading]="loadingProducts"
-    [total]="totalProducts"
-    [perPage]="productsPerPage"
-    [page]="currentPage"
-    (pageChange)="onPageChange($event)"
-    (addToCart)="addToCart($event)">
-  </app-product-grid>
+        <app-product-grid *ngIf="!loadingProducts" [products]="products" [loadingAddToCart]="loadingAddToCart"
+          [loading]="loadingProducts" [total]="totalProducts" [perPage]="productsPerPage" [page]="currentPage"
+          (pageChange)="onPageChange($event)" (addToCart)="addToCart($event)">
 
-</div>
+        </app-product-grid>
+
+      </div>
     </div>
 
 
-  <div class="pagination-wrapper-responsive">
-  <app-pagination
-    [total]="totalProducts"
-    [page]="currentPage"
-    [perPage]="productsPerPage"
-    (pageChange)="onPageChange($event)">
-  </app-pagination>
-</div>
+    <div class="pagination-wrapper-responsive">
+      <app-pagination [total]="totalProducts" [page]="currentPage" [perPage]="productsPerPage"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
 
 
   </div>

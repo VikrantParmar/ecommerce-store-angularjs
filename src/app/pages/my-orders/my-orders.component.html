@@ -2,53 +2,67 @@
   <h2 class="mb-4">My Orders</h2>
 
   <div *ngIf="loading" class="cart-loader">
-      <div class="custom-spinner"></div>
-    </div>
-
-    <div *ngIf="!loading">
-
-  <div *ngIf="!loading && orders.length > 0" class="bg-white p-3 rounded shadow mt-5 mb-5">
-    <!-- ✅ Responsive table wrapper -->
-    <div class="table-responsive">
-      <table class="table align-middle mb-0">
-        <thead class="table-light text-center">
-          <tr>
-            <th>Order Number</th>
-            <th>Total Items</th>
-            <th>Total Price</th>
-            <th>Status</th>
-            <th>Created Date</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of orders" class="text-center">
-            <td>{{ order.orderNumber }}</td>
-            <td>{{ order.totalItems }}</td>
-            <td>{{ format(order.totalPrice) }}</td>
-            <td>
-              <span [ngClass]="getStatusClass(order.status)" class="badge">
-                {{ order.status }}
-              </span>
-            </td>
-            <td>{{ order.createdAt | date: 'medium' }}</td>
-            <td>
-              <a [routerLink]="['/my-orders', order.id]" class="btn btn-sm btn-dark">View</a>
-
-               <button class="btn btn-sm btn-success" (click)="downloadInvoice(order.id, order.orderNumber)"
-                [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">
-                <i *ngIf="!loadingInvoice[order.id]" class="bi bi-file-earmark-pdf me-1"></i>
-                <span *ngIf="loadingInvoice[order.id]" class="spinner-border spinner-border-sm me-1"></span>
-                {{ loadingInvoice[order.id] ? 'Downloading' : 'Invoice' }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="custom-spinner"></div>
   </div>
 
-  <div *ngIf="!loading && orders.length === 0" class="alert alert-info mt-5 mb-5">
-    No orders found.
+  <div *ngIf="!loading">
+
+    <div *ngIf="!loading && orders.length > 0" class="bg-white p-3 rounded shadow mt-5 mb-5">
+      <!-- ✅ Responsive table wrapper -->
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead class="table-light text-center">
+            <tr>
+              <th>Order Number</th>
+              <th>Total Items</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Created Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders" class="text-center">
+              <td>{{ order.orderNumber }}</td>
+              <td>{{ order.totalItems }}</td>
+              <td>{{ format(order.totalPrice) }}</td>
+              <td>
+                <span [ngClass]="getStatusClass(order.status)" class="badge me-1">
+                  {{ order.status }}
+                </span>
+
+                <!-- Refund Initiated Badge -->
+                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'initiated'"
+                  class="badge bg-warning text-dark me-1">
+                  Refund Initiated
+                </span>
+
+                <!-- Refunded Badge -->
+                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'refunded'"
+                  class="badge bg-success text-white">
+                  Refund Completed
+                </span>
+              </td>
+
+              <td>{{ order.createdAt | date: 'medium' }}</td>
+              <td>
+                <a [routerLink]="['/my-orders', order.id]" class="order-btn view-btn">View</a>
+
+                <button class="order-btn invoice-btn" (click)="downloadInvoice(order.id, order.orderNumber)"
+                  [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">
+                  <i *ngIf="!loadingInvoice[order.id]" class="bi bi-file-earmark-pdf"></i>
+                  <span *ngIf="loadingInvoice[order.id]" class="spinner-border spinner-border-sm"></span>
+                  {{ loadingInvoice[order.id] ? 'Downloading' : 'Invoice' }}
+                </button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && orders.length === 0" class="alert alert-info mt-5 mb-5">
+      No orders found.
+    </div>
   </div>
-</div>

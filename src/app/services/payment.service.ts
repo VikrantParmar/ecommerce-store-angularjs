@@ -11,14 +11,14 @@ import { environment } from '../../environments/environment';
 export class PaymentService {
   private stripePromise = loadStripe(environment.stripePublishableKey);
 
-  private baseUrl = environment.apiBaseUrl; 
+  private baseUrl = environment.apiBaseUrl;
   constructor(private http: HttpClient) { }
 
-  createPaymentIntent(data: { amount: number; products: any[] }) {
+  createPaymentIntent(data: { orderId:number; amount: number; products: any[] }) {
     return this.http.post<{ clientSecret: string }>(`${this.baseUrl}/payment`, data);
   }
 
-
+// orderId: number;
 
   updatePaymentStatus(paymentIntentId: string) {
     return this.http.post(`${this.baseUrl}/update-status`, { paymentIntentId });

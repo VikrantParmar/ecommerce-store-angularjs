@@ -42,6 +42,8 @@ export class MyOrdersComponent implements OnInit {
     switch (status.toLowerCase()) {
       case 'pending':
         return 'bg-warning text-dark';
+      case 'order confirmed':
+        return 'bg-success text-white';
       case 'cancelled':
         return 'bg-danger';
       case 'shipped':
@@ -58,19 +60,19 @@ export class MyOrdersComponent implements OnInit {
   }
 
   downloadInvoice(orderId: number, orderNumber: string) {
-  this.loadingInvoice[orderId] = true;
-  this.orderService.downloadInvoice(orderId).subscribe({
-    next: (res: Blob) => {
-      const url = window.URL.createObjectURL(res);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `invoice-${orderNumber}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      this.loadingInvoice[orderId] = false;
-    },
-    error: () => this.loadingInvoice[orderId] = false
-  });
-}
+    this.loadingInvoice[orderId] = true;
+    this.orderService.downloadInvoice(orderId).subscribe({
+      next: (res: Blob) => {
+        const url = window.URL.createObjectURL(res);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${orderNumber}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.loadingInvoice[orderId] = false;
+      },
+      error: () => this.loadingInvoice[orderId] = false
+    });
+  }
 
 }

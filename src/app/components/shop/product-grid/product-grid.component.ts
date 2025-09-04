@@ -37,6 +37,8 @@ export class ProductGridComponent {
   @Output() pageChange = new EventEmitter<number>();
   @Output() addToCart = new EventEmitter<number>();
   @Output() QuickView = new EventEmitter<any>();
+  @Input() loadingAddToCart: { [productId: number]: boolean } = {};
+
 
   Math = Math;
 

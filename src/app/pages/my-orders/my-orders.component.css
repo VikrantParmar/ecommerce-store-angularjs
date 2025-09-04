@@ -24,3 +24,39 @@
     transform: rotate(360deg);
   }
 }
+
+.order-btn {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.order-btn.view-btn {
+  background-color: #343a40;
+  color: #fff;
+  border: none;
+
+}
+
+.order-btn.invoice-btn {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+}
+
+.order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+td .order-btn {
+  margin-right: 8px;
+  margin-top: 4px;
+}
+td .order-btn:last-child {
+  margin-right: 0;
+}

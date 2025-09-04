@@ -24,10 +24,15 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/wishlist">
+              <a class="dropdown-item d-flex align-items-center" routerLink="/wishlist">
                 <i class="fas fa-heart me-2"></i> Wishlist
+                <span *ngIf="wishlistCount !== null" class="badge rounded bg-dark ms-auto"
+                  style="font-size: 0.7rem;">
+                  {{ wishlistCount }}
+                </span>
               </a>
             </li>
+
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -63,7 +68,7 @@
       </div>
 
       <!-- Nav Links -->
-      <div class="collapse navbar-collapse collapse-custom order-md-1" id="navbarsFurni" #navbarCollapse>
+      <div class="collapse  navbar-collapse collapse-custom order-md-1" id="navbarsFurni" #navbarCollapse>
         <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
           <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <a class="nav-link" routerLink="/">Home</a>
@@ -86,9 +91,9 @@
           <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
             <a class="nav-link" routerLink="/signin">Sign in</a>
           </li>
-          <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
+          <!-- <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
             <a class="nav-link" routerLink="/signup">Sign up</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

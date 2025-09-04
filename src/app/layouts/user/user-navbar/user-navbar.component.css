@@ -60,7 +60,7 @@ a.more {
 .custom-navbar .custom-navbar-nav li a {
   font-weight: 500;
   color: #ffffff !important;
-  opacity: .5;
+  /* opacity: .5; */
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
@@ -201,5 +201,15 @@ a.more {
 }
 
 .bi-list {
-  transform: scale(1.15); 
+  transform: scale(1.15);
+}
+
+
+
+.button{
+  padding: 0px 0px 0px 0px;
+  background-color: black;
+  color:white;
+  border: none;
+  border-radius: 5px;
 }

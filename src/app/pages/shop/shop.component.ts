@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/products.service';
-import { CommonModule, } from '@angular/common';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
 import { FormsModule } from '@angular/forms';
 import { CategoryListComponent } from '../../components/shop/category-list/category-list.component';
@@ -11,12 +11,18 @@ import { ProductGridComponent } from '../../components/shop/product-grid/product
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { ProductUtilsService } from '../../utils/product-utils.service';
 import { ActivatedRoute, Router } from '@angular/router';
-
-
+import { timer, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-shop',
-  imports: [CommonModule, FormsModule, CategoryListComponent, SortBarComponent, ProductGridComponent, PaginationComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CategoryListComponent,
+    SortBarComponent,
+    ProductGridComponent,
+    PaginationComponent
+  ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.css'
 })
@@ -30,10 +36,8 @@ export class ShopComponent implements OnInit {
   currentPage = 1;
   totalProducts = 0;
   productsPerPage = 12;
-  Math = Math; //
   selectedSortOption = 'default';
-
-
+  loadingAddToCart: { [productId: number]: boolean } = {};
 
   constructor(
     private categoryService: CategoryService,
@@ -43,55 +47,76 @@ export class ShopComponent implements OnInit {
     public productUtils: ProductUtilsService,
     private route: ActivatedRoute,
     private router: Router
-
   ) { }
 
   ngOnInit(): void {
-    const savedPage = sessionStorage.getItem('shopCurrentPage');
-    this.currentPage = savedPage ? parseInt(savedPage, 10) : 1;
-    this.loadCategories();
+    this.route.queryParams.subscribe(async (params) => {
+      this.currentPage = +params['page'] || 1;
+      this.selectedSortOption = params['sort'] || 'default';
+      this.productsPerPage = +params['limit'] || 12;
+      const categoryName = params['category'] || null;
+
+      await this.loadCategories();
+
+      this.selectedCategoryId = this.getCategoryIdByName(categoryName);
+
+      this.loadProductsByCategory(this.selectedCategoryId);
+    });
   }
 
+  getCategoryIdByName(categoryName: string | null): number | null {
+    if (!categoryName) return null;
+    const category = this.categories.find((c) => c.name === categoryName);
+    return category ? category.id : null;
+  }
 
   getImageUrl(filename: string): string {
     return this.productUtils.getImageUrl(filename);
   }
 
-
-  loadCategories() {
+  loadCategories(): Promise<void> {
     this.loadingCategories = true;
-    this.categoryService.getCategories({
-      page: 1,
-      limit: 100,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      search: '',
-      onlyWithProducts: true
-    }).subscribe({
-      next: (res) => {
-        this.categories = res.data?.data || [];
-        this.loadingCategories = false;
-
-        // Select "All" category by default
-        this.selectCategory(null);
-      },
-      error: () => {
-        this.loadingCategories = false;
-      }
+    return new Promise((resolve) => {
+      this.categoryService.getCategories({
+        page: 1,
+        limit: 100,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        search: '',
+        onlyWithProducts: true
+      }).subscribe({
+        next: (res) => {
+          this.categories = res.data?.data || [];
+          this.loadingCategories = false;
+          resolve();
+        },
+        error: () => {
+          this.loadingCategories = false;
+          resolve();
+        }
+      });
     });
   }
 
-
-  selectCategory(categoryId: number | null) {
-    const savedPage = sessionStorage.getItem('shopCurrentPage');
-    if (!savedPage || this.selectedCategoryId !== categoryId) {
-      this.currentPage = 1; // ✅ Only reset if selecting a new category
-    }
-
-    this.selectedCategoryId = categoryId;
-    this.loadProductsByCategory(categoryId);
+  onCategorySelected(event: { id: number | null; name: string | null }) {
+    this.selectCategory(event.id, event.name || undefined);
   }
 
+  selectCategory(categoryId: number | null, categoryName?: string) {
+    this.currentPage = 1;
+    this.selectedCategoryId = categoryId;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        limit: this.productsPerPage,
+        category: categoryName || null,
+        sort: this.selectedSortOption
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
 
   loadProductsByCategory(categoryId: number | null) {
     this.loadingProducts = true;
@@ -99,12 +124,11 @@ export class ShopComponent implements OnInit {
     const query: any = {
       page: this.currentPage,
       limit: this.productsPerPage,
-      sortField: 'createdAt',
-      sortOrder: 'ASC',
       search: '',
       categoryId: categoryId
     };
 
+    // Handle sorting
     if (this.selectedSortOption === 'lowToHigh') {
       query.sortField = 'price';
       query.sortOrder = 'ASC';
@@ -116,38 +140,50 @@ export class ShopComponent implements OnInit {
       query.sortOrder = 'DESC';
     }
 
+    const minLoaderTime$ = timer(2000);
+    const apiCall$ = this.productService.getAllProducts(query);
 
-    this.productService.getAllProducts(query)
-      .pipe()
-      .subscribe({
-        next: (res) => {
-          this.products = res.data?.data || [];
-          this.totalProducts = res.data?.total || 0;
-          this.loadingProducts = false;
-        },
-        error: () => {
-          this.loadingProducts = false;
-        }
-      });
+    forkJoin([minLoaderTime$, apiCall$]).subscribe({
+      next: ([_, res]: any) => {
+        this.products = res.data?.data || [];
+        this.totalProducts = res.data?.total || 0;
+      },
+      error: () => {
+      },
+      complete: () => {
+        this.loadingProducts = false;
+      }
+    });
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
-    sessionStorage.setItem('shopCurrentPage', String(page)); // Store current page
-    this.loadProductsByCategory(this.selectedCategoryId);
+    this.updateQueryParams();
     window.scrollTo({ top: 150, behavior: 'smooth' });
-  }
-
-
-
-  addToCart(product: any) {
-    this.productUtils.addToCart(product);
   }
 
   onSortChange(sortOption: string) {
     this.selectedSortOption = sortOption;
-    // this.currentPage = 1;
-    this.loadProductsByCategory(this.selectedCategoryId);
+    this.currentPage = 1;
+    this.updateQueryParams();
+  }
+
+  updateQueryParams() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        limit: this.productsPerPage,
+        category: this.categories.find((c) => c.id === this.selectedCategoryId)?.name || null,
+        sort: this.selectedSortOption
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  addToCart(product: any) {
+    this.productUtils.addToCart(product, (loading: boolean) => {
+      this.loadingAddToCart[product.id] = loading;
+    });
   }
 }
-
