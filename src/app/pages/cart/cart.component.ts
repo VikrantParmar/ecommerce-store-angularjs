@@ -57,12 +57,12 @@ export class CartComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadCart();
+    this.loadCart(true);
   }
 
-  loadCart() {
+  loadCart(force: boolean = false) {
     this.loading = true;
-    this.cartService.getCart().subscribe({
+    this.cartService.getCart(force).subscribe({
       next: (res) => {
         this.cartItems = res.items;
         this.cartSummary = res.summary || this.cartSummary;
@@ -70,7 +70,6 @@ export class CartComponent implements OnInit {
         this.discount = this.cartSummary.discountAmount || 0;
         this.newTotal = this.cartSummary.totalPayable || this.cartSummary.subtotal || 0;
 
-        // Promo code discount details
         if (this.cartSummary.promoCodeDetails) {
           this.discountType = this.cartSummary.promoCodeDetails.discountType;
           this.discountValue = this.cartSummary.promoCodeDetails.discountValue;
@@ -84,6 +83,7 @@ export class CartComponent implements OnInit {
       error: () => (this.loading = false),
     });
   }
+
 
   decreaseQuantity(item: any) {
     if (item.quantity > 1) {
@@ -246,26 +246,26 @@ export class CartComponent implements OnInit {
 
 
   goToCheckout() {
-  if (this.cartItems.length === 0) {
-    this.toastr.warning('Your cart is empty.');
-    return;
+    if (this.cartItems.length === 0) {
+      this.toastr.warning('Your cart is empty.');
+      return;
+    }
+
+    const hasOutOfStock = this.cartItems.some(item => {
+      const variantStock = item.variant?.stock;
+      const productStock = item.Product?.stock;
+      const availableStock = variantStock ?? productStock;
+
+      return !availableStock || item.quantity > availableStock;
+    });
+
+    if (hasOutOfStock) {
+      this.toastr.warning('Some products in your cart are out of stock or exceed available quantity.');
+      return;
+    }
+
+    this.router.navigate(['/checkout']);
   }
-
-  const hasOutOfStock = this.cartItems.some(item => {
-    const variantStock = item.variant?.stock;
-    const productStock = item.Product?.stock;
-    const availableStock = variantStock ?? productStock;
-
-    return !availableStock || item.quantity > availableStock;
-  });
-
-  if (hasOutOfStock) {
-    this.toastr.warning('Some products in your cart are out of stock or exceed available quantity.');
-    return;
-  }
-
-  this.router.navigate(['/checkout']);
-}
 
 
 }

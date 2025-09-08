@@ -21,42 +21,43 @@ export class CartService {
 
   constructor(private http: HttpClient) { }
 
-  getCart(): Observable<any> {
-    if (this.cartCache) {
-      return of(this.cartCache);
-    }
+ getCart(force: boolean = false): Observable<any> {
+  if (this.cartCache && !force) {
+    return of(this.cartCache);
+  }
 
-    if (this.cartLoading) {
-      return new Observable(observer => {
-        this.cartObservers.push((data) => {
-          observer.next(data);
-          observer.complete();
-        });
-      });
-    }
-
-    this.cartLoading = true;
+  if (this.cartLoading) {
     return new Observable(observer => {
-      this.http.get<any>(`${this.baseUrl}`, { withCredentials: true }).subscribe({
-        next: (res) => {
-          this.cartCache = res;
-          const count = res.items?.length || 0;
-          this.cartCountSubject.next(count);
-          observer.next(res);
-          observer.complete();
-
-          this.cartObservers.forEach(cb => cb(res));
-          this.cartObservers = [];
-          this.cartLoading = false;
-        },
-        error: (err) => {
-          observer.error(err);
-          observer.complete();
-          this.cartLoading = false;
-        }
+      this.cartObservers.push((data) => {
+        observer.next(data);
+        observer.complete();
       });
     });
   }
+
+  this.cartLoading = true;
+  return new Observable(observer => {
+    this.http.get<any>(`${this.baseUrl}`, { withCredentials: true }).subscribe({
+      next: (res) => {
+        this.cartCache = res;
+        const count = res.items?.length || 0;
+        this.cartCountSubject.next(count);
+        observer.next(res);
+        observer.complete();
+
+        this.cartObservers.forEach(cb => cb(res));
+        this.cartObservers = [];
+        this.cartLoading = false;
+      },
+      error: (err) => {
+        observer.error(err);
+        observer.complete();
+        this.cartLoading = false;
+      }
+    });
+  });
+}
+
 
   private refreshCartCount(): void {
     this.cartCache = null;
@@ -73,14 +74,21 @@ export class CartService {
   }
 
   addToCart(payload: { productId: number; variantId?: number; quantity: number }): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/`,
-      payload,
-      { withCredentials: true }
-    ).pipe(
-      tap(() => this.refreshCartCount())
-    );
-  }
+  return this.http.post(
+    `${this.baseUrl}/`,
+    payload,
+    { withCredentials: true }
+  ).pipe(
+    tap((res: any) => {
+      // direct count update from response
+      const count = res.items?.length || 0;
+      this.cartCountSubject.next(count);
+      // cache update
+      this.cartCache = res;
+    })
+  );
+}
+
 
 
   updateCartItem(productId: number, quantity: number, variantId?: number): Observable<any> {

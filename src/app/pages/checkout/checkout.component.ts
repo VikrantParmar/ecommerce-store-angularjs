@@ -43,7 +43,7 @@ export class CheckoutComponent implements OnInit {
   submitted = false;
   stripe: any = null;
   card: StripeCardElement | null = null;
-  selectedPayment: 'stripe' | 'paypal' | 'cod' = 'stripe';
+  selectedPayment: 'Stripe' | 'Paypal' | 'COD' = 'Stripe';
   paypalRendered = false;
   cardError: string = '';
   loading = false;
@@ -111,7 +111,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   ngAfterViewChecked(): void {
-    if (this.selectedPayment === 'paypal' && !this.paypalRendered) {
+    if (this.selectedPayment === 'Paypal' && !this.paypalRendered) {
       const container = document.getElementById('paypal-button-container');
       if (container) {
         container.innerHTML = '';
@@ -213,7 +213,7 @@ export class CheckoutComponent implements OnInit {
       shippingMethodId: this.selectedShippingMethod?.id || null
     };
 
-    if (this.selectedPayment === 'cod') {
+    if (this.selectedPayment === 'COD') {
       // Cash on Delivery
       this.loading = true;
       this.orderService.createOrder(orderPayload).subscribe({
@@ -238,7 +238,7 @@ export class CheckoutComponent implements OnInit {
     }
 
     // ✅ Stripe Payment Flow
-    if (this.selectedPayment === 'stripe') {
+    if (this.selectedPayment === 'Stripe') {
       if (!this.card || !this.stripe) return;
 
       this.loading = true;
@@ -351,7 +351,7 @@ export class CheckoutComponent implements OnInit {
 
   //       const payPalRes: any = await this.paypalService.createPaypalOrder(this.total, orderRes.orderId).toPromise();
 
-  //       return payPalRes.orderID; 
+  //       return payPalRes.orderID;
   //     },
 
   //     onApprove: async (data: any, actions: any) => {
@@ -377,7 +377,7 @@ export class CheckoutComponent implements OnInit {
   // }
 
 
-    
+
   loadPayPalScript(): Promise<void> {
     return new Promise((resolve) => {
       if ((<any>window).paypal) {
@@ -466,10 +466,10 @@ export class CheckoutComponent implements OnInit {
     this.cardError = '';
     this.successMessage = '';
 
-    if (this.selectedPayment === 'stripe') {
+    if (this.selectedPayment === 'Stripe') {
       this.setupStripe();
     }
-    if (this.selectedPayment === 'paypal') {
+    if (this.selectedPayment === 'Paypal') {
       this.paypalRendered = false;
       this.setupPayPal(); // ensure PayPal renders again
 

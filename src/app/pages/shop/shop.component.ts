@@ -128,7 +128,6 @@ export class ShopComponent implements OnInit {
       categoryId: categoryId
     };
 
-    // Handle sorting
     if (this.selectedSortOption === 'lowToHigh') {
       query.sortField = 'price';
       query.sortOrder = 'ASC';
@@ -140,21 +139,18 @@ export class ShopComponent implements OnInit {
       query.sortOrder = 'DESC';
     }
 
-    const minLoaderTime$ = timer(2000);
-    const apiCall$ = this.productService.getAllProducts(query);
-
-    forkJoin([minLoaderTime$, apiCall$]).subscribe({
-      next: ([_, res]: any) => {
+    this.productService.getAllProducts(query).subscribe({
+      next: (res: any) => {
         this.products = res.data?.data || [];
         this.totalProducts = res.data?.total || 0;
       },
-      error: () => {
-      },
+      error: () => { },
       complete: () => {
         this.loadingProducts = false;
       }
     });
   }
+
 
   onPageChange(page: number) {
     this.currentPage = page;

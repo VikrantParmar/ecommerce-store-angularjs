@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 export interface PaymentSummary {
   id: number;
   amount: number;
-  refundStatus?: 'initiated' | 'refunded' | null;
+  refundStatus?: 'initiated' | 'refunded' | 'succeeded' | null;
   refundedAt?: string | null;
 }
 
@@ -20,7 +20,7 @@ export interface OrderSummary {
   createdAt: string;
   updatedAt: string;
   invoicePdfUrl?: string;
-  payments?: PaymentSummary[]; // <-- this is now type-safe
+  payments?: PaymentSummary[]; 
 
 }
 

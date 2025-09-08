@@ -38,7 +38,7 @@
                 </span>
 
                 <!-- Refunded Badge -->
-                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'refunded'"
+                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'succeeded'"
                   class="badge bg-success text-white">
                   Refund Completed
                 </span>

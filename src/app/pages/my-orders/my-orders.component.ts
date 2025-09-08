@@ -52,7 +52,7 @@ export class MyOrdersComponent implements OnInit {
         return 'bg-success';
       case 'paid':
         return 'bg-success';
-      case 'refunded':
+      case 'Refunded':
         return 'bg-info text-dark';
       default:
         return 'bg-secondary';

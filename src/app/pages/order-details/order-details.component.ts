@@ -70,7 +70,7 @@ export class OrderDetailsComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'pending': return 'bg-warning text-dark';
-      case 'order confirmed': return 'bg-success text-dark';
+      case 'order confirmed': return 'bg-success text-white';
       case 'cancelled': return 'bg-danger';
       case 'shipped': return 'bg-primary';
       case 'delivered': return 'bg-success';
