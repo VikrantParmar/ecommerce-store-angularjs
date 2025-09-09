@@ -47,6 +47,7 @@ export class CheckoutComponent implements OnInit {
   paypalRendered = false;
   cardError: string = '';
   loading = false;
+  pageLoading = true;
   successMessage = '';
   selectedShippingMethod: any = null;
 
@@ -146,9 +147,12 @@ export class CheckoutComponent implements OnInit {
           this.discountType = '';
           this.discountValue = 0;
         }
+
+        this.pageLoading = false;
       },
       error: (err) => {
         console.error('Error fetching cart:', err);
+        this.pageLoading = false;
       }
     });
   }
@@ -218,6 +222,7 @@ export class CheckoutComponent implements OnInit {
       this.loading = true;
       this.orderService.createOrder(orderPayload).subscribe({
         next: (res: any) => {
+          this.cartService.resetCartLocally();
           this.router.navigate(['/order-success'], {
             state: {
               orderId: res.orderId,
@@ -237,7 +242,6 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // ✅ Stripe Payment Flow
     if (this.selectedPayment === 'Stripe') {
       if (!this.card || !this.stripe) return;
 
@@ -287,7 +291,7 @@ export class CheckoutComponent implements OnInit {
           await this.paymentService.updatePaymentStatus(result.paymentIntent.id).toPromise();
 
           this.successMessage = 'Payment successful!';
-
+          this.cartService.resetCartLocally();
           this.router.navigate(['/order-success'], {
             state: {
               orderId: orderRes.orderId,
@@ -410,7 +414,6 @@ export class CheckoutComponent implements OnInit {
           return;
         }
 
-        // 1️⃣ Create local order first
         const orderPayload = {
           uniqueId,
           shippingAddress: this.shippingAddress,
@@ -422,10 +425,8 @@ export class CheckoutComponent implements OnInit {
 
         const orderRes: any = await this.orderService.createOrder(orderPayload).toPromise();
 
-        // 2️⃣ Create PayPal order
         const payPalRes: any = await this.paypalService.createPaypalOrder(this.total, orderRes.orderId).toPromise();
 
-        // Save local orderId for onApprove
         (window as any)._localOrderId = orderRes.orderId;
 
         return payPalRes.orderID;

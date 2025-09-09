@@ -38,6 +38,9 @@ export const routes: Routes = [
       { path: 'wishlist', loadComponent: () => import('./pages/wishlist/wishlist.component').then(m => m.WishlistComponent), canActivate: [AuthGuard] },
       { path: 'product-rating/:slug', loadComponent: () => import('./pages/product-rating/product-rating.component').then(m => m.ProductRatingComponent), canActivate: [AuthGuard] },
       { path: 'product/:id/reviews', loadComponent: () => import('./pages/all-reviews/all-reviews.component').then(m => m.AllReviewsComponent), canActivate: [AuthGuard] },
+      { path: 'return-order-request/:orderId', loadComponent: () => import('./pages/return-order/return-order.component').then(m => m.ReturnOrderComponent), canActivate: [AuthGuard] },
+
+
 
     ],
   },

@@ -1,0 +1,49 @@
+<div class="container my-5" *ngIf="order; else loadingOrError">
+  <h4>Return Request</h4>
+
+  <div class="card p-4 shadow rounded-4">
+
+    <!-- Back Button -->
+    <div class="mb-3">
+  <a class="text-decoration-none text-secondary d-inline-flex align-items-center" [routerLink]="['/my-orders', order.id]">
+    <i class="fas fa-arrow-left me-2"></i> Back
+  </a>
+</div>
+
+
+    <!-- Page Title -->
+    <h5 class="mb-3">Return Order: #{{ order.orderNumber }}</h5>
+
+    <!-- Success Message -->
+    <p *ngIf="returnSuccess" class="text-success">Return request submitted successfully.</p>
+
+    <!-- Return Form -->
+    <div *ngIf="!returnSuccess">
+      <h6>Reason for Return</h6>
+
+      <div *ngFor="let reason of returnReasons" class="form-check">
+        <input class="form-check-input" type="radio" name="reason" [value]="reason" [(ngModel)]="selectedReason">
+        <label class="form-check-label">{{ reason }}</label>
+      </div>
+
+      <textarea class="form-control mt-2" rows="2" placeholder="Optional comment" [(ngModel)]="comment"></textarea>
+
+      <div class="text-end mt-3">
+        <button class="btn btn-warning" [disabled]="isSubmitting" (click)="submitReturn()">
+          <span *ngIf="!isSubmitting">Submit Return</span>
+          <span *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2"></span>Processing..
+          </span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div *ngIf="loading" class="text-center py-5">
+    Loading...
+  </div>
+  <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
+</ng-template>

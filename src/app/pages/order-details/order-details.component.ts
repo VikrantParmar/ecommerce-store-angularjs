@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OrderService } from '../../services/orders.service';
 import { CommonModule } from '@angular/common';
 import { formatPrice } from '../../constants/currency.constant';
@@ -35,6 +35,7 @@ export class OrderDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private orderService: OrderService,
     private productService: ProductService,
     private toastr: ToastrService
@@ -80,7 +81,6 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  // Step 1: Open confirmation modal
   openCancelConfirm(order: any) {
     const modal = document.getElementById('cancelConfirmModal');
     if (modal) {
@@ -88,7 +88,6 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  // Step 2: After confirming, show cancel form and hide other details
   proceedToCancelPage(order: any) {
     const modal = document.getElementById('cancelConfirmModal');
     if (modal) {
@@ -110,31 +109,36 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
-submitCancel(orderId: number | string) {
-  const id = Number(orderId);
+  submitCancel(orderId: number | string) {
+    const id = Number(orderId);
 
-  if (!this.selectedReason) {
-    this.toastr.warning("Please select a reason");
-    return;
+    if (!this.selectedReason) {
+      this.toastr.warning("Please select a reason");
+      return;
+    }
+
+    this.isSubmitting = true;
+    setTimeout(() => {
+      this.orderService.cancelOrder(id, this.selectedReason, this.comment).subscribe({
+        next: () => {
+          this.order.status = 'Cancelled';
+          this.cancelSuccess = true;
+          this.toastr.success("Order cancelled successfully");
+          this.showCancelForm = true;
+          this.showAllReasons = false;
+          this.isSubmitting = false;
+        },
+        error: () => {
+          this.toastr.error("Failed to cancel order");
+          this.isSubmitting = false;
+        }
+      });
+    }, 2000);
   }
 
-  this.isSubmitting = true;
-  setTimeout(() => {
-    this.orderService.cancelOrder(id, this.selectedReason, this.comment).subscribe({
-      next: () => {
-        this.order.status = 'Cancelled';
-        this.cancelSuccess = true;
-        this.toastr.success("Order cancelled successfully");
-        this.showCancelForm = true;
-        this.showAllReasons = false;
-        this.isSubmitting = false;
-      },
-      error: () => {
-        this.toastr.error("Failed to cancel order");
-        this.isSubmitting = false;
-      }
-    });
-  }, 2000);
+  openReturnPage(order: any) {
+  this.router.navigate(['/return-order-request', order.id]);
 }
+
 
 }

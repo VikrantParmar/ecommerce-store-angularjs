@@ -2,17 +2,20 @@
   <div *ngFor="let log of stepLogs; let i = index" class="timeline-item">
 
     <div class="timeline-marker" [ngClass]="{
-       'completed': i < currentStepIndex,
-       'active': i === currentStepIndex && !cancelled,
-       'pending': i > currentStepIndex && !log.createdAt,
+       'cancelled': log.status.toLowerCase() === 'cancelled',
        'delivered': log.status.toLowerCase() === 'delivered',
-       'cancelled': log.status.toLowerCase() === 'cancelled'
+       'completed': i < currentStepIndex && log.status.toLowerCase() !== 'delivered' && log.status.toLowerCase() !== 'cancelled',
+       'active': i === currentStepIndex && !cancelled && log.status.toLowerCase() !== 'delivered' && log.status.toLowerCase() !== 'cancelled',
+       'pending': i > currentStepIndex && !log.createdAt
     }">
-      <span *ngIf="i <= currentStepIndex && log.createdAt && log.status.toLowerCase() !== 'cancelled'">
-        <i class="fa-solid fa-check"></i>
+      <!-- Delivered / Completed: check icon -->
+      <span *ngIf="log.status.toLowerCase() === 'delivered' || (i <= currentStepIndex && log.createdAt && log.status.toLowerCase() !== 'cancelled')">
+        <i class="fa-solid fa-check text-white"></i>
       </span>
+
+      <!-- Cancelled: X icon -->
       <span *ngIf="log.status.toLowerCase() === 'cancelled'">
-        <i class="fa-solid fa-xmark text-white "></i>
+        <i class="fa-solid fa-xmark text-white"></i>
       </span>
     </div>
 

@@ -1,3 +1,7 @@
+
+
+
+
 <div class="hero">
   <div class="container">
     <div class="row justify-content-between">
@@ -10,8 +14,13 @@
   </div>
 </div>
 
+<div *ngIf="pageLoading" class="cart-loader">
+    <div class="custom-spinner"></div>
+  </div>
+
 
 <!-- Checkout Form (Entire form across both columns) -->
+   <div *ngIf="!pageLoading">
 <div class="container my-5">
   <form #checkoutForm="ngForm" (ngSubmit)="placeOrder(checkoutForm)" novalidate>
     <div class="row g-4">
@@ -435,4 +444,5 @@
 
     </div>
   </form>
+</div>
 </div>
