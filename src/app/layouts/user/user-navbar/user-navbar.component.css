@@ -213,3 +213,47 @@ a.more {
   border: none;
   border-radius: 5px;
 }
+
+
+.dropdown-menu {
+  background-color: #343a40 !important; /* dark navbar color */
+  color: #fff !important; /* light text */
+}
+
+.dropdown-menu .dropdown-item {
+  color: #fff !important;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #495057 !important;
+}
+
+
+
+
+/* Zepto top loader line */
+#zepto-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background-color: #007bff; /* blue line */
+  z-index: 9999;
+  transition: width 0.3s ease;
+}
+
+/* Overlay to block background during page load */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.2); /* semi-transparent */
+  z-index: 9998;
+  display: none;
+}
+.loader-overlay.show {
+  display: block;
+}

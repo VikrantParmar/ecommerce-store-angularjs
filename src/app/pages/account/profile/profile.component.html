@@ -1,0 +1,48 @@
+<div class="container profile-container">
+
+  <div *ngIf="loading" class="profile-loader">
+    <div class="custom-spinner"></div>
+  </div>
+
+  <div *ngIf="!loading" class="profile-card">
+    <h3 class="text-center mb-4">My Profile</h3>
+
+    <!-- Success / Error Messages -->
+    <app-notification-message [message]="successMessage" type="success"></app-notification-message>
+    <app-notification-message [message]="error" type="error"></app-notification-message>
+
+    <!-- Read-only view as inputs -->
+    <div *ngIf="!editing" class="profile-view">
+      <div class="form-group mb-3">
+        <label for="username-read">Name</label>
+        <input type="text" id="username-read" class="form-control readonly-input" [value]="username" readonly />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="email-read">Email</label>
+        <input type="email" id="email-read" class="form-control readonly-input" [value]="email" readonly />
+      </div>
+
+      <button class="btn btn-outline-primary mt-3" (click)="enableEdit()">Edit</button>
+    </div>
+
+    <!-- Edit form -->
+    <form *ngIf="editing" (ngSubmit)="updateProfile()" class="profile-edit">
+      <div class="form-group mb-3">
+        <label for="username">Username</label>
+        <input type="text" id="username" class="form-control modern-input" [(ngModel)]="updatedUsername" name="username"
+          required placeholder="Enter your username" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="email">Email</label>
+        <input type="email" id="email" class="form-control modern-input" [value]="email" disabled />
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-danger" (click)="cancelEdit()">Cancel</button>
+        <button type="submit" class="btn btn-dark">Save</button>
+      </div>
+    </form>
+  </div>
+</div>

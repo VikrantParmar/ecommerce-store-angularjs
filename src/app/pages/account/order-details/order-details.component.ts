@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { OrderService } from '../../services/orders.service';
 import { CommonModule } from '@angular/common';
-import { formatPrice } from '../../constants/currency.constant';
-import { ProductService } from '../../services/products.service';
-import { OrderTrackingTimelineComponent } from "../../components/order-tracking/order-tracking.component";
+import { OrderService } from '../../../services/orders.service';
+import { formatPrice } from '../../../constants/currency.constant';
+import { ProductService } from '../../../services/products.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { OrderTrackingTimelineComponent } from '../../../components/order-tracking/order-tracking.component';
 
 @Component({
   selector: 'app-order-details',
@@ -137,7 +137,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   openReturnPage(order: any) {
-  this.router.navigate(['/return-order-request', order.id]);
+  this.router.navigate(['/account/return-order-request', order.id]);
 }
 
 

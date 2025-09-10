@@ -38,6 +38,8 @@ export class ShopComponent implements OnInit {
   productsPerPage = 12;
   selectedSortOption = 'default';
   loadingAddToCart: { [productId: number]: boolean } = {};
+  searchQuery: string = '';
+
 
   constructor(
     private categoryService: CategoryService,
@@ -55,6 +57,7 @@ export class ShopComponent implements OnInit {
       this.selectedSortOption = params['sort'] || 'default';
       this.productsPerPage = +params['limit'] || 12;
       const categoryName = params['category'] || null;
+      this.searchQuery = params['search'] || '';
 
       await this.loadCategories();
 
@@ -124,7 +127,7 @@ export class ShopComponent implements OnInit {
     const query: any = {
       page: this.currentPage,
       limit: this.productsPerPage,
-      search: '',
+      search: this.searchQuery || '',
       categoryId: categoryId
     };
 
@@ -171,7 +174,8 @@ export class ShopComponent implements OnInit {
         page: this.currentPage,
         limit: this.productsPerPage,
         category: this.categories.find((c) => c.id === this.selectedCategoryId)?.name || null,
-        sort: this.selectedSortOption
+        sort: this.selectedSortOption,
+        search: this.searchQuery || null
       },
       queryParamsHandling: 'merge'
     });
@@ -182,4 +186,16 @@ export class ShopComponent implements OnInit {
       this.loadingAddToCart[product.id] = loading;
     });
   }
+
+onSearchSubmit() {
+  if (!this.searchQuery) return;
+
+  let words = this.searchQuery.trim().split(/\s+/).slice(0, 3);
+  this.searchQuery = words.join(" ");
+
+  this.currentPage = 1;
+  this.updateQueryParams();
+}
+
+
 }

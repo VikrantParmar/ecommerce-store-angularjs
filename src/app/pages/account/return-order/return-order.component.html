@@ -1,11 +1,11 @@
-<div class="container my-5" *ngIf="order; else loadingOrError">
-  <h4>Return Request</h4>
+<div class="" *ngIf="order; else loadingOrError">
+  <h3 class="mb-3">Return Request</h3>
 
-  <div class="card p-4 shadow rounded-4">
+  <div class="card p-3 shadow rounded-4">
 
     <!-- Back Button -->
     <div class="mb-3">
-  <a class="text-decoration-none text-secondary d-inline-flex align-items-center" [routerLink]="['/my-orders', order.id]">
+  <a class="text-decoration-none text-secondary d-inline-flex align-items-center" [routerLink]="['/account/my-orders', order.id]">
     <i class="fas fa-arrow-left me-2"></i> Back
   </a>
 </div>

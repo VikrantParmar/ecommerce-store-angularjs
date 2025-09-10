@@ -23,22 +23,30 @@ export const routes: Routes = [
       { path: 'blog', loadComponent: () => import('./pages/blog/blog.component').then(m => m.BlogComponent), },
       { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent), },
       { path: 'cart', loadComponent: () => import('./pages/cart/cart.component').then(m => m.CartComponent), },
-        { path: 'product/:slug', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
-        // { path: 'product/:slug/:sku', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
+      { path: 'product/:slug', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
+      // { path: 'product/:slug/:sku', loadComponent: () => import('./pages/product-details/product-details.component').then(m => m.ProductDetailsComponent) },
 
+
+      {
+        path: 'account',
+        loadComponent: () => import('./pages/account/account/account.component').then(m => m.AccountComponent),
+        canActivate: [AuthGuard],
+        children: [
+          { path: 'profile', loadComponent: () => import('./pages/account/profile/profile.component').then(m => m.ProfileComponent) },
+          { path: 'my-orders', loadComponent: () => import('./pages/account/my-orders/my-orders.component').then(m => m.MyOrdersComponent) },
+          { path: 'my-orders/:orderId', loadComponent: () => import('./pages/account/order-details/order-details.component').then(m => m.OrderDetailsComponent) },
+          { path: 'wishlist', loadComponent: () => import('./pages/account/wishlist/wishlist.component').then(m => m.WishlistComponent) },
+          { path: 'return-order-request/:orderId', loadComponent: () => import('./pages/account/return-order/return-order.component').then(m => m.ReturnOrderComponent), canActivate: [AuthGuard] },
+          { path: '', redirectTo: 'my-orders', pathMatch: 'full' }
+        ]
+      },
 
 
 
 
       { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent), canActivate: [AuthGuard] },
-      { path: 'order-success', loadComponent: () => import('./pages/order-success-page/order-success-page.component').then(m => m.OrderSuccessPageComponent), canActivate: [AuthGuard] },
-      { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent), canActivate: [AuthGuard] },
-      { path: 'my-orders', loadComponent: () => import('./pages/my-orders/my-orders.component').then(m => m.MyOrdersComponent), canActivate: [AuthGuard] },
-      { path: 'my-orders/:orderId', loadComponent: () => import('./pages/order-details/order-details.component').then(m => m.OrderDetailsComponent), canActivate: [AuthGuard] },
-      { path: 'wishlist', loadComponent: () => import('./pages/wishlist/wishlist.component').then(m => m.WishlistComponent), canActivate: [AuthGuard] },
       { path: 'product-rating/:slug', loadComponent: () => import('./pages/product-rating/product-rating.component').then(m => m.ProductRatingComponent), canActivate: [AuthGuard] },
       { path: 'product/:id/reviews', loadComponent: () => import('./pages/all-reviews/all-reviews.component').then(m => m.AllReviewsComponent), canActivate: [AuthGuard] },
-      { path: 'return-order-request/:orderId', loadComponent: () => import('./pages/return-order/return-order.component').then(m => m.ReturnOrderComponent), canActivate: [AuthGuard] },
 
 
 

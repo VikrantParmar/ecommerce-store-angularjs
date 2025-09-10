@@ -1,12 +1,14 @@
-<div class="container my-5" *ngIf="order; else loadingOrError">
-  <div class="card border-0 shadow-lg p-4 rounded-4">
+<div class="" *ngIf="order; else loadingOrError">
+    <h3 class="mb-4">Orders Details</h3>
+
+  <div class="card border-0 shadow-sm p-4 rounded-4">
 
     <!-- Only show full order details if not cancelling -->
     <ng-container *ngIf="!showCancelForm">
 
       <!-- Back Link -->
       <div class="mb-3">
-        <a class="text-decoration-none text-secondary d-inline-flex align-items-center" [routerLink]="['/my-orders']">
+        <a class="text-decoration-none text-secondary d-inline-flex align-items-center" [routerLink]="['/account/my-orders']">
           <i class="fas fa-arrow-left me-2"></i> Back
         </a>
       </div>

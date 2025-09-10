@@ -1,28 +1,5 @@
-<!-- Start Hero Section -->
-<div class="hero">
-  <div class="container">
-    <div class="row justify-content-between">
-      <div class="col-lg-5">
-        <div class="intro-excerpt">
-          <h1>Wishlist</h1>
-          <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
-            imperdiet dolor tempor tristique.</p>
-          <p><a routerLink="/shop" class="btn btn-secondary me-2">Shop Now</a><a routerLink="/blog"
-              class="btn btn-white-outline">Explore</a>
-          </p>
-        </div>
-      </div>
-      <div class="col-lg-7">
-        <div class="hero-img-wrap">
-          <img src="images/couch.png" class="img-fluid">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="untree_co-section">
-  <div class="container bg-white">
+<div class="">
+  <h3 class="mb-3">Wishlist</h3>
 
     <!-- Loader -->
     <div *ngIf="loading" class="cart-loader">
@@ -30,7 +7,7 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && wishlist.length === 0">
+    <div *ngIf="!loading && wishlist.length === 0" class="bg-white p-3 rounded shadow">
       <div class="row">
         <div class="col-12 text-center p-5">
           <img src="images/empty-cart.svg" alt="Empty Wishlist" class="mb-3" style="height: 200px;" />
@@ -109,4 +86,3 @@
     </div>
 
   </div>
-</div>

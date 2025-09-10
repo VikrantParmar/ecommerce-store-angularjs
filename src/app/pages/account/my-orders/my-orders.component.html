@@ -1,5 +1,5 @@
-<div class="container my-4 mt-5">
-  <h2 class="mb-4">My Orders</h2>
+<div class="">
+  <h3 class="mb-4">My Orders</h3>
 
   <div *ngIf="loading" class="cart-loader">
     <div class="custom-spinner"></div>
@@ -7,7 +7,7 @@
 
   <div *ngIf="!loading">
 
-    <div *ngIf="!loading && orders.length > 0" class="bg-white p-3 rounded shadow mt-5 mb-5">
+    <div *ngIf="!loading && orders.length > 0" class="bg-white p-3 rounded shadow">
       <!-- ✅ Responsive table wrapper -->
       <div class="table-responsive">
         <table class="table align-middle mb-0">
@@ -46,7 +46,7 @@
 
               <td>{{ order.createdAt | date: 'medium' }}</td>
               <td>
-                <a [routerLink]="['/my-orders', order.id]" class="order-btn view-btn">View</a>
+                <a [routerLink]="['/account/my-orders', order.id]" class="order-btn view-btn">View</a>
 
                 <button class="order-btn invoice-btn" (click)="downloadInvoice(order.id, order.orderNumber)"
                   [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">

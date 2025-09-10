@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { WishlistService } from '../../services/wishlist.service';
+import { WishlistService } from '../../../services/wishlist.service';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../services/products.service';
+import { ProductService } from '../../../services/products.service';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../services/cart.service';
-import { formatPrice } from '../../constants/currency.constant';
+import { CartService } from '../../../services/cart.service';
+import { formatPrice } from '../../../constants/currency.constant';
 
 @Component({
   selector: 'app-wishlist',

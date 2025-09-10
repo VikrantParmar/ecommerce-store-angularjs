@@ -1,3 +1,5 @@
+
+
 <body>
   <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark fixed-top" aria-label="Furni navigation bar">
     <div class="container d-flex align-items-center justify-content-between">
@@ -8,47 +10,15 @@
       <div class="d-flex align-items-center gap-3 ms-4 ms-md-5 order-md-2">
         <!-- User Dropdown -->
         <div class="nav-item dropdown position-relative" *ngIf="isLoggedIn">
-          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+          <a class="nav-link" routerLink="/account">
             <img src="images/user.svg" alt="User Profile" />
           </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-            <li>
-              <a class="dropdown-item" routerLink="/profile">
-                <i class="fas fa-user me-2"></i> Profile
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/my-orders">
-                <i class="fas fa-box me-2"></i> My Orders
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center" routerLink="/wishlist">
-                <i class="fas fa-heart me-2"></i> Wishlist
-                <span *ngIf="wishlistCount !== null" class="badge rounded bg-dark ms-auto"
-                  style="font-size: 0.7rem;">
-                  {{ wishlistCount }}
-                </span>
-              </a>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li>
-              <a class="dropdown-item text-danger" (click)="logout()">
-                <i class="fas fa-sign-out-alt me-2"></i> Logout
-              </a>
-            </li>
-          </ul>
-
         </div>
 
         <!-- Cart -->
         <div class="nav-item position-relative">
           <a class="nav-link" routerLink="/cart">
-            <img src="images/cart.svg" alt="Cart" width="24" height="24" />
+            <img src="images/cart.svg" alt="Cart" width="24" height="24" class="ms-3" />
             <span *ngIf="cartCount !== null"
               class="position-absolute top-3 start-100 translate-middle badge rounded-pill bg-danger"
               style="font-size: 0.7rem;">
@@ -73,10 +43,30 @@
           <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <a class="nav-link" routerLink="/">Home</a>
           </li>
+
+          <!-- 🔹 Category Dropdown -->
+          <div class="nav-item dropdown ms-3" *ngIf="categories.length">
+            <a class="nav-link dropdown-toggle text-white"  role="button" id="categoryDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Categories
+            </a>
+            <ul class="dropdown-menu bg-dark text-white" aria-labelledby="categoryDropdown">
+              <li *ngFor="let cat of categories">
+                <a class="dropdown-item text-white"  (click)="onCategorySelect(cat.name)">
+                  {{ cat.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+
+
+
+
           <li class="nav-item" routerLinkActive="active">
             <a class="nav-link" routerLink="/shop">Shop</a>
           </li>
-          <li class="nav-item" routerLinkActive="active">
+          <!-- <li class="nav-item" routerLinkActive="active">
             <a class="nav-link" routerLink="/about">About us</a>
           </li>
           <li class="nav-item" routerLinkActive="active">
@@ -87,7 +77,13 @@
           </li>
           <li class="nav-item" routerLinkActive="active">
             <a class="nav-link" routerLink="/contact">Contact us</a>
-          </li>
+          </li> -->
+
+          <form class="d-flex ms-md-3 mt-2 mt-md-0" (ngSubmit)="onSearchSubmit()" style="max-width: 300px; flex:1;">
+            <input class="form-control" type="search" placeholder="Search products..." [(ngModel)]="searchQuery"
+              name="q" (keyup.enter)="onSearchSubmit()">
+          </form>
+
           <li class="nav-item" routerLinkActive="active" *ngIf="!isLoggedIn">
             <a class="nav-link" routerLink="/signin">Sign in</a>
           </li>
@@ -95,6 +91,10 @@
             <a class="nav-link" routerLink="/signup">Sign up</a>
           </li> -->
         </ul>
+
+        <!-- 🔹 Search Bar (without button) -->
+
+
       </div>
     </div>
   </nav>

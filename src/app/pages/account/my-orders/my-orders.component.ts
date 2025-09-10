@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { OrderService, OrderSummary } from '../../services/orders.service';
+import { OrderService, OrderSummary } from '../../../services/orders.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { formatPrice } from '../../constants/currency.constant';
+import { formatPrice } from '../../../constants/currency.constant';
 
 
 @Component({

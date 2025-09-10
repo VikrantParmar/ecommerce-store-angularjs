@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -7,11 +7,13 @@ import { CartService } from '../../../services/cart.service';
 import { WishlistService } from '../../../services/wishlist.service';
 import { filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { FormsModule } from '@angular/forms';
+import { CategoryService } from '../../../services/category.service';
 
 @Component({
   selector: 'app-user-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule],
+  imports: [CommonModule, RouterLink, RouterModule, FormsModule],
   templateUrl: './user-navbar.component.html',
   styleUrls: ['./user-navbar.component.css']
 })
@@ -22,6 +24,11 @@ export class UserNavbarComponent implements OnInit {
   cartCount = 0;
   wishlistCount = 0;
   isNavbarOpen = false;
+  searchQuery: string = '';
+  categories: any[] = [];
+  
+
+
 
   @ViewChild('navbarCollapse') navbarCollapse!: ElementRef;
 
@@ -30,6 +37,8 @@ export class UserNavbarComponent implements OnInit {
     private cartService: CartService,
     private wishlistService: WishlistService,
     private router: Router,
+    private route: ActivatedRoute,
+    private categoryService: CategoryService
 
   ) { }
 
@@ -38,9 +47,18 @@ export class UserNavbarComponent implements OnInit {
       this.cartCount = count ?? 0;
     });
 
-    this.wishlistService.wishlistCount$.subscribe(count => {
-      this.wishlistCount = count ?? 0;
+    this.route.queryParams.subscribe(params => {
+      this.searchQuery = params['search'] || '';
+
+      this.categoryService.getCategories({ page: 1, limit: 100, onlyWithProducts: true }).subscribe(res => {
+        this.categories = res.data?.data || [];
+      });
+
     });
+
+    // this.wishlistService.wishlistCount$.subscribe(count => {
+    //   this.wishlistCount = count ?? 0;
+    // });
 
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
@@ -70,16 +88,23 @@ export class UserNavbarComponent implements OnInit {
     });
   }
 
-  logout(): void {
-  this.authService.logout();
+  onSearchSubmit() {
+    if (!this.searchQuery) return;
 
-  this.cartCount = 0;
-  this.wishlistCount = 0;
-  this.cartService['cartCache'] = null;
+    let words = this.searchQuery.trim().split(/\s+/).slice(0, 3);
+    this.searchQuery = words.join(" ");
 
-  this.router.navigate(['/signin']);
-}
+    this.router.navigate(['/shop'], {
+      queryParams: { search: this.searchQuery, page: 1, limit: 12, sort: "default" }
+    });
+  }
 
+  onCategorySelect(categoryName: string) {
+    this.searchQuery = '';
+    this.router.navigate(['/shop'], {
+      queryParams: { category: categoryName, page: 1, limit: 12, sort: "default" }
+    });
+  }
 
 
   toggleNavbar(): void {
@@ -104,5 +129,8 @@ export class UserNavbarComponent implements OnInit {
       this.isNavbarOpen = false;
     }
   }
+
+
+
 }
 

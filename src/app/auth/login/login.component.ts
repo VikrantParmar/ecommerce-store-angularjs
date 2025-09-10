@@ -13,6 +13,7 @@ import { NotificationMessageComponent } from '../../shared/notification-message/
   selector: 'app-login',
   imports: [CommonModule, FormsModule, RouterLink, NotificationMessageComponent],
   templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 export class LoginComponent {
   email = '';
