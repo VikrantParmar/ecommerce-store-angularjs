@@ -17,6 +17,7 @@ import { OrderTrackingTimelineComponent } from '../../../components/order-tracki
 export class OrderDetailsComponent implements OnInit {
 
   format = formatPrice;
+  orderNumber: string | null = null;
 
   order: any = null;
   loading = false;
@@ -41,15 +42,16 @@ export class OrderDetailsComponent implements OnInit {
     private toastr: ToastrService
   ) { }
 
+
   ngOnInit(): void {
-    const orderId = Number(this.route.snapshot.paramMap.get('orderId'));
-    if (!orderId) {
-      this.error = "Invalid order ID.";
+    const orderNumber = this.route.snapshot.paramMap.get('orderNumber'); 
+    if (!orderNumber) {
+      this.error = "Invalid order number.";
       return;
     }
 
     this.loading = true;
-    this.orderService.getOrderDetails(orderId).subscribe({
+    this.orderService.getOrderDetails(orderNumber).subscribe({
       next: (data) => {
         this.order = data;
         this.loading = false;
@@ -60,6 +62,9 @@ export class OrderDetailsComponent implements OnInit {
       }
     });
   }
+
+
+
 
   getCartImageUrl(item: any): string {
     if (item.variant?.images?.length > 0) {
@@ -137,8 +142,8 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   openReturnPage(order: any) {
-  this.router.navigate(['/account/return-order-request', order.id]);
-}
+    this.router.navigate(['/account/return-order-request', order.id]);
+  }
 
 
 }

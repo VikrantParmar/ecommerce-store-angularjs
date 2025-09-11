@@ -1,7 +1,3 @@
-.table td, .table th {
-  vertical-align: middle;
-}
-
 
 .cart-loader {
   display: flex;
@@ -53,10 +49,7 @@
   cursor: not-allowed;
 }
 
-td .order-btn {
-  margin-right: 8px;
-  margin-top: 4px;
+.text-center{
+  cursor: pointer;
 }
-td .order-btn:last-child {
-  margin-right: 0;
-}
+

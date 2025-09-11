@@ -1,23 +1,27 @@
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ProductGridComponent } from '../../components/shop/product-grid/product-grid.component';
 import { ProductService } from '../../services/products.service';
 import { CartService } from '../../services/cart.service';
 import { ToastrService } from 'ngx-toastr';
-import { RouterLink } from '@angular/router';
 
 declare var tns: any;
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink], 
+  imports: [
+    CommonModule,          // <-- Add this
+    RouterLink,
+    ProductGridComponent
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
-  // ProductGridComponent
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  featuredProducts: any[] = [];
-  loading = false;
+  products: any[] = [];
+  loadingProducts = false;
 
   constructor(
     private productService: ProductService,
@@ -42,32 +46,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   loadFeaturedProducts() {
-    this.loading = true;
+    this.loadingProducts = true;
     this.productService.getAllProducts({
       page: 1,
-      limit: 3,
+      limit: 4,
       sortField: 'createdAt',
       sortOrder: 'DESC'
     }).subscribe({
       next: (res) => {
-        this.featuredProducts = res.data?.data || [];
-        this.loading = false;
+        this.products = res.data?.data || [];
+        this.loadingProducts = false;
       },
       error: () => {
-        this.loading = false;
+        this.loadingProducts = false;
       }
     });
   }
 
-  getImageUrl(filename: string): string {
-    return this.productService.getImageUrl(filename);
-  }
-
-  onAddToCart(productId: number) {
+  addToCart(productId: number) {
     this.cartService.addToCart({ productId, quantity: 1 }).subscribe({
       next: () => this.toastr.success('Product added to cart'),
       error: () => this.toastr.error('Failed to add product to cart')
     });
   }
-
 }

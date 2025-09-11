@@ -1,68 +1,74 @@
-<div class="">
-  <h3 class="mb-4">My Orders</h3>
+<h4 class="mb-4">My Orders</h4>
 
-  <div *ngIf="loading" class="cart-loader">
-    <div class="custom-spinner"></div>
-  </div>
+<!-- Loader -->
+<div *ngIf="loading" class="cart-loader text-center my-5">
+  <div class="custom-spinner"></div>
+</div>
 
-  <div *ngIf="!loading">
+<!-- Orders List -->
+<div *ngIf="!loading && orders.length > 0" class="row g-3">
+  <div class="col-12" *ngFor="let order of orders">
+    <div class="card shadow-sm rounded-3 h-100">
 
-    <div *ngIf="!loading && orders.length > 0" class="bg-white p-3 rounded shadow">
-      <!-- ✅ Responsive table wrapper -->
-      <div class="table-responsive">
-        <table class="table align-middle mb-0">
-          <thead class="table-light text-center">
-            <tr>
-              <th>Order Number</th>
-              <th>Total Items</th>
-              <th>Total Price</th>
-              <th>Status</th>
-              <th>Created Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let order of orders" class="text-center">
-              <td>{{ order.orderNumber }}</td>
-              <td>{{ order.totalItems }}</td>
-              <td>{{ format(order.totalPrice) }}</td>
-              <td>
-                <span [ngClass]="getStatusClass(order.status)" class="badge me-1">
-                  {{ order.status }}
-                </span>
+      <!-- Card Body clickable using routerLink -->
+      <a [routerLink]="['/account/my-orders', order.orderNumber]" class="text-decoration-none text-dark">
+        <div class="card-body">
 
-                <!-- Refund Initiated Badge -->
-                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'initiated'"
-                  class="badge bg-warning text-dark me-1">
-                  Refund Initiated
-                </span>
+          <!-- Order Number + Status -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <p class="text-muted small mb-0">Order #{{ order.orderNumber }}</p>
+            <span class="badge text-uppercase rounded {{ getStatusClass(order.status) }}">
+              {{ order.status }}
+            </span>
+          </div>
 
-                <!-- Refunded Badge -->
-                <span *ngIf="order.status === 'Cancelled' && order.payments?.[0]?.refundStatus === 'succeeded'"
-                  class="badge bg-success text-white">
-                  Refund Completed
-                </span>
-              </td>
+          <!-- Items -->
+          <p class="text-muted small mb-1">Items: {{ order.totalItems }}</p>
 
-              <td>{{ order.createdAt | date: 'medium' }}</td>
-              <td>
-                <a [routerLink]="['/account/my-orders', order.id]" class="order-btn view-btn">View</a>
+          <!-- Placed On + Total Price -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <p class="text-muted small mb-0">Placed on: {{ order.createdAt | date: 'medium' }}</p>
+            <div class="fw-bold">{{ format(order.totalPrice) }}</div>
+          </div>
 
-                <button class="order-btn invoice-btn" (click)="downloadInvoice(order.id, order.orderNumber)"
-                  [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">
-                  <i *ngIf="!loadingInvoice[order.id]" class="bi bi-file-earmark-pdf"></i>
-                  <span *ngIf="loadingInvoice[order.id]" class="spinner-border spinner-border-sm"></span>
-                  {{ loadingInvoice[order.id] ? 'Downloading' : 'Invoice' }}
-                </button>
-              </td>
+          <!-- Refund Status -->
+          <div *ngIf="order.status === 'Cancelled'" class="mt-2">
+            <span *ngIf="order.payments?.[0]?.refundStatus === 'initiated'" class="badge bg-warning text-dark">
+              Refund Initiated
+            </span>
+            <span *ngIf="order.payments?.[0]?.refundStatus === 'succeeded'" class="badge bg-success">
+              Refund Completed
+            </span>
+          </div>
 
-            </tr>
-          </tbody>
-        </table>
+        </div>
+      </a>
+
+      <!-- Card Footer -->
+      <div class="card-footer bg-light d-flex align-items-center justify-content-between">
+        <div></div>
+
+        <!-- Rating (only for Delivered) -->
+        <div class="text-center cursor-pointer" *ngIf="order.status === 'Delivered'"
+             (click)="goToRating(order.order_items?.[0]?.product); $event.stopPropagation()">
+          Rate your order
+        </div>
+
+        <!-- Invoice Button -->
+        <button class="order-btn invoice-btn btn btn-sm btn-outline-primary"
+                (click)="downloadInvoice(order.id, order.orderNumber); $event.stopPropagation();"
+                [disabled]="loadingInvoice[order.id]" *ngIf="order.invoicePdfUrl">
+          <i *ngIf="!loadingInvoice[order.id]" class="bi bi-file-earmark-pdf"></i>
+          <span *ngIf="loadingInvoice[order.id]" class="spinner-border spinner-border-sm"></span>
+          {{ loadingInvoice[order.id] ? 'Downloading' : 'Invoice' }}
+        </button>
       </div>
-    </div>
 
-    <div *ngIf="!loading && orders.length === 0" class="alert alert-info mt-5 mb-5">
-      No orders found.
     </div>
   </div>
+</div>
+
+<!-- Empty Orders -->
+<div *ngIf="!loading && orders.length === 0" class="alert alert-info mt-5 mb-5 text-center">
+  No orders found.
+</div>

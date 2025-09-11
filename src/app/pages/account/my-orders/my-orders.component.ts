@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService, OrderSummary } from '../../../services/orders.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { formatPrice } from '../../../constants/currency.constant';
+import { ProductService } from '../../../services/products.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class MyOrdersComponent implements OnInit {
 
 
 
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService, private productService: ProductService, private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loading = true;
@@ -36,6 +38,13 @@ export class MyOrdersComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+    getCartImageUrl(item: any): string {
+    if (item.variant?.images?.length > 0) {
+      return this.productService.getVariantImageUrl(item.variant.images[0].image_url);
+    }
+    return this.productService.getImageUrl(item.product?.img);
   }
 
   getStatusClass(status: string): string {
@@ -74,5 +83,13 @@ export class MyOrdersComponent implements OnInit {
       error: () => this.loadingInvoice[orderId] = false
     });
   }
+
+
+goToRating(product: any) {
+  if (!product) return;
+  this.router.navigate(['/product-rating', product.slug]);
+}
+
+
 
 }

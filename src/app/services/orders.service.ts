@@ -20,8 +20,20 @@ export interface OrderSummary {
   createdAt: string;
   updatedAt: string;
   invoicePdfUrl?: string;
-  payments?: PaymentSummary[]; 
+  payments?: PaymentSummary[];
+  order_items?: OrderItemSummary[];   // ✅ add this
 
+}
+
+export interface OrderItemSummary {
+  product: {
+    id: number;
+    slug: string;
+    name: string;
+    img?: string;
+  };
+  quantity: number;
+  price: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,8 +50,8 @@ export class OrderService {
     return this.http.get<OrderSummary[]>(`${this.baseUrl}/my-orders`, { withCredentials: true });
   }
 
-  getOrderDetails(orderId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/my-orders/${orderId}`, { withCredentials: true });
+  getOrderDetails(orderNumber: string | number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/my-orders/${orderNumber}`, { withCredentials: true });
   }
 
   downloadInvoice(orderId: number): Observable<Blob> {

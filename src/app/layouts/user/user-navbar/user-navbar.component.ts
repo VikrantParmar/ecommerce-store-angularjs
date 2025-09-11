@@ -26,7 +26,7 @@ export class UserNavbarComponent implements OnInit {
   isNavbarOpen = false;
   searchQuery: string = '';
   categories: any[] = [];
-  
+
 
 
 
@@ -69,7 +69,7 @@ export class UserNavbarComponent implements OnInit {
         this.userRole = user.role?.toLowerCase() || null;
 
         this.cartService.getCart().subscribe();
-        this.wishlistService.getWishlist().subscribe();
+        // this.wishlistService.getWishlist().subscribe();
 
       } else {
         this.username = '';

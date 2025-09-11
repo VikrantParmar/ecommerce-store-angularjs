@@ -6,10 +6,11 @@ import { ProductService } from '../../../services/products.service';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
 import { formatPrice } from '../../../constants/currency.constant';
+import { RatingDisplayComponent } from "../../../components/product-ratings/rating-display/rating-display.component";
 
 @Component({
   selector: 'app-wishlist',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RatingDisplayComponent],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.css'
 })
@@ -17,7 +18,7 @@ export class WishlistComponent implements OnInit {
   wishlist: any[] = [];
   loading = true;
   format = formatPrice;
-
+  
 
   constructor(
     private wishlistService: WishlistService,
@@ -25,6 +26,11 @@ export class WishlistComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService
   ) { }
+
+
+  ngOnInit() {
+    this.fetchWishlist();
+  }
 
   getImageUrl(filename: string): string {
     return this.productService.getImageUrl(filename);
@@ -36,11 +42,6 @@ export class WishlistComponent implements OnInit {
     }
 
     return this.productService.getImageUrl(item.product?.img);
-  }
-
-
-  ngOnInit() {
-    this.fetchWishlist();
   }
 
 

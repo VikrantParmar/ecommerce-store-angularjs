@@ -34,7 +34,7 @@ export const routes: Routes = [
         children: [
           { path: 'profile', loadComponent: () => import('./pages/account/profile/profile.component').then(m => m.ProfileComponent) },
           { path: 'my-orders', loadComponent: () => import('./pages/account/my-orders/my-orders.component').then(m => m.MyOrdersComponent) },
-          { path: 'my-orders/:orderId', loadComponent: () => import('./pages/account/order-details/order-details.component').then(m => m.OrderDetailsComponent) },
+          { path: 'my-orders/:orderNumber', loadComponent: () => import('./pages/account/order-details/order-details.component').then(m => m.OrderDetailsComponent) },
           { path: 'wishlist', loadComponent: () => import('./pages/account/wishlist/wishlist.component').then(m => m.WishlistComponent) },
           { path: 'return-order-request/:orderId', loadComponent: () => import('./pages/account/return-order/return-order.component').then(m => m.ReturnOrderComponent), canActivate: [AuthGuard] },
           { path: '', redirectTo: 'my-orders', pathMatch: 'full' }
@@ -43,7 +43,7 @@ export const routes: Routes = [
 
 
 
-
+      { path: 'order-success', loadComponent: () => import('./pages/order-success-page/order-success-page.component').then(m => m.OrderSuccessPageComponent), canActivate: [AuthGuard] },
       { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent), canActivate: [AuthGuard] },
       { path: 'product-rating/:slug', loadComponent: () => import('./pages/product-rating/product-rating.component').then(m => m.ProductRatingComponent), canActivate: [AuthGuard] },
       { path: 'product/:id/reviews', loadComponent: () => import('./pages/all-reviews/all-reviews.component').then(m => m.AllReviewsComponent), canActivate: [AuthGuard] },
